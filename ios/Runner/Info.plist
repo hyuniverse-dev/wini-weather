@@ -45,5 +45,11 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<!-- 위치 권한 추가 -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+    <string>이 앱은 위치 정보가 필요합니다.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>이 앱은 항상 위치 정보가 필요합니다.</string>
+
 </dict>
 </plist>
