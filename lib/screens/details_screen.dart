@@ -106,7 +106,7 @@ class DetailsScreenContent extends StatelessWidget {
               base: base,
             ),
             SizedBox(
-              height: 50.0,
+              height: 50,
             ),
             ForecastSection(
               weatherIcons: [
