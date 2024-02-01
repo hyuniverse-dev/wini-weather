@@ -5,6 +5,14 @@ import 'package:flutter/material.dart';
 import 'location_response.dart';
 
 class LocationModel extends ChangeNotifier {
+  double latitude;
+  double longitude;
+
+  LocationModel({
+    required this.latitude,
+    required this.longitude,
+  });
+
   List<LocationResponse> _locationData = [
     LocationResponse(
       licence:
@@ -40,11 +48,10 @@ class LocationModel extends ChangeNotifier {
       ),
     ),
   ];
+
   List<LocationResponse> get locationData => _locationData;
-  void addLocation (LocationResponse location) {
+  void addLocation(LocationResponse location) {
     _locationData.add(location);
     notifyListeners();
   }
-
-
 }

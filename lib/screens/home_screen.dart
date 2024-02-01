@@ -6,15 +6,26 @@ import 'package:morning_weather/screens/add_location_screen.dart';
 import 'package:morning_weather/screens/introduce_screen.dart';
 import 'package:morning_weather/screens/settings_screen.dart';
 import 'package:morning_weather/services/forecast_weather_service.dart';
+import 'package:morning_weather/services/location_service.dart';
+import 'package:morning_weather/services/weather_service.dart';
+import 'package:morning_weather/utils/realm_utils.dart';
 import 'package:morning_weather/utils/route_utils.dart';
 import 'package:realm/realm.dart' hide ConnectionState;
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../models/location.dart';
 import '../widgets/home_screen/cards.dart';
 import 'details_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final double initialLatitude;
+  final double initialLongitude;
+
+  const HomeScreen({
+    super.key,
+    required this.initialLatitude,
+    required this.initialLongitude,
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -28,59 +39,67 @@ class _HomeScreenState extends State<HomeScreen> {
   var latitude = '0.0';
   var longitude = '0.0';
   var currentIndex = 0;
+  late int pageLength;
   final config = Configuration.local([Location.schema]);
-
+  final pageController = PageController(viewportFraction: 0.8, keepPage: true);
   final int sensitivity = 20;
   Realm? realm;
-
-  // var currentId;
-  String coodinate = '';
+  String coordinate = '';
   ForecastWeatherResponse? forecastWeatherData;
   Future<ForecastWeatherResponse>? _forecastFuture;
 
   @override
   void initState() {
-    super.initState();
     print('initState Called');
+    super.initState();
     realm = Realm(config);
-    location = realm!.all<Location>().firstOrNull;
+    final firstLocation = realm?.all<Location>().firstOrNull;
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final coordinate = '${widget.initialLatitude},${widget.initialLongitude}';
+      final initialLocation = await fetchLocationData(coordinate);
 
-    // Todo Refactoring soon..
-    if (location == null) {
-      realm!.write(() {
-        realm!.add(Location(
-          getLastPrimaryKey(realm!),
-          'Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright',
-          '35.1799528',
-          '129.0752365',
-          'busan',
-          '부산광역시',
-          '대한민국',
-        ));
+      final currentLocation = Location(
+        1,
+        initialLocation.licence,
+        initialLocation.latitude,
+        initialLocation.longitude,
+        initialLocation.name,
+        initialLocation.address.city ?? initialLocation.name,
+        initialLocation.address.country,
+      );
+
+      if (firstLocation == null) {
+        createLocation(realm!, currentLocation);
+      } else {
+        updateLocation(realm!, currentLocation);
+      }
+      setState(() {
+        pageLength = realm!.all<Location>().length;
+        print(pageLength);
+        location = currentLocation;
+        _forecastFuture = fetchForecastWeatherData(coordinate, 1);
       });
-    }
-
-    latitude = location.latitude ?? '35.1799528';
-    longitude = location.longitude ?? '129.0752365';
-    coodinate = '$latitude,$longitude';
-    _forecastFuture = fetchForecastWeatherData(coodinate, 1);
+    });
   }
 
   void _loadForecastWeatherData() {
-    _forecastFuture = fetchForecastWeatherData(coodinate, 1);
+    _forecastFuture = fetchForecastWeatherData(coordinate, 1);
   }
 
   void _handleVerticalSwipe(DragUpdateDetails details, BuildContext context) {
     if (details.delta.dy < -sensitivity) {
       Navigator.of(context).push(
-        createSwipeRoute(DetailsScreen(coodinate: coodinate), 'up'),
+        createSwipeRoute(DetailsScreen(coodinate: coordinate), 'up'),
       );
     }
   }
 
   bool _tryFetchFirstLocationId() {
     final firstLocation = realm!.all<Location>().firstOrNull;
-    return !(firstLocation!.id == location.id);
+    if (firstLocation == null || location == null) {
+      return false;
+    }
+    return firstLocation.id != location.id;
   }
 
   bool _tryUpdateToNextLocation() {
@@ -126,7 +145,7 @@ class _HomeScreenState extends State<HomeScreen> {
       location = newLocation;
       latitude = newLocation.latitude;
       longitude = newLocation.longitude;
-      coodinate = '${newLocation.latitude},${newLocation.longitude}';
+      coordinate = '${newLocation.latitude},${newLocation.longitude}';
       _loadForecastWeatherData();
     });
   }
@@ -190,7 +209,14 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(context),
-      body: _buildBody(context),
+      body: Column(
+        children: [
+          Expanded(
+            child: _buildBody(context),
+          ),
+          _buildIndicator()
+        ],
+      ),
     );
   }
 
@@ -244,7 +270,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ForecastWeatherResponse forecastWeather = snapshot.data!;
               return _buildContent(context, forecastWeather);
             } else {
-              return Text('No Data');
+              return Text('Loading...');
             }
           },
         ),
@@ -286,6 +312,24 @@ class _HomeScreenState extends State<HomeScreen> {
               child: buildWiniCard()),
         ),
       ],
+    );
+  }
+
+  Widget _buildIndicator() {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 30.0),
+      child: Align(
+        alignment: Alignment.bottomCenter,
+        child: SmoothPageIndicator(
+          controller: pageController,
+          count: pageLength,
+          effect: const WormEffect(
+            dotHeight: 8,
+            dotWidth: 8,
+            type: WormType.thinUnderground,
+          ),
+        ),
+      ),
     );
   }
 

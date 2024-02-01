@@ -43,6 +43,7 @@ dependencies:
   realm: ^1.7.0
   uuid: ^4.3.2
   geolocator: ^10.1.0
+  smooth_page_indicator: ^1.1.0
 
 dev_dependencies:
   flutter_test:
