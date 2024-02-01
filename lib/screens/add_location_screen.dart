@@ -37,7 +37,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
         onHorizontalDragEnd: (DragEndDetails details) {
           if (dragDistance > minDragDistance &&
               details.velocity.pixelsPerSecond.dx > minVelocity) {
-            Navigator.of(context).pop();
+            Navigator.of(context).pop(false);
           }
         },
         child: SingleChildScrollView(

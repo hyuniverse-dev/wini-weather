@@ -39,9 +39,10 @@ class _HomeScreenState extends State<HomeScreen> {
   var latitude = '0.0';
   var longitude = '0.0';
   var currentIndex = 0;
-  late int pageLength;
+  var pageIndex = 0;
+  var pageLength = 0;
   final config = Configuration.local([Location.schema]);
-  final pageController = PageController(viewportFraction: 0.8, keepPage: true);
+  final pageController = PageController(viewportFraction: 1.0, keepPage: true);
   final int sensitivity = 20;
   Realm? realm;
   String coordinate = '';
@@ -55,9 +56,8 @@ class _HomeScreenState extends State<HomeScreen> {
     realm = Realm(config);
     final firstLocation = realm?.all<Location>().firstOrNull;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final coordinate = '${widget.initialLatitude},${widget.initialLongitude}';
+      coordinate = '${widget.initialLatitude},${widget.initialLongitude}';
       final initialLocation = await fetchLocationData(coordinate);
-
       final currentLocation = Location(
         1,
         initialLocation.licence,
@@ -74,8 +74,8 @@ class _HomeScreenState extends State<HomeScreen> {
         updateLocation(realm!, currentLocation);
       }
       setState(() {
-        pageLength = realm!.all<Location>().length;
-        print(pageLength);
+        final locations = realm!.all<Location>().toList();
+        pageLength = locations.length;
         location = currentLocation;
         _forecastFuture = fetchForecastWeatherData(coordinate, 1);
       });
@@ -115,6 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
         _updateLocationAndWeatherData(nextLocation);
         print('updatedLocation.id >>> ${nextLocation.id}');
         print('updatedLocation.name >>> ${nextLocation.name}');
+        // pageIndex++;
         return true;
       }
     }
@@ -134,6 +135,7 @@ class _HomeScreenState extends State<HomeScreen> {
       print('updatedLocation.name >>> ${beforeLocation.name}');
       if (location.id != beforeLocation.id) {
         _updateLocationAndWeatherData(beforeLocation);
+        // pageIndex--;
         return true;
       }
     }
@@ -152,6 +154,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _handleHorizontalSwipe(DragUpdateDetails details, BuildContext context) {
     if (details.delta.dx > sensitivity && !isDragging) {
+      // 오른쪽으로 스와이프
+      if (pageController.page!.round() > 0) {
+        pageController.previousPage(
+          duration: Duration(milliseconds: 600),
+          curve: Curves.easeOut,
+        );
+      }
+
       var hasBeforeLocation = _tryUpdateToBeforeLocation();
       isDragging = true;
       if (!hasBeforeLocation) {
@@ -163,6 +173,14 @@ class _HomeScreenState extends State<HomeScreen> {
         print('hasBeforeLocation is False');
       }
     } else if (details.delta.dx < -sensitivity && !isDragging) {
+      // 왼쪽으로 스와이프
+      if (pageController.page!.round() < pageLength - 1) {
+        pageController.nextPage(
+          duration: Duration(milliseconds: 600),
+          curve: Curves.easeOut,
+        );
+      }
+
       var hasNextLocation = _tryUpdateToNextLocation();
       isDragging = true;
       if (!hasNextLocation) {
@@ -175,7 +193,21 @@ class _HomeScreenState extends State<HomeScreen> {
             setState(() {
               final config = Configuration.local([Location.schema]);
               Realm realm = Realm(config);
-              location = realm!.all<Location>().lastOrNull;
+              final locations = realm!.all<Location>();
+
+              // pageLength Update
+              pageLength = locations.length;
+
+              // pagePoint Update to last
+              if (pageController.hasClients && pageLength > 0) {
+                pageController.animateToPage(
+                  pageLength - 1,
+                  duration: Duration(milliseconds: 600),
+                  curve: Curves.easeOut,
+                );
+              }
+
+              location = locations.lastOrNull;
               _updateLocationAndWeatherData(location);
             });
           }
@@ -187,20 +219,32 @@ class _HomeScreenState extends State<HomeScreen> {
   void removeLocationData(int id) {
     final config = Configuration.local([Location.schema]);
     var realm = Realm(config);
-
     final List<Location> locations = realm.all<Location>().toList();
     int currentIndex = locations.indexWhere((loc) => loc.id == location.id);
 
-    realm.write(() {
-      var locationToRemove = realm.query<Location>('id == $id').firstOrNull;
-      print('locationToRemove >>> ${locationToRemove!.id}');
-      print('locationToRemove >>> ${locationToRemove!.name}');
-      if (locationToRemove != null) {
-        realm.delete(locationToRemove);
-      }
+    setState(() {
+      realm.write(() {
+        var locationToRemove = realm.query<Location>('id == $id').firstOrNull;
+        print('locationToRemove >>> ${locationToRemove!.id}');
+        print('locationToRemove >>> ${locationToRemove!.name}');
+        if (locationToRemove != null) {
+          realm.delete(locationToRemove);
+        }
+      });
     });
+
     setState(() {
       location = locations[currentIndex - 1];
+      // pageLength Update
+      pageLength = (locations.length - 1);
+      // pagePoint Update to last
+      if (pageController.hasClients && pageLength > 0) {
+        pageController.animateToPage(
+          currentIndex - 1,
+          duration: Duration(milliseconds: 600),
+          curve: Curves.easeOut,
+        );
+      }
     });
     _updateLocationAndWeatherData(location);
   }
@@ -212,7 +256,13 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Column(
         children: [
           Expanded(
-            child: _buildBody(context),
+            child: PageView.builder(
+              controller: pageController,
+              itemCount: pageLength,
+              itemBuilder: (context, index) {
+                return _buildBody(context);
+              },
+            ),
           ),
           _buildIndicator()
         ],
@@ -263,7 +313,7 @@ class _HomeScreenState extends State<HomeScreen> {
           future: _forecastFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return isDetailScreen ? SizedBox() : CircularProgressIndicator();
+              return isDetailScreen ? SizedBox() : RefreshProgressIndicator();
             } else if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');
             } else if (snapshot.hasData) {
@@ -316,6 +366,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildIndicator() {
+    if (pageLength == null ||
+        pageLength.isNaN ||
+        pageLength <= 0) {
+      return SizedBox.shrink();
+    }
     return Padding(
       padding: EdgeInsets.only(bottom: 30.0),
       child: Align(
@@ -323,10 +378,12 @@ class _HomeScreenState extends State<HomeScreen> {
         child: SmoothPageIndicator(
           controller: pageController,
           count: pageLength,
-          effect: const WormEffect(
-            dotHeight: 8,
-            dotWidth: 8,
-            type: WormType.thinUnderground,
+          effect: const JumpingDotEffect(
+            dotHeight: 12,
+            dotWidth: 12,
+            verticalOffset: 20,
+            jumpScale: .7,
+            // type: WormType.thinUnderground,
           ),
         ),
       ),

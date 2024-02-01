@@ -73,7 +73,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
       if (notification.metrics.pixels == notification.metrics.minScrollExtent) {
         topReachCount++;
         print(topReachCount);
-        if (topReachCount > 1) {
+        if (topReachCount >= 1) {
           Navigator.of(context).pop();
         }
       }
