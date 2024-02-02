@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:morning_weather/models/location_model.dart';
 import 'package:morning_weather/screens/home_screen.dart';
-import 'package:morning_weather/utils/geolocator_utils.dart';
+import 'package:morning_weather/utils/geo_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:geolocator/geolocator.dart';
 

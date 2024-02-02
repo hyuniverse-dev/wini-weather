@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:morning_weather/models/forecast_weather_response.dart';
 import 'package:morning_weather/screens/add_location_screen.dart';
@@ -7,14 +5,15 @@ import 'package:morning_weather/screens/introduce_screen.dart';
 import 'package:morning_weather/screens/settings_screen.dart';
 import 'package:morning_weather/services/forecast_weather_service.dart';
 import 'package:morning_weather/services/location_service.dart';
-import 'package:morning_weather/services/weather_service.dart';
 import 'package:morning_weather/utils/realm_utils.dart';
-import 'package:morning_weather/utils/route_utils.dart';
+import 'package:morning_weather/widgets/home_screen/custom_route.dart';
 import 'package:realm/realm.dart' hide ConnectionState;
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../models/location.dart';
-import '../widgets/home_screen/cards.dart';
+import '../utils/geo_utils.dart';
+import '../utils/navigation_utils.dart';
+import '../widgets/home_screen/custom_cards.dart';
 import 'details_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -94,54 +93,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  bool _tryFetchFirstLocationId() {
-    final firstLocation = realm!.all<Location>().firstOrNull;
-    if (firstLocation == null || location == null) {
-      return false;
-    }
-    return firstLocation.id != location.id;
-  }
-
-  bool _tryUpdateToNextLocation() {
-    final List<Location> locations = realm!.all<Location>().toList();
-    currentIndex = locations.indexWhere((loc) => loc.id == location.id);
-    Location currentLocation = locations[currentIndex];
-    print('beforeLocation.id >>> ${currentLocation.id}');
-    print('beforeLocation.name >>> ${currentLocation.name}');
-
-    if (currentIndex != -1 && currentIndex < locations.length - 1) {
-      var nextLocation = locations[currentIndex + 1];
-      if (location.id != nextLocation.id) {
-        _updateLocationAndWeatherData(nextLocation);
-        print('updatedLocation.id >>> ${nextLocation.id}');
-        print('updatedLocation.name >>> ${nextLocation.name}');
-        // pageIndex++;
-        return true;
-      }
-    }
-    return false;
-  }
-
-  bool _tryUpdateToBeforeLocation() {
-    final List<Location> locations = realm!.all<Location>().toList();
-    int currentIndex = locations.indexWhere((loc) => loc.id == location.id);
-    Location currentLocation = locations[currentIndex];
-    print('beforeLocation.id >>> ${currentLocation.id}');
-    print('beforeLocation.name >>> ${currentLocation.name}');
-
-    if (currentIndex != -1 && currentIndex > 0) {
-      var beforeLocation = locations[currentIndex - 1];
-      print('updatedLocation.id >>> ${beforeLocation.id}');
-      print('updatedLocation.name >>> ${beforeLocation.name}');
-      if (location.id != beforeLocation.id) {
-        _updateLocationAndWeatherData(beforeLocation);
-        // pageIndex--;
-        return true;
-      }
-    }
-    return false;
-  }
-
   void _updateLocationAndWeatherData(Location newLocation) {
     setState(() {
       location = newLocation;
@@ -153,63 +104,47 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _handleHorizontalSwipe(DragUpdateDetails details, BuildContext context) {
-    if (details.delta.dx > sensitivity && !isDragging) {
-      // 오른쪽으로 스와이프
-      if (pageController.page!.round() > 0) {
-        pageController.previousPage(
-          duration: Duration(milliseconds: 600),
-          curve: Curves.easeOut,
-        );
+    final bool isSwipeRight = details.delta.dx > sensitivity;
+    final bool isSwipeLeft = details.delta.dx < -sensitivity;
+
+    if ((isSwipeRight || isSwipeLeft) && !isDragging) {
+      navigateToPage(pageController, pageLength, isSwipeLeft);
+
+      final updatedLocation =
+          handleLocationUpdate(isSwipeLeft, realm!, location);
+      if (updatedLocation != null) {
+        _updateLocationAndWeatherData(updatedLocation);
       }
 
-      var hasBeforeLocation = _tryUpdateToBeforeLocation();
       isDragging = true;
-      if (!hasBeforeLocation) {
-        Navigator.of(context)
-            .push(
-              createSwipeRoute(IntroduceScreen(), 'left'),
-            )
-            .then((_) => isDragging = false);
-        print('hasBeforeLocation is False');
-      }
-    } else if (details.delta.dx < -sensitivity && !isDragging) {
-      // 왼쪽으로 스와이프
-      if (pageController.page!.round() < pageLength - 1) {
-        pageController.nextPage(
-          duration: Duration(milliseconds: 600),
-          curve: Curves.easeOut,
-        );
-      }
 
-      var hasNextLocation = _tryUpdateToNextLocation();
-      isDragging = true;
-      if (!hasNextLocation) {
-        Navigator.of(context)
-            .push(
-          createSwipeRoute(AddLocationScreen(), 'right'),
-        )
-            .then((value) {
-          if (value) {
-            setState(() {
-              final config = Configuration.local([Location.schema]);
-              Realm realm = Realm(config);
-              final locations = realm!.all<Location>();
+      if (updatedLocation == null) {
+        navigateToNewScreen(context, isSwipeLeft, (value) {
+          if (isSwipeLeft) {
+            if (value != null && value == true) {
+              setState(() {
+                final config = Configuration.local([Location.schema]);
+                Realm realm = Realm(config);
+                final locations = realm.all<Location>();
 
-              // pageLength Update
-              pageLength = locations.length;
+                // pageLength Update
+                pageLength = locations.length;
 
-              // pagePoint Update to last
-              if (pageController.hasClients && pageLength > 0) {
-                pageController.animateToPage(
-                  pageLength - 1,
-                  duration: Duration(milliseconds: 600),
-                  curve: Curves.easeOut,
-                );
-              }
-
-              location = locations.lastOrNull;
-              _updateLocationAndWeatherData(location);
-            });
+                // pagePoint Update to last
+                if (pageController.hasClients && pageLength > 0) {
+                  pageController.animateToPage(
+                    pageLength - 1,
+                    duration: Duration(milliseconds: 600),
+                    curve: Curves.easeOut,
+                  );
+                }
+                location = locations.lastOrNull;
+                _updateLocationAndWeatherData(location);
+              });
+            }
+          } else {
+            isDragging = false;
+            print('BeforeLocation is null');
           }
         });
       }
@@ -217,36 +152,65 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void removeLocationData(int id) {
-    final config = Configuration.local([Location.schema]);
-    var realm = Realm(config);
-    final List<Location> locations = realm.all<Location>().toList();
-    int currentIndex = locations.indexWhere((loc) => loc.id == location.id);
+    removeLocation(id).then((result) => {
+          // 비동기 작업의 결과로 받은 데이터를 사용하여 UI 상태를 업데이트합니다.
+          setState(() {
+            // 'locations'와 'currentIndex'는 이 컴포넌트의 상태를 나타내는 변수입니다.
+            // 이들 변수의 정의와 초기화는 이 예시에 포함되지 않았습니다.
+            var updatedLocations = result["updatedLocations"] as List<Location>;
+            var newIndex = result["currentIndex"] as int;
 
-    setState(() {
-      realm.write(() {
-        var locationToRemove = realm.query<Location>('id == $id').firstOrNull;
-        print('locationToRemove >>> ${locationToRemove!.id}');
-        print('locationToRemove >>> ${locationToRemove!.name}');
-        if (locationToRemove != null) {
-          realm.delete(locationToRemove);
-        }
-      });
-    });
+            // pageLength와 기타 필요한 상태를 업데이트합니다.
+            pageLength = updatedLocations.length;
+            currentIndex = newIndex;
 
-    setState(() {
-      location = locations[currentIndex - 1];
-      // pageLength Update
-      pageLength = (locations.length - 1);
-      // pagePoint Update to last
-      if (pageController.hasClients && pageLength > 0) {
-        pageController.animateToPage(
-          currentIndex - 1,
-          duration: Duration(milliseconds: 600),
-          curve: Curves.easeOut,
-        );
-      }
-    });
-    _updateLocationAndWeatherData(location);
+            // pageController를 사용하여 페이지 위치를 업데이트합니다.
+            if (pageController.hasClients && pageLength > 0) {
+              pageController.animateToPage(
+                newIndex,
+                duration: Duration(milliseconds: 600),
+                curve: Curves.easeOut,
+              );
+            }
+
+            // 가정: 현재 위치(location) 업데이트 로직
+            location =
+                updatedLocations.isNotEmpty ? updatedLocations[newIndex] : null;
+
+            // 필요한 추가 데이터 업데이트 로직
+            _updateLocationAndWeatherData(location);
+          })
+        });
+    // final config = Configuration.local([Location.schema]);
+    // var realm = Realm(config);
+    // final List<Location> locations = realm.all<Location>().toList();
+    // int currentIndex = locations.indexWhere((loc) => loc.id == location.id);
+    //
+    // setState(() {
+    //   realm.write(() {
+    //     var locationToRemove = realm.query<Location>('id == $id').firstOrNull;
+    //     print('locationToRemove >>> ${locationToRemove!.id}');
+    //     print('locationToRemove >>> ${locationToRemove!.name}');
+    //     if (locationToRemove != null) {
+    //       realm.delete(locationToRemove);
+    //     }
+    //   });
+    // });
+    //
+    // setState(() {
+    //   location = locations[currentIndex - 1];
+    //   // pageLength Update
+    //   pageLength = (locations.length - 1);
+    //   // pagePoint Update to last
+    //   if (pageController.hasClients && pageLength > 0) {
+    //     pageController.animateToPage(
+    //       currentIndex - 1,
+    //       duration: Duration(milliseconds: 600),
+    //       curve: Curves.easeOut,
+    //     );
+    //   }
+    // });
+    // _updateLocationAndWeatherData(location);
   }
 
   @override
@@ -277,7 +241,7 @@ class _HomeScreenState extends State<HomeScreen> {
           onPressed: () => _navigateToSettings(context),
           icon: Icon(Icons.settings),
         ),
-        _tryFetchFirstLocationId()
+        tryFetchFirstLocationId(realm!, location)
             ? IconButton(
                 onPressed: () => removeLocationData(location.id),
                 icon: Icon(Icons.delete),
@@ -366,9 +330,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildIndicator() {
-    if (pageLength == null ||
-        pageLength.isNaN ||
-        pageLength <= 0) {
+    if (pageLength == null || pageLength.isNaN || pageLength <= 0) {
       return SizedBox.shrink();
     }
     return Padding(
@@ -379,9 +341,9 @@ class _HomeScreenState extends State<HomeScreen> {
           controller: pageController,
           count: pageLength,
           effect: const JumpingDotEffect(
-            dotHeight: 12,
-            dotWidth: 12,
-            verticalOffset: 20,
+            dotHeight: 6,
+            dotWidth: 6,
+            verticalOffset: 16,
             jumpScale: .7,
             // type: WormType.thinUnderground,
           ),
