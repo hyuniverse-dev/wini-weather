@@ -34,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
   var isLoading = true;
   var isDragging = false;
   var isDetailScreen = false;
-  var location;
+
   var latitude = '0.0';
   var longitude = '0.0';
   var currentIndex = 0;
@@ -43,10 +43,11 @@ class _HomeScreenState extends State<HomeScreen> {
   final config = Configuration.local([Location.schema]);
   final pageController = PageController(viewportFraction: 1.0, keepPage: true);
   final int sensitivity = 20;
-  Realm? realm;
-  String coordinate = '';
-  ForecastWeatherResponse? forecastWeatherData;
-  Future<ForecastWeatherResponse>? _forecastFuture;
+  Location? location;
+  late Realm? realm;
+  late String coordinate = '';
+  late ForecastWeatherResponse? forecastWeatherData;
+  late Future<ForecastWeatherResponse>? _forecastFuture;
 
   @override
   void initState() {
@@ -111,7 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
       navigateToPage(pageController, pageLength, isSwipeLeft);
 
       final updatedLocation =
-          handleLocationUpdate(isSwipeLeft, realm!, location);
+          handleLocationUpdate(isSwipeLeft, realm!, location!);
       if (updatedLocation != null) {
         _updateLocationAndWeatherData(updatedLocation);
       }
@@ -138,8 +139,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     curve: Curves.easeOut,
                   );
                 }
-                location = locations.lastOrNull;
-                _updateLocationAndWeatherData(location);
+                location = locations.lastOrNull!;
+                _updateLocationAndWeatherData(location!);
               });
             }
           } else {
@@ -174,11 +175,12 @@ class _HomeScreenState extends State<HomeScreen> {
             }
 
             // 가정: 현재 위치(location) 업데이트 로직
-            location =
-                updatedLocations.isNotEmpty ? updatedLocations[newIndex] : null;
+            location = updatedLocations.isNotEmpty
+                ? updatedLocations[newIndex]
+                : updatedLocations[currentIndex];
 
             // 필요한 추가 데이터 업데이트 로직
-            _updateLocationAndWeatherData(location);
+            _updateLocationAndWeatherData(location!);
           })
         });
     // final config = Configuration.local([Location.schema]);
@@ -217,20 +219,24 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(context),
-      body: Column(
-        children: [
-          Expanded(
-            child: PageView.builder(
-              controller: pageController,
-              itemCount: pageLength,
-              itemBuilder: (context, index) {
-                return _buildBody(context);
-              },
+      body: location == null
+          ? Center(
+              child: RefreshProgressIndicator(),
+            )
+          : Column(
+              children: [
+                Expanded(
+                  child: PageView.builder(
+                    controller: pageController,
+                    itemCount: pageLength,
+                    itemBuilder: (context, index) {
+                      return _buildBody(context);
+                    },
+                  ),
+                ),
+                _buildIndicator()
+              ],
             ),
-          ),
-          _buildIndicator()
-        ],
-      ),
     );
   }
 
@@ -241,12 +247,14 @@ class _HomeScreenState extends State<HomeScreen> {
           onPressed: () => _navigateToSettings(context),
           icon: Icon(Icons.settings),
         ),
-        tryFetchFirstLocationId(realm!, location)
-            ? IconButton(
-                onPressed: () => removeLocationData(location.id),
-                icon: Icon(Icons.delete),
-              )
-            : SizedBox.shrink()
+        location == null
+            ? SizedBox.shrink()
+            : tryFetchFirstLocationId(realm!, location!)
+                ? IconButton(
+                    onPressed: () => removeLocationData(location!.id),
+                    icon: Icon(Icons.delete),
+                  )
+                : SizedBox.shrink()
       ],
     );
   }
