@@ -21,6 +21,20 @@ void updateLocation(Realm realm, Location location) {
   });
 }
 
+List<Location> fetchLocations(Realm realm) {
+  var config = Configuration.local([Location.schema]);
+  realm = Realm(config);
+  final locations = realm.all<Location>().toList();
+  return locations;
+}
+
+void removeLocationById(Realm realm, int id) {
+  var location = realm.find<Location>(id);
+  if (location != null) {
+    realm.write(() => realm.delete(location));
+  }
+}
+
 Future<Map<String, dynamic>> removeLocation(int id) async {
   final config = Configuration.local([Location.schema]);
   var realm = Realm(config);

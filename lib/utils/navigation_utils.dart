@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:morning_weather/screens/settings_screen.dart';
 import 'package:morning_weather/widgets/home_screen/custom_route.dart';
 
 import '../screens/add_location_screen.dart';
@@ -27,4 +28,11 @@ void navigateToNewScreen(
       .push(createSwipeRoute(isNext ? AddLocationScreen() : IntroduceScreen(),
           isNext ? 'right' : 'left'))
       .then((value) => postNavigation(value));
+}
+
+void navigateToSettingsScreen(BuildContext context) {
+  print('SettingsScreen Button Click!');
+  Navigator.of(context).push(
+    createOntapRoute(SettingsScreen(), 'settingsScreen'),
+  );
 }

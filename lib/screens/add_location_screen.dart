@@ -1,12 +1,14 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:morning_weather/models/location_model.dart';
+import 'package:morning_weather/models/weather.dart' as current;
 import 'package:morning_weather/services/location_service.dart';
+import 'package:morning_weather/services/weather_service.dart';
 import 'package:morning_weather/utils/alert_utils.dart';
-import 'package:provider/provider.dart';
-import 'package:realm/realm.dart';
+import 'package:morning_weather/utils/calculate_utils.dart';
+import 'package:realm/realm.dart' hide ConnectionState;
 import '../models/location.dart';
 import '../utils/api_utils.dart';
+import '../utils/realm_utils.dart';
 
 class AddLocationScreen extends StatefulWidget {
   const AddLocationScreen({super.key});
@@ -16,16 +18,26 @@ class AddLocationScreen extends StatefulWidget {
 }
 
 class _AddLocationScreenState extends State<AddLocationScreen> {
-  var currentLocation = 'Seoul';
   var dragDistance = 0.0;
   var config = Configuration.local([Location.schema]);
 
   final TextEditingController textController = TextEditingController();
   final double minDragDistance = 0;
   final double minVelocity = 0;
+  late String currentLocation;
   late String? city;
   late Realm realm;
-  late var location;
+  late var locations;
+
+  @override
+  void initState() {
+    super.initState();
+    realm = Realm(config);
+    setState(() {
+      locations = fetchLocations(realm);
+      currentLocation = locations[0].city;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +49,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
         onHorizontalDragEnd: (DragEndDetails details) {
           if (dragDistance > minDragDistance &&
               details.velocity.pixelsPerSecond.dx > minVelocity) {
-            Navigator.of(context).pop(false);
+            Navigator.of(context).pop(true);
           }
         },
         child: SingleChildScrollView(
@@ -113,8 +125,11 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                                           locationData.licence,
                                           locationData.latitude,
                                           locationData.longitude,
-                                          locationData.name,
-                                          city!,
+                                          locationData
+                                                  .nameDetails.officialNameEn ??
+                                              locationData.address.city!,
+                                          locationData.address.city ??
+                                              locationData.name,
                                           locationData.address.country,
                                         ),
                                       );
@@ -149,24 +164,57 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                             color: Colors.black45, fontWeight: FontWeight.bold),
                       ),
                     ),
-                    LocationWeatherItem(
-                      city: 'United Kingdom',
-                      icon: Icons.sunny,
-                      temperature: '22°C',
-                      date: 'Thu, January 10th, 4:32PM',
-                    ),
-                    LocationWeatherItem(
-                      city: 'Australia',
-                      icon: Icons.cloud,
-                      temperature: '0°C',
-                      date: 'Wed, January 10th, 4:32PM',
-                    ),
-                    LocationWeatherItem(
-                      city: 'Papua New Guinea',
-                      icon: Icons.grain,
-                      temperature: '-8°C',
-                      date: 'Wed, January 10th, 4:32PM',
-                    ),
+                    locations.isNotEmpty
+                        ? ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: locations.length,
+                            itemBuilder: (context, index) {
+                              var location = locations[index];
+                              return FutureBuilder<current.WeatherResponse>(
+                                future: _fetchCurrentWeather(
+                                    '${location.latitude},${location.longitude}'),
+                                builder: (BuildContext context,
+                                    AsyncSnapshot<current.WeatherResponse>
+                                        snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return SizedBox();
+                                  } else if (snapshot.hasError) {
+                                    return Text('Error : ${snapshot.error}');
+                                  } else {
+                                    var tempC =
+                                        snapshot.data!.current.tempC.toString();
+                                    var windKph = snapshot.data!.current.windKph
+                                        .toString();
+                                    var date =
+                                        DateTime.fromMillisecondsSinceEpoch(
+                                            snapshot.data!.location
+                                                    .localtimeEpoch *
+                                                1000,
+                                            isUtc: true);
+                                    var weekday = getCurrentWeekday(date);
+
+                                    return LocationWeatherItem(
+                                      index: index,
+                                      city: location.name,
+                                      weatherIcon: Icons.sunny,
+                                      summary:
+                                          '${weekday[0]}, ${tempC}°C, ${windKph}kph',
+                                      onRemovePressed: () {
+                                        setState(() {
+                                          removeLocationById(
+                                              realm, location.id);
+                                        });
+                                        locations.removeAt(index);
+                                      },
+                                    );
+                                  }
+                                },
+                              );
+                            },
+                          )
+                        : RefreshProgressIndicator()
                   ],
                 ),
               ),
@@ -179,18 +227,29 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
   }
 }
 
+Future<current.WeatherResponse> _fetchCurrentWeather(String coordinate) async {
+  try {
+    var currentWeather = await fetchWeatherData(coordinate);
+    return currentWeather;
+  } catch (e) {
+    return throw Exception('_fetchCurrentWeather Error : $e');
+  }
+}
+
 class LocationWeatherItem extends StatelessWidget {
+  final int index;
   final String city;
-  final IconData icon;
-  final String temperature;
-  final String date;
+  final IconData weatherIcon;
+  final String summary;
+  final VoidCallback onRemovePressed;
 
   const LocationWeatherItem({
     super.key,
+    required this.index,
     required this.city,
-    required this.icon,
-    required this.temperature,
-    required this.date,
+    required this.weatherIcon,
+    required this.summary,
+    required this.onRemovePressed,
   });
 
   @override
@@ -211,7 +270,7 @@ class LocationWeatherItem extends StatelessWidget {
           child: Row(
             children: [
               Icon(
-                icon,
+                weatherIcon,
                 size: 46,
                 color: Colors.black45,
               ),
@@ -222,20 +281,29 @@ class LocationWeatherItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    city,
+                    city.length > 10 ? '${city.substring(0, 10)}...' : city,
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Text(date),
+                  Text(summary),
                 ],
               ),
               Spacer(),
-              Text(
-                temperature,
-                style: TextStyle(fontSize: 25.0),
-              )
+              index == 0
+                  ? Icon(
+                      Icons.block,
+                      color: Colors.white.withOpacity(1.0),
+                    )
+                  : IconButton(
+                      icon: Icon(
+                        Icons.remove_circle_outline,
+                        size: 26.0,
+                        color: Colors.black45,
+                      ),
+                      onPressed: onRemovePressed,
+                    ),
             ],
           ),
         ),

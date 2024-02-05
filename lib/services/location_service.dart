@@ -5,12 +5,13 @@ import 'package:morning_weather/models/location_response.dart';
 
 Future<LocationResponse> fetchLocationData(String searchKeyword) async {
   const int addressDetails = 1;
+  const int nameDetails = 1;
   const String format = 'jsonv2';
   const int limit = 1;
   final String url = 'https://nominatim.openstreetmap.org/search';
 
   final Uri uri = Uri.parse(
-      '$url?addressdetails=$addressDetails&q=$searchKeyword&format=$format&limit=$limit');
+      '$url?addressdetails=$addressDetails&q=$searchKeyword&format=$format&limit=$limit&namedetails=$nameDetails');
 
   try {
     final response = await http.get(uri);

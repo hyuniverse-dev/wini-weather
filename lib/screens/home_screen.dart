@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:morning_weather/models/forecast_weather_response.dart';
-import 'package:morning_weather/screens/add_location_screen.dart';
-import 'package:morning_weather/screens/introduce_screen.dart';
-import 'package:morning_weather/screens/settings_screen.dart';
 import 'package:morning_weather/services/forecast_weather_service.dart';
 import 'package:morning_weather/services/location_service.dart';
 import 'package:morning_weather/utils/realm_utils.dart';
@@ -31,7 +28,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  var isLoading = true;
+  var isLoading = false;
   var isDragging = false;
   var isDetailScreen = false;
 
@@ -51,19 +48,21 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    print('initState Called');
     super.initState();
     realm = Realm(config);
     final firstLocation = realm?.all<Location>().firstOrNull;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      coordinate = '${widget.initialLatitude},${widget.initialLongitude}';
+      coordinate =
+          '${widget.initialLatitude.toStringAsFixed(7)},${widget.initialLongitude.toStringAsFixed(7)}';
+      print(coordinate);
       final initialLocation = await fetchLocationData(coordinate);
       final currentLocation = Location(
         1,
         initialLocation.licence,
-        initialLocation.latitude,
-        initialLocation.longitude,
-        initialLocation.name,
+        initialLocation.latitude.substring(0, 7),
+        initialLocation.longitude.substring(0, 7),
+        initialLocation.nameDetails.officialNameEn ??
+            initialLocation.address.city!,
         initialLocation.address.city ?? initialLocation.name,
         initialLocation.address.country,
       );
@@ -108,9 +107,8 @@ class _HomeScreenState extends State<HomeScreen> {
     final bool isSwipeRight = details.delta.dx > sensitivity;
     final bool isSwipeLeft = details.delta.dx < -sensitivity;
 
-    if ((isSwipeRight || isSwipeLeft) && !isDragging) {
+    if ((isSwipeRight || isSwipeLeft) && !isDragging && !isLoading) {
       navigateToPage(pageController, pageLength, isSwipeLeft);
-
       final updatedLocation =
           handleLocationUpdate(isSwipeLeft, realm!, location!);
       if (updatedLocation != null) {
@@ -118,6 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
       }
 
       isDragging = true;
+      isLoading = true;
 
       if (updatedLocation == null) {
         navigateToNewScreen(context, isSwipeLeft, (value) {
@@ -135,7 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 if (pageController.hasClients && pageLength > 0) {
                   pageController.animateToPage(
                     pageLength - 1,
-                    duration: Duration(milliseconds: 600),
+                    duration: Duration(milliseconds: 500),
                     curve: Curves.easeOut,
                   );
                 }
@@ -144,6 +143,7 @@ class _HomeScreenState extends State<HomeScreen> {
               });
             }
           } else {
+            isLoading = false;
             isDragging = false;
             print('BeforeLocation is null');
           }
@@ -152,117 +152,38 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  void removeLocationData(int id) {
-    removeLocation(id).then((result) => {
-          // 비동기 작업의 결과로 받은 데이터를 사용하여 UI 상태를 업데이트합니다.
-          setState(() {
-            // 'locations'와 'currentIndex'는 이 컴포넌트의 상태를 나타내는 변수입니다.
-            // 이들 변수의 정의와 초기화는 이 예시에 포함되지 않았습니다.
-            var updatedLocations = result["updatedLocations"] as List<Location>;
-            var newIndex = result["currentIndex"] as int;
-
-            // pageLength와 기타 필요한 상태를 업데이트합니다.
-            pageLength = updatedLocations.length;
-            currentIndex = newIndex;
-
-            // pageController를 사용하여 페이지 위치를 업데이트합니다.
-            if (pageController.hasClients && pageLength > 0) {
-              pageController.animateToPage(
-                newIndex,
-                duration: Duration(milliseconds: 600),
-                curve: Curves.easeOut,
-              );
-            }
-
-            // 가정: 현재 위치(location) 업데이트 로직
-            location = updatedLocations.isNotEmpty
-                ? updatedLocations[newIndex]
-                : updatedLocations[currentIndex];
-
-            // 필요한 추가 데이터 업데이트 로직
-            _updateLocationAndWeatherData(location!);
-          })
-        });
-    // final config = Configuration.local([Location.schema]);
-    // var realm = Realm(config);
-    // final List<Location> locations = realm.all<Location>().toList();
-    // int currentIndex = locations.indexWhere((loc) => loc.id == location.id);
-    //
-    // setState(() {
-    //   realm.write(() {
-    //     var locationToRemove = realm.query<Location>('id == $id').firstOrNull;
-    //     print('locationToRemove >>> ${locationToRemove!.id}');
-    //     print('locationToRemove >>> ${locationToRemove!.name}');
-    //     if (locationToRemove != null) {
-    //       realm.delete(locationToRemove);
-    //     }
-    //   });
-    // });
-    //
-    // setState(() {
-    //   location = locations[currentIndex - 1];
-    //   // pageLength Update
-    //   pageLength = (locations.length - 1);
-    //   // pagePoint Update to last
-    //   if (pageController.hasClients && pageLength > 0) {
-    //     pageController.animateToPage(
-    //       currentIndex - 1,
-    //       duration: Duration(milliseconds: 600),
-    //       curve: Curves.easeOut,
-    //     );
-    //   }
-    // });
-    // _updateLocationAndWeatherData(location);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _buildAppBar(context),
-      body: location == null
-          ? Center(
-              child: RefreshProgressIndicator(),
-            )
-          : Column(
-              children: [
-                Expanded(
-                  child: PageView.builder(
-                    controller: pageController,
-                    itemCount: pageLength,
-                    itemBuilder: (context, index) {
-                      return _buildBody(context);
-                    },
+        appBar: _buildAppBar(context),
+        body: location == null
+            ? Center(
+                child: RefreshProgressIndicator(),
+              )
+            : Column(
+                children: [
+                  Expanded(
+                    child: PageView.builder(
+                      controller: pageController,
+                      itemCount: pageLength,
+                      itemBuilder: (context, index) {
+                        return _buildBody(context);
+                      },
+                    ),
                   ),
-                ),
-                _buildIndicator()
-              ],
-            ),
-    );
+                  _buildIndicator()
+                ],
+              ));
   }
 
   AppBar _buildAppBar(BuildContext context) {
     return AppBar(
       actions: [
         IconButton(
-          onPressed: () => _navigateToSettings(context),
+          onPressed: () => navigateToSettingsScreen(context),
           icon: Icon(Icons.settings),
         ),
-        location == null
-            ? SizedBox.shrink()
-            : tryFetchFirstLocationId(realm!, location!)
-                ? IconButton(
-                    onPressed: () => removeLocationData(location!.id),
-                    icon: Icon(Icons.delete),
-                  )
-                : SizedBox.shrink()
       ],
-    );
-  }
-
-  void _navigateToSettings(BuildContext context) {
-    print('SettingsScreen Button Click!');
-    Navigator.of(context).push(
-      createOntapRoute(SettingsScreen(), 'settingsScreen'),
     );
   }
 
@@ -278,6 +199,7 @@ class _HomeScreenState extends State<HomeScreen> {
         _handleHorizontalSwipe(details, context);
       },
       onHorizontalDragEnd: (details) {
+        isLoading = false;
         isDragging = false;
       },
       child: Center(
@@ -290,7 +212,7 @@ class _HomeScreenState extends State<HomeScreen> {
               return Text('Error: ${snapshot.error}');
             } else if (snapshot.hasData) {
               ForecastWeatherResponse forecastWeather = snapshot.data!;
-              return _buildContent(context, forecastWeather);
+              return _buildContent(context, forecastWeather, location!);
             } else {
               return Text('Loading...');
             }
@@ -300,12 +222,12 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildContent(
-      BuildContext context, ForecastWeatherResponse forecastWeatherData) {
+  Widget _buildContent(BuildContext context,
+      ForecastWeatherResponse forecastWeatherData, Location location) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
-    final String country = forecastWeatherData.location.country;
-    final String location = forecastWeatherData.location.name;
+    final String country = location.country;
+    final String name = location.name;
     final double feelsTemp = forecastWeatherData.current.feelsC;
     final double currentTemp = forecastWeatherData.current.tempC;
     final double hTemp =
@@ -317,7 +239,7 @@ class _HomeScreenState extends State<HomeScreen> {
       alignment: Alignment.center,
       children: [
         _buildBackgroundContainer(),
-        buildMainCard(screenWidth, screenHeight, country, location, feelsTemp,
+        buildMainCard(screenWidth, screenHeight, country, name, feelsTemp,
             currentTemp, hTemp, lTemp),
         Positioned(
           right: MediaQuery.of(context).size.width * 0.03,

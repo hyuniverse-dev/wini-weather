@@ -10,6 +10,8 @@ import 'package:morning_weather/widgets/details_screen/forecast_section.dart';
 import 'package:morning_weather/widgets/details_screen/today_section.dart';
 import 'package:weather_icons/weather_icons.dart';
 
+import '../utils/calculate_utils.dart';
+
 class DetailsScreen extends StatefulWidget {
   final String coodinate;
 
@@ -118,7 +120,7 @@ class DetailsScreenContent extends StatelessWidget {
                 WeatherIcons.cloudy_windy,
                 WeatherIcons.day_haze
               ],
-              days: _getCurrentWeekday(),
+              days: getCurrentWeekday(DateTime.now()),
               location: location,
               base: (base - 10.0),
               dayCount: 7,
@@ -143,23 +145,23 @@ class DetailsScreenContent extends StatelessWidget {
     );
   }
 
-  List<String> _getCurrentWeekday() {
-    var now = DateTime.now();
-    final List<String> weekdays = [
-      'Mon',
-      'Tue',
-      'Wed',
-      'Thu',
-      'Fri',
-      'Sat',
-      'Sun'
-    ];
-    int todayIndex = now.weekday - 1;
-    List<String> recorderWeekdays = []
-      ..addAll(weekdays.sublist(todayIndex))
-      ..addAll(weekdays.sublist(0, todayIndex));
-
-    recorderWeekdays[0] = 'Today';
-    return recorderWeekdays;
-  }
+  // List<String> _getCurrentWeekday() {
+  //   var now = DateTime.now();
+  //   final List<String> weekdays = [
+  //     'Mon',
+  //     'Tue',
+  //     'Wed',
+  //     'Thu',
+  //     'Fri',
+  //     'Sat',
+  //     'Sun'
+  //   ];
+  //   int todayIndex = now.weekday - 1;
+  //   List<String> recorderWeekdays = []
+  //     ..addAll(weekdays.sublist(todayIndex))
+  //     ..addAll(weekdays.sublist(0, todayIndex));
+  //
+  //   recorderWeekdays[0] = 'Today';
+  //   return recorderWeekdays;
+  // }
 }
