@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:morning_weather/models/forecast_weather_response.dart';
 import 'dart:convert';
 
-Future<ForecastWeatherResponse> fetchForecastWeatherData(coodinate, day) async {
+Future<ForecastWeatherResponse> fetchForecastWeatherData(coordinate, day) async {
   const String apiUrl = 'https://api.weatherapi.com/v1/forecast.json';
   const String apiKey = '439977f78b294cf59cc12549241001';
   const String aqi = 'yes';
@@ -14,7 +14,7 @@ Future<ForecastWeatherResponse> fetchForecastWeatherData(coodinate, day) async {
   var count = 0;
 
   final Uri url = Uri.parse(
-      '$apiUrl?q=$coodinate&days=$days&aqi=$aqi&alerts=$alerts&key=$apiKey');
+      '$apiUrl?q=$coordinate&days=$days&aqi=$aqi&alerts=$alerts&key=$apiKey');
 
   try {
     final response = await http.get(url).timeout(const Duration(seconds: 2));
@@ -32,7 +32,7 @@ Future<ForecastWeatherResponse> fetchForecastWeatherData(coodinate, day) async {
   } on TimeoutException catch (e) {
     if  (count < retries){
       count++;
-      return fetchForecastWeatherData(coodinate, day);
+      return fetchForecastWeatherData(coordinate, day);
     }else {
       throw TimeoutException('Request failed after retires');
     }

@@ -28,7 +28,7 @@ Future<Position> determinePosition() async {
   return await Geolocator.getCurrentPosition();
 }
 
-/// 이 함수는 사용자 위치 조회 권한을 검사한 결과를 boolean으로 반환합니다.
+/// 이 함수는 사용자 위치 조회 권한 요청 결과를 boolean으로 반환합니다.
 Future<bool> requestLocationPermission() async {
   bool isServiceEnabled;
   LocationPermission permission;
@@ -87,6 +87,14 @@ Location? tryUpdateToBeforeLocation(Realm realm, Location location) {
     }
   }
   return null;
+}
+
+/// 이 함수는 사용자 위치 조회 권한 확인한 결과를 boolean으로 반환합니다.
+Future<bool> checkLocationPermissionStatus() async {
+  LocationPermission permission = await Geolocator.checkPermission();
+  return permission == LocationPermission.whileInUse ||
+      permission == LocationPermission.always ||
+      permission == LocationPermission.denied;
 }
 
 Location? handleLocationUpdate(bool isNext, Realm realm, Location location) {

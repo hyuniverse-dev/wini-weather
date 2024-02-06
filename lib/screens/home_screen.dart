@@ -27,7 +27,7 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   var isLoading = false;
   var isDragging = false;
   var isDetailScreen = false;
@@ -45,11 +45,14 @@ class _HomeScreenState extends State<HomeScreen> {
   late String coordinate = '';
   late ForecastWeatherResponse? forecastWeatherData;
   late Future<ForecastWeatherResponse>? _forecastFuture;
+  late final Stream<RealmResultsChanges<Location>> stream;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     realm = Realm(config);
+    stream = realm!.all<Location>().changes;
     final firstLocation = realm?.all<Location>().firstOrNull;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       coordinate =
@@ -81,99 +84,55 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void _loadForecastWeatherData() {
-    _forecastFuture = fetchForecastWeatherData(coordinate, 1);
+  @override
+  void dispose() {
+    realm?.close();
+    super.dispose();
   }
 
-  void _handleVerticalSwipe(DragUpdateDetails details, BuildContext context) {
-    if (details.delta.dy < -sensitivity) {
-      Navigator.of(context).push(
-        createSwipeRoute(DetailsScreen(coodinate: coordinate), 'up'),
-      );
-    }
-  }
-
-  void _updateLocationAndWeatherData(Location newLocation) {
-    setState(() {
-      location = newLocation;
-      latitude = newLocation.latitude;
-      longitude = newLocation.longitude;
-      coordinate = '${newLocation.latitude},${newLocation.longitude}';
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed) {
+      print('didChangeAppLifecycleState 실행 >>> ');
+      print('current index >>> $currentIndex');
+      print('page index >>> $pageIndex');
+      if (pageIndex == 0) {
+        location = realm!.all<Location>().first;
+      }
       _loadForecastWeatherData();
-    });
-  }
-
-  void _handleHorizontalSwipe(DragUpdateDetails details, BuildContext context) {
-    final bool isSwipeRight = details.delta.dx > sensitivity;
-    final bool isSwipeLeft = details.delta.dx < -sensitivity;
-
-    if ((isSwipeRight || isSwipeLeft) && !isDragging && !isLoading) {
-      navigateToPage(pageController, pageLength, isSwipeLeft);
-      final updatedLocation =
-          handleLocationUpdate(isSwipeLeft, realm!, location!);
-      if (updatedLocation != null) {
-        _updateLocationAndWeatherData(updatedLocation);
-      }
-
-      isDragging = true;
-      isLoading = true;
-
-      if (updatedLocation == null) {
-        navigateToNewScreen(context, isSwipeLeft, (value) {
-          if (isSwipeLeft) {
-            if (value != null && value == true) {
-              setState(() {
-                final config = Configuration.local([Location.schema]);
-                Realm realm = Realm(config);
-                final locations = realm.all<Location>();
-
-                // pageLength Update
-                pageLength = locations.length;
-
-                // pagePoint Update to last
-                if (pageController.hasClients && pageLength > 0) {
-                  pageController.animateToPage(
-                    pageLength - 1,
-                    duration: Duration(milliseconds: 500),
-                    curve: Curves.easeOut,
-                  );
-                }
-                location = locations.lastOrNull!;
-                _updateLocationAndWeatherData(location!);
-              });
-            }
-          } else {
-            isLoading = false;
-            isDragging = false;
-            print('BeforeLocation is null');
-          }
-        });
-      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: _buildAppBar(context),
-        body: location == null
-            ? Center(
-                child: RefreshProgressIndicator(),
-              )
-            : Column(
-                children: [
-                  Expanded(
-                    child: PageView.builder(
-                      controller: pageController,
-                      itemCount: pageLength,
-                      itemBuilder: (context, index) {
-                        return _buildBody(context);
-                      },
+    return StreamBuilder<RealmResultsChanges<Location>>(
+      stream: stream,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) return RefreshProgressIndicator();
+        return Scaffold(
+          appBar: _buildAppBar(context),
+          body: location == null
+              ? Center(
+                  child: RefreshProgressIndicator(),
+                )
+              : Column(
+                  children: [
+                    Expanded(
+                      child: PageView.builder(
+                        controller: pageController,
+                        itemCount: pageLength,
+                        itemBuilder: (context, index) {
+                          return _buildBody(context);
+                        },
+                      ),
                     ),
-                  ),
-                  _buildIndicator()
-                ],
-              ));
+                    _buildIndicator()
+                  ],
+                ),
+        );
+      },
+    );
   }
 
   AppBar _buildAppBar(BuildContext context) {
@@ -259,6 +218,84 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  void _loadForecastWeatherData() {
+    _forecastFuture = fetchForecastWeatherData(coordinate, 1);
+  }
+
+  void _handleVerticalSwipe(DragUpdateDetails details, BuildContext context) {
+    if (details.delta.dy < -sensitivity) {
+      Navigator.of(context).push(
+        createSwipeRoute(DetailsScreen(coodinate: coordinate), 'up'),
+      );
+    }
+  }
+
+  void _updateLocationAndWeatherData(Location newLocation) {
+    setState(() {
+      location = newLocation;
+      latitude = newLocation.latitude;
+      longitude = newLocation.longitude;
+      coordinate = '${newLocation.latitude},${newLocation.longitude}';
+      _loadForecastWeatherData();
+    });
+  }
+
+  void _handleHorizontalSwipe(DragUpdateDetails details, BuildContext context) {
+    final bool isSwipeRight = details.delta.dx > sensitivity;
+    final bool isSwipeLeft = details.delta.dx < -sensitivity;
+
+    if ((isSwipeRight || isSwipeLeft) && !isDragging && !isLoading) {
+      if (isSwipeLeft) {
+        pageIndex++;
+        print(pageIndex);
+      } else {
+        pageIndex--;
+        print(pageIndex);
+      }
+      navigateToPage(pageController, pageLength, isSwipeLeft);
+      final updatedLocation =
+          handleLocationUpdate(isSwipeLeft, realm!, location!);
+      if (updatedLocation != null) {
+        _updateLocationAndWeatherData(updatedLocation);
+      }
+
+      isDragging = true;
+      isLoading = true;
+
+      if (updatedLocation == null) {
+        navigateToNewScreen(context, isSwipeLeft, (value) {
+          if (isSwipeLeft) {
+            if (value != null && value == true) {
+              setState(() {
+                final config = Configuration.local([Location.schema]);
+                Realm realm = Realm(config);
+                final locations = realm.all<Location>();
+
+                // pageLength Update
+                pageLength = locations.length;
+
+                // pagePoint Update to last
+                if (pageController.hasClients && pageLength > 0) {
+                  pageController.animateToPage(
+                    pageLength - 1,
+                    duration: Duration(milliseconds: 500),
+                    curve: Curves.easeOut,
+                  );
+                }
+                location = locations.lastOrNull!;
+                _updateLocationAndWeatherData(location!);
+              });
+            }
+          } else {
+            isLoading = false;
+            isDragging = false;
+            print('BeforeLocation is null');
+          }
+        });
+      }
+    }
+  }
+
   Widget _buildIndicator() {
     if (pageLength == null || pageLength.isNaN || pageLength <= 0) {
       return SizedBox.shrink();
@@ -275,7 +312,6 @@ class _HomeScreenState extends State<HomeScreen> {
             dotWidth: 6,
             verticalOffset: 16,
             jumpScale: .7,
-            // type: WormType.thinUnderground,
           ),
         ),
       ),

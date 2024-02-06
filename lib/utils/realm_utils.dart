@@ -9,6 +9,7 @@ void createLocation(Realm realm, Location location) {
 }
 
 void updateLocation(Realm realm, Location location) {
+  print('updateLocation 실행 >>>');
   final firstLocation = realm.all<Location>().firstOrNull;
   final int id = firstLocation!.id;
 
