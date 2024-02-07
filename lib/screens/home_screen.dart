@@ -198,8 +198,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       alignment: Alignment.center,
       children: [
         _buildBackgroundContainer(),
-        buildMainCard(screenWidth, screenHeight, country, name, feelsTemp,
-            currentTemp, hTemp, lTemp),
+        // buildMainCard(screenWidth, screenHeight, country, name, feelsTemp,
+        //     currentTemp, hTemp, lTemp),
         Positioned(
           right: MediaQuery.of(context).size.width * 0.03,
           top: MediaQuery.of(context).size.height * 0.1,
@@ -212,7 +212,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                 color: Colors.white.withOpacity(0),
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: buildWiniCard()),
+              // child: buildWiniCard(),
+          ),
         ),
       ],
     );
@@ -321,7 +322,13 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   Widget _buildBackgroundContainer() {
     return Positioned.fill(
       child: Container(
-        color: Colors.white,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+              image: AssetImage("assets/images/test1.png"),
+              fit: BoxFit.cover
+          ),
+        )
+        // color: Colors.white,
       ),
     );
   }

@@ -6,7 +6,7 @@ import 'package:morning_weather/utils/realm_utils.dart';
 import 'package:morning_weather/widgets/settings_screen/switch_tile.dart';
 import 'package:realm/realm.dart';
 import 'package:uuid/uuid.dart' as uuid_pkg;
-import 'package:app_settings/app_settings.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import '../models/location.dart';
 import '../models/settings.dart';
@@ -24,22 +24,25 @@ class _SettingsScreenState extends State<SettingsScreen>
   var uid = uuid_pkg.Uuid();
   late Realm realm;
   late var settings;
-  late bool isCelsius;
-  late bool isNotificationOn;
-  late int notificationHour;
-  late int notificationMinute;
-  late bool isTemperatureEnabled;
-  late bool isFeelsLikeEnabled;
-  late bool isSkyConditionEnabled;
-  late bool isWindConditionEnabled;
-  late bool isLocated;
+  late bool isCelsius = true;
+  late bool isNotificationOn = true;
+  late int notificationHour = 0;
+  late int notificationMinute = 0;
+  late bool isTemperatureEnabled = true;
+  late bool isFeelsLikeEnabled = true;
+  late bool isSkyConditionEnabled = true;
+  late bool isWindConditionEnabled = false;
+  late bool isLocated = false;
   late TimeOfDay notificationTime =
       TimeOfDay(hour: notificationHour, minute: notificationMinute);
+  final FlutterLocalNotificationsPlugin localNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
 
   @override
   void initState() {
     super.initState();
     _initSettings();
+    _initNotification();
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -70,6 +73,66 @@ class _SettingsScreenState extends State<SettingsScreen>
       setState(() {
         isLocated = located;
       });
+    }
+  }
+
+  Future<void> _initNotification() async {
+    final initSettings = InitializationSettings(
+        android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+        iOS: DarwinInitializationSettings(
+          requestAlertPermission: true,
+          requestBadgePermission: true,
+          requestSoundPermission: true,
+        ),
+        macOS: DarwinInitializationSettings(
+          requestAlertPermission: true,
+          requestBadgePermission: true,
+          requestSoundPermission: true,
+        ));
+
+    await localNotificationsPlugin.initialize(initSettings);
+
+    const AndroidNotificationChannel channel = AndroidNotificationChannel(
+        'importance_preview_notification', 'weather_preview',
+        description: 'This channel is used for weather preview',
+        importance: Importance.high);
+
+    localNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(channel);
+  }
+
+  Future<void> showNotification() async {
+    print('showNotification 실행1 >>> ');
+    try {
+      const AndroidNotificationDetails androidDetails =
+          AndroidNotificationDetails(
+        'importance_preview_notification',
+        'weather_preview',
+        importance: Importance.high,
+        priority: Priority.high,
+        showWhen: true,
+      );
+
+      const DarwinNotificationDetails iOSDetails = DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentBanner: true,
+          presentSound: true);
+
+      const NotificationDetails generalNotificationDetails =
+          NotificationDetails(android: androidDetails, iOS: iOSDetails);
+
+      await localNotificationsPlugin.show(
+        1,
+        'Wini\'s Today Weather(Sample)',
+        '\"Prepare an umbrella today!\"\n#High: 12°C #Low: -1°C #Wind: NNW, 0.4kph #Sky: Clear',
+        generalNotificationDetails,
+      );
+      print('showNotification 실행2 >>> ');
+    } catch (e) {
+      print('showNotification Error >>> $e');
     }
   }
 
@@ -294,8 +357,9 @@ class _SettingsScreenState extends State<SettingsScreen>
                     style: ButtonStyle(
                       minimumSize: MaterialStateProperty.all(Size(60, 30)),
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       print('Preview Button Clicked!');
+                      await showNotification();
                     },
                     child: const Text('Preview')),
               ),
@@ -314,9 +378,6 @@ class _SettingsScreenState extends State<SettingsScreen>
                   await AppSettings.openAppSettings();
                   bool permissionStatus = await checkLocationPermissionStatus();
                   print(permissionStatus);
-                  // setState(() {
-                  //   isLocated = permissionStatus ? value : isLocated;
-                  // });
                 },
               ),
             ),
