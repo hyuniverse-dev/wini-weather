@@ -161,7 +161,6 @@
 				374646B3E91CA7304A1DE8BA /* Pods-RunnerTests.release.xcconfig */,
 				E1A05DB0E368C50974076A0B /* Pods-RunnerTests.profile.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -228,6 +227,11 @@
 						LastSwiftMigration = 1100;
 					};
 				};
+				SystemCapabilities = {
+                	com.apple.BackgroundModes = {
+                		enabled = 1;
+                	};
+                };
 			};
 			buildConfigurationList = 97C146E91CF9000F007C117D /* Build configuration list for PBXProject "Runner" */;
 			compatibilityVersion = "Xcode 9.3";

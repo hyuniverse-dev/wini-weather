@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:morning_weather/models/location_model.dart';
 import 'package:morning_weather/screens/home_screen.dart';
+import 'package:morning_weather/services/notification_service.dart';
 import 'package:morning_weather/utils/geo_utils.dart';
 import 'package:provider/provider.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:workmanager/workmanager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   bool hasPermission = await requestLocationPermission();
+  Workmanager().initialize(callbackDispatcher, isInDebugMode: true);
+  Workmanager().registerPeriodicTask('importance_preview_notification', 'simplePeriodicTask',
+      frequency: Duration(seconds: 1));
 
   if (hasPermission) {
     var position = await determinePosition();
@@ -97,4 +101,23 @@ class MyPage extends StatelessWidget {
       initialLongitude: longitude,
     );
   }
+}
+
+void callbackDispatcher() {
+  Workmanager().executeTask((task, inputData) async {
+    switch (task) {
+      case 'simplePeriodicTask':
+        final hour = 16;
+        final minute = 11;
+        final now = DateTime.now();
+        print(now);
+        print(now.hour);
+        print(now.minute);
+        if (now.hour == hour && now.minute == minute) {
+          NotificationManager();
+        }
+        break;
+    }
+    return Future.value(true);
+  });
 }

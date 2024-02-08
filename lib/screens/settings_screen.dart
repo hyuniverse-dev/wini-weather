@@ -123,11 +123,12 @@ class _SettingsScreenState extends State<SettingsScreen>
 
       const NotificationDetails generalNotificationDetails =
           NotificationDetails(android: androidDetails, iOS: iOSDetails);
-
+      var notificationTitle = 'Wini\'s Today Weather(Sample)';
+      var notificationMessage = '\"Prepare an umbrella today!\"\n${isTemperatureEnabled ? '#High: 12°C #Low: -1°C' : ''} ${isFeelsLikeEnabled ? '#Feels: 5°C' : ''} ${isSkyConditionEnabled ? '#Sky: Clear' : ''} ${isWindConditionEnabled ? '#Wind: NNW, 0.4kph' : ''}';
       await localNotificationsPlugin.show(
         1,
-        'Wini\'s Today Weather(Sample)',
-        '\"Prepare an umbrella today!\"\n#High: 12°C #Low: -1°C #Wind: NNW, 0.4kph #Sky: Clear',
+        notificationTitle,
+        notificationMessage,
         generalNotificationDetails,
       );
       print('showNotification 실행2 >>> ');
