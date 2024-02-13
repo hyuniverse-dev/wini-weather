@@ -1,5 +1,6 @@
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:morning_weather/services/location_service.dart';
 import 'package:morning_weather/utils/geo_utils.dart';
 import 'package:morning_weather/utils/realm_utils.dart';
@@ -7,9 +8,11 @@ import 'package:morning_weather/widgets/settings_screen/switch_tile.dart';
 import 'package:realm/realm.dart';
 import 'package:uuid/uuid.dart' as uuid_pkg;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/location.dart';
 import '../models/settings.dart';
+import '../services/notification_service.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -101,40 +104,6 @@ class _SettingsScreenState extends State<SettingsScreen>
         .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(channel);
-  }
-
-  Future<void> showNotification() async {
-    print('showNotification 실행1 >>> ');
-    try {
-      const AndroidNotificationDetails androidDetails =
-          AndroidNotificationDetails(
-        'importance_preview_notification',
-        'weather_preview',
-        importance: Importance.high,
-        priority: Priority.high,
-        showWhen: true,
-      );
-
-      const DarwinNotificationDetails iOSDetails = DarwinNotificationDetails(
-          presentAlert: true,
-          presentBadge: true,
-          presentBanner: true,
-          presentSound: true);
-
-      const NotificationDetails generalNotificationDetails =
-          NotificationDetails(android: androidDetails, iOS: iOSDetails);
-      var notificationTitle = 'Wini\'s Today Weather(Sample)';
-      var notificationMessage = '\"Prepare an umbrella today!\"\n${isTemperatureEnabled ? '#High: 12°C #Low: -1°C' : ''} ${isFeelsLikeEnabled ? '#Feels: 5°C' : ''} ${isSkyConditionEnabled ? '#Sky: Clear' : ''} ${isWindConditionEnabled ? '#Wind: NNW, 0.4kph' : ''}';
-      await localNotificationsPlugin.show(
-        1,
-        notificationTitle,
-        notificationMessage,
-        generalNotificationDetails,
-      );
-      print('showNotification 실행2 >>> ');
-    } catch (e) {
-      print('showNotification Error >>> $e');
-    }
   }
 
   @override
@@ -261,13 +230,21 @@ class _SettingsScreenState extends State<SettingsScreen>
               ),
               trailing: Switch(
                 value: isNotificationOn,
-                onChanged: (value) {
+                onChanged: (value) async {
                   setState(() {
                     isNotificationOn = value;
                     realm.write(() {
                       settings.isNotificationOn = value;
                     });
                   });
+                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                  prefs.setBool('isNotificationOn', value);
+                  print(value);
+                  if (value){
+                    await FlutterBackgroundService().startService();
+                  } else {
+                    FlutterBackgroundService().invoke("stopService");
+                  }
                 },
               ),
               subtitle: InkWell(
@@ -360,7 +337,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                     ),
                     onPressed: () async {
                       print('Preview Button Clicked!');
-                      await showNotification();
+                      await NotificationService().showNotification();
                     },
                     child: const Text('Preview')),
               ),

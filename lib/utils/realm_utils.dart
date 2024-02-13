@@ -1,6 +1,7 @@
 import 'package:realm/realm.dart';
 
 import '../models/location.dart';
+import '../models/settings.dart';
 
 void createLocation(Realm realm, Location location) {
   realm.write(() {
@@ -55,4 +56,11 @@ Future<Map<String, dynamic>> removeLocation(int id) async {
     "updatedLocations": realm.all<Location>().toList(),
     "currentIndex": currentIndex > 0 ? currentIndex - 1 : 0
   });
+}
+
+Future<Settings> fetchSettings() async {
+  var config = Configuration.local([Settings.schema]);
+  var realm = Realm(config);
+  var settings = realm.all<Settings>().last;
+  return settings;
 }

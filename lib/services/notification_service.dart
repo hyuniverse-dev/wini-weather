@@ -1,69 +1,90 @@
-import 'dart:ffi';
-
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:intl/intl.dart';
 import 'package:morning_weather/models/settings.dart';
+import 'package:morning_weather/utils/realm_utils.dart';
 import 'package:realm/realm.dart';
-import 'package:timezone/data/latest.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
 
-class NotificationManager {
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
+class NotificationService {
+  final localNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
-  NotificationManager() {
-    _initializeNotifications();
-    tz.initializeTimeZones();
-  }
-
-  void _initializeNotifications() {
-    const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('app_icon');
-    const DarwinInitializationSettings initializationSettingsIOS =
-        DarwinInitializationSettings(
-      requestAlertPermission: true,
-      requestBadgePermission: true,
-      requestSoundPermission: true,
-    );
-    final InitializationSettings initializationSettings =
-        InitializationSettings(
-      android: initializationSettingsAndroid,
-      iOS: initializationSettingsIOS,
+  Future<NotificationDetails> notificationDetails() async {
+    const AndroidNotificationDetails androidDetails =
+    AndroidNotificationDetails(
+      'importance_preview_notification',
+      'weather_preview',
+      importance: Importance.high,
+      priority: Priority.high,
+      showWhen: true,
     );
 
-    flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    const DarwinNotificationDetails iOSDetails = DarwinNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+        presentBanner: true,
+        presentSound: true);
+
+    const NotificationDetails generalNotificationDetails =
+    NotificationDetails(android: androidDetails, iOS: iOSDetails);
+
+    return generalNotificationDetails;
   }
 
-  Future<void> scheduleWeatherNotification() async {
-    var hour = 0;
-    var minute = 0;
+  Future<void> showNotification() async {
+    final settings = await fetchSettings();
+    final isTemperatureEnabled = settings.isTemperatureEnabled;
+    final isFeelsLikeEnabled = settings.isFeelsLikeEnabled;
+    final isSkyConditionEnabled = settings.isSkyConditionEnabled;
+    final isWindConditionEnabled = settings.isWindConditionEnabled;
+
+    print('showNotification 실행1 >>> ');
+    try {
+      final generalNotificationDetails = await notificationDetails();
+      var notificationTitle = 'Wini\'s Today Weather(Sample)';
+      var notificationMessage =
+          '\"Prepare an umbrella today!\"\n${isTemperatureEnabled
+          ? '#High: 12°C #Low: -1°C'
+          : ''} ${isFeelsLikeEnabled
+          ? '#Feels: 5°C'
+          : ''} ${isSkyConditionEnabled
+          ? '#Sky: Clear'
+          : ''} ${isWindConditionEnabled ? '#Wind: NNW, 0.4kph' : ''}';
+      await localNotificationsPlugin.show(
+        1,
+        notificationTitle,
+        notificationMessage,
+        generalNotificationDetails,
+      );
+      print('showNotification 실행2 >>> ');
+    } catch (e) {
+      print('showNotification Error >>> $e');
+    }
+  }
+
+  Future<void> scheduleNotification({
+    int id = 0,
+    String? title,
+    String? body,
+    String? payLoad,
+    required DateTime currentTime,
+  }) async {
+    final localNotification = FlutterLocalNotificationsPlugin();
     var config = Configuration.local([Settings.schema]);
     var realm = Realm(config);
-    var settings = realm.all<Settings>().lastOrNull;
-    if (settings != null) {
-      hour = settings.notificationHour;
-      minute = settings.notificationMinute;
+    final settings = realm
+        .all<Settings>()
+        .last;
+    final hour = settings.notificationHour;
+    final minute = settings.notificationMinute;
+    var now = DateTime.now().toLocal();
+    var scheduleTime = DateTime(now.year, now.month, now.day, hour, minute);
+    var formattedCurrentTime = DateFormat('HH:mm').format(currentTime);
+    var formattedScheduleTime = DateFormat('HH:mm').format(scheduleTime);
+    print('formattedScheduleTime >>> $formattedScheduleTime');
+    print('formattedCurrentTime >>> $formattedCurrentTime');
+
+    if (formattedScheduleTime == formattedCurrentTime) {
+      print('Push notification run!');
+      showNotification();
     }
-
-    final now = DateTime.now();
-    final scheduledDate = DateTime(now.year, now.month, now.day, hour, minute);
-    final tzScheduledDate = tz.TZDateTime.from(scheduledDate, tz.local);
-
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-        0,
-        '날씨 알림',
-        '오늘의 날씨는 맑음, 최고 기온 25도입니다.',
-        tzScheduledDate,
-        const NotificationDetails(
-          android: AndroidNotificationDetails(
-            'importance_preview_notification',
-            'weather_notification',
-            channelDescription: 'This channel is used for weather notification',
-          ),
-          iOS: DarwinNotificationDetails(),
-        ),
-        androidAllowWhileIdle: true,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime,
-        matchDateTimeComponents: DateTimeComponents.time);
   }
 }
