@@ -2,108 +2,109 @@ import 'package:realm/realm.dart';
 
 import '../models/location.dart';
 
-void createLocation(Realm realm, Location location) {
-  realm.write(() {
-    realm.add(location);
-  });
-}
+class LocationDataService {
+  final Realm realm;
 
-void updateLocation(Realm realm, Location location) {
-  print('updateLocation 실행 >>>');
-  final firstLocation = realm.all<Location>().firstOrNull;
-  final int id = firstLocation!.id;
+  LocationDataService(this.realm);
 
-  realm.write(() {
-    firstLocation.latitude = location.latitude;
-    firstLocation.longitude = location.longitude;
-    firstLocation.name = location.name;
-    firstLocation.city = location.city;
-    firstLocation.country = location.country;
-  });
-}
-
-List<Location> fetchLocations(Realm realm) {
-  var config = Configuration.local([Location.schema]);
-  realm = Realm(config);
-  final locations = realm.all<Location>().toList();
-  return locations;
-}
-
-void removeLocationById(Realm realm, int id) {
-  var location = realm.find<Location>(id);
-  if (location != null) {
-    realm.write(() => realm.delete(location));
+  void createLocation(Location location) {
+    realm.write(() {
+      realm.add(location);
+    });
   }
-}
 
-Future<Map<String, dynamic>> removeLocation(int id) async {
-  final config = Configuration.local([Location.schema]);
-  var realm = Realm(config);
-  final List<Location> locations = realm.all<Location>().toList();
-  int currentIndex = locations.indexWhere((loc) => loc.id == id);
+  void updateLocation(Location location) {
+    print('updateLocation 실행 >>>');
+    final firstLocation = realm.all<Location>().firstOrNull;
+    final int id = firstLocation!.id;
 
-  realm.write(() {
-    var locationToRemove = realm.query<Location>('id == $id').firstOrNull;
-    if (locationToRemove != null) {
-      realm.delete(locationToRemove);
-      print(
-          'Deleted location: ${locationToRemove.id}, ${locationToRemove.name}');
-    }
-  });
+    realm.write(() {
+      firstLocation.latitude = location.latitude;
+      firstLocation.longitude = location.longitude;
+      firstLocation.name = location.name;
+      firstLocation.city = location.city;
+      firstLocation.country = location.country;
+    });
+  }
 
-  return Future.value({
-    "updatedLocations": realm.all<Location>().toList(),
-    "currentIndex": currentIndex > 0 ? currentIndex - 1 : 0
-  });
-}
+  List<Location> fetchLocations() {
+    return realm.all<Location>().toList();
+  }
 
-int getNextId(Realm realm, int currentId) {
-  var objects = realm.all<Location>();
-  var sortedId = objects.map((e) => e.id).toList()..sort();
-  for (var id in sortedId) {
-    if (id > currentId) {
-      return id;
+  void removeLocationById(int id) {
+    var location = realm.find<Location>(id);
+    if (location != null) {
+      realm.write(() => realm.delete(location));
     }
   }
-  return -1;
-}
 
-bool tryFetchFirstLocationId(Realm realm, Location location) {
-  final firstLocation = realm!.all<Location>().firstOrNull;
-  if (firstLocation == null || location == null) {
-    return false;
+  Future<Map<String, dynamic>> removeLocation(int id) async {
+    final List<Location> locations = realm.all<Location>().toList();
+    int currentIndex = locations.indexWhere((loc) => loc.id == id);
+
+    realm.write(() {
+      var locationToRemove = realm.query<Location>('id == $id').firstOrNull;
+      if (locationToRemove != null) {
+        realm.delete(locationToRemove);
+        print(
+            'Deleted location: ${locationToRemove.id}, ${locationToRemove.name}');
+      }
+    });
+
+    return Future.value({
+      "updatedLocations": realm.all<Location>().toList(),
+      "currentIndex": currentIndex > 0 ? currentIndex - 1 : 0
+    });
   }
-  return firstLocation.id != location.id;
-}
 
-Location? tryUpdateToNextLocation(Realm realm, Location location) {
-  final List<Location> locations = realm!.all<Location>().toList();
-  final currentIndex = locations.indexWhere((loc) => loc.id == location.id);
-  Location currentLocation = locations[currentIndex];
-  if (currentIndex != -1 && currentIndex < locations.length - 1) {
-    var nextLocation = locations[currentIndex + 1];
-    if (location.id != nextLocation.id) {
-      return nextLocation;
+  int getNextId(int currentId) {
+    var objects = realm.all<Location>();
+    var sortedId = objects.map((e) => e.id).toList()..sort();
+    for (var id in sortedId) {
+      if (id > currentId) {
+        return id;
+      }
     }
+    return -1;
   }
-  return null;
-}
 
-Location? tryUpdateToBeforeLocation(Realm realm, Location location) {
-  final List<Location> locations = realm!.all<Location>().toList();
-  int currentIndex = locations.indexWhere((loc) => loc.id == location.id);
-  Location currentLocation = locations[currentIndex];
-  if (currentIndex != -1 && currentIndex > 0) {
-    var beforeLocation = locations[currentIndex - 1];
-    if (location.id != beforeLocation.id) {
-      return beforeLocation;
+  bool tryFetchFirstLocationId(Location location) {
+    final firstLocation = realm.all<Location>().firstOrNull;
+    if (firstLocation == null || location == null) {
+      return false;
     }
+    return firstLocation.id != location.id;
   }
-  return null;
-}
 
-Location? handleLocationUpdate(bool isNext, Realm realm, Location location) {
-  return isNext
-      ? tryUpdateToNextLocation(realm, location)
-      : tryUpdateToBeforeLocation(realm, location);
+  Location? tryUpdateToNextLocation(Location location) {
+    final List<Location> locations = realm.all<Location>().toList();
+    final currentIndex = locations.indexWhere((loc) => loc.id == location.id);
+    Location currentLocation = locations[currentIndex];
+    if (currentIndex != -1 && currentIndex < locations.length - 1) {
+      var nextLocation = locations[currentIndex + 1];
+      if (location.id != nextLocation.id) {
+        return nextLocation;
+      }
+    }
+    return null;
+  }
+
+  Location? tryUpdateToBeforeLocation(Location location) {
+    final List<Location> locations = realm.all<Location>().toList();
+    int currentIndex = locations.indexWhere((loc) => loc.id == location.id);
+    Location currentLocation = locations[currentIndex];
+    if (currentIndex != -1 && currentIndex > 0) {
+      var beforeLocation = locations[currentIndex - 1];
+      if (location.id != beforeLocation.id) {
+        return beforeLocation;
+      }
+    }
+    return null;
+  }
+
+  Location? handleLocationUpdate(bool isNext, Location location) {
+    return isNext
+        ? tryUpdateToNextLocation(location)
+        : tryUpdateToBeforeLocation(location);
+  }
 }

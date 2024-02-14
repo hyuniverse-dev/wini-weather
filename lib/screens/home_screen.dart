@@ -40,7 +40,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   final pageController = PageController(viewportFraction: 1.0, keepPage: true);
   final int sensitivity = 20;
   Location? location;
-  late Realm? realm;
+  late Realm realm;
+  late LocationDataService locationDataService;
   late String coordinate = '';
   late ForecastWeatherResponse? forecastWeatherData;
   late Future<ForecastWeatherResponse>? _forecastFuture;
@@ -52,6 +53,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     realm = Realm(config);
     stream = realm!.all<Location>().changes;
+    locationDataService = LocationDataService(realm);
     final firstLocation = realm?.all<Location>().firstOrNull;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       coordinate =
@@ -70,9 +72,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       );
 
       if (firstLocation == null) {
-        createLocation(realm!, currentLocation);
+        locationDataService.createLocation(currentLocation);
       } else {
-        updateLocation(realm!, currentLocation);
+        locationDataService.updateLocation(currentLocation);
       }
       setState(() {
         final locations = realm!.all<Location>().toList();
@@ -254,7 +256,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       }
       navigateToPage(pageController, pageLength, isSwipeLeft);
       final updatedLocation =
-          handleLocationUpdate(isSwipeLeft, realm!, location!);
+          locationDataService.handleLocationUpdate(isSwipeLeft, location!);
       if (updatedLocation != null) {
         _updateLocationAndWeatherData(updatedLocation);
       }

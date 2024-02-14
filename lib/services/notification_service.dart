@@ -1,15 +1,45 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:intl/intl.dart';
 import 'package:morning_weather/models/settings.dart';
 import 'package:morning_weather/services/settings_data_service.dart';
 import 'package:realm/realm.dart';
 
 class NotificationService {
   final localNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  final Realm realm;
+
+  NotificationService(this.realm);
+
+  Future<void> init() async {
+    final initSettings = InitializationSettings(
+        android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+        iOS: DarwinInitializationSettings(
+          requestAlertPermission: true,
+          requestBadgePermission: true,
+          requestSoundPermission: true,
+        ),
+        macOS: DarwinInitializationSettings(
+          requestAlertPermission: true,
+          requestBadgePermission: true,
+          requestSoundPermission: true,
+        ));
+
+    await localNotificationsPlugin.initialize(initSettings);
+
+    const AndroidNotificationChannel channel = AndroidNotificationChannel(
+        'importance_preview_notification', 'weather_preview',
+        description: 'This channel is used for weather preview',
+        importance: Importance.high);
+
+    localNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(channel);
+  }
 
   Future<NotificationDetails> notificationDetails() async {
     const AndroidNotificationDetails androidDetails =
-    AndroidNotificationDetails(
+        AndroidNotificationDetails(
       'importance_preview_notification',
       'weather_preview',
       importance: Importance.high,
@@ -24,13 +54,14 @@ class NotificationService {
         presentSound: true);
 
     const NotificationDetails generalNotificationDetails =
-    NotificationDetails(android: androidDetails, iOS: iOSDetails);
+        NotificationDetails(android: androidDetails, iOS: iOSDetails);
 
     return generalNotificationDetails;
   }
 
   Future<void> showNotification() async {
-    final settings = await fetchSettings();
+    SettingsDataService settingsDataService = SettingsDataService(realm);
+    final settings = await settingsDataService.fetchSettings();
     final isTemperatureEnabled = settings.isTemperatureEnabled;
     final isFeelsLikeEnabled = settings.isFeelsLikeEnabled;
     final isSkyConditionEnabled = settings.isSkyConditionEnabled;
@@ -39,15 +70,9 @@ class NotificationService {
     print('showNotification 실행1 >>> ');
     try {
       final generalNotificationDetails = await notificationDetails();
-      var notificationTitle = 'Wini\'s Today Weather(Sample)';
+      var notificationTitle = 'Wini\'s Today Weather (Sample)';
       var notificationMessage =
-          '\"Prepare an umbrella today!\"\n${isTemperatureEnabled
-          ? '#High: 12°C #Low: -1°C'
-          : ''} ${isFeelsLikeEnabled
-          ? '#Feels: 5°C'
-          : ''} ${isSkyConditionEnabled
-          ? '#Sky: Clear'
-          : ''} ${isWindConditionEnabled ? '#Wind: NNW, 0.4kph' : ''}';
+          '\"Prepare an umbrella today!\"\n${isTemperatureEnabled ? '#High: 12°C #Low: -1°C' : ''} ${isFeelsLikeEnabled ? '#Feels: 5°C' : ''} ${isSkyConditionEnabled ? '#Sky: Clear' : ''} ${isWindConditionEnabled ? '#Wind: NNW, 0.4kph' : ''}';
       await localNotificationsPlugin.show(
         1,
         notificationTitle,
@@ -65,24 +90,17 @@ class NotificationService {
     String? title,
     String? body,
     String? payLoad,
-    required DateTime currentTime,
+    required TimeOfDay currentTime,
   }) async {
     final localNotification = FlutterLocalNotificationsPlugin();
-    var config = Configuration.local([Settings.schema]);
-    var realm = Realm(config);
-    final settings = realm
-        .all<Settings>()
-        .last;
-    final hour = settings.notificationHour;
-    final minute = settings.notificationMinute;
-    var now = DateTime.now().toLocal();
-    var scheduleTime = DateTime(now.year, now.month, now.day, hour, minute);
-    var formattedCurrentTime = DateFormat('HH:mm').format(currentTime);
-    var formattedScheduleTime = DateFormat('HH:mm').format(scheduleTime);
-    print('formattedScheduleTime >>> $formattedScheduleTime');
-    print('formattedCurrentTime >>> $formattedCurrentTime');
+    final settings = realm.all<Settings>().last;
+    var scheduleTime = TimeOfDay(hour: settings.notificationHour, minute: settings.notificationMinute);
+    final isSameHour = scheduleTime.hour == currentTime.hour;
+    final isSameMinute = scheduleTime.minute == currentTime.minute;
+    print('scheduleTime >>> $scheduleTime');
+    print('currentTime >>> $currentTime');
 
-    if (formattedScheduleTime == formattedCurrentTime) {
+    if (isSameHour && isSameMinute) {
       print('Push notification run!');
       showNotification();
     }

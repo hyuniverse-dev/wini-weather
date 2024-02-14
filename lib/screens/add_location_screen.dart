@@ -32,7 +32,8 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
     super.initState();
     realm = Realm(config);
     setState(() {
-      locations = fetchLocations(realm);
+      final locationDataService = LocationDataService(realm);
+      locations = locationDataService.fetchLocations();
       currentLocation = locations[0].city;
     });
   }
@@ -144,8 +145,10 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                                           '${weekday[0]}, ${tempC}°C, ${windKph}kph',
                                       onRemovePressed: () {
                                         setState(() {
-                                          removeLocationById(
-                                              realm, location.id);
+                                          final locationDataService =
+                                              LocationDataService(realm);
+                                          locationDataService
+                                              .removeLocationById(location.id);
                                         });
                                         locations.removeAt(index);
                                       },

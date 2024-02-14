@@ -7,10 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:morning_weather/models/location_model.dart';
+import 'package:morning_weather/models/settings.dart';
 import 'package:morning_weather/screens/home_screen.dart';
 import 'package:morning_weather/services/notification_service.dart';
 import 'package:morning_weather/utils/location_permission_utils.dart';
+import 'package:morning_weather/utils/shared_preferences_utils.dart';
 import 'package:provider/provider.dart';
+import 'package:realm/realm.dart';
 import 'package:workmanager/workmanager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -60,6 +63,7 @@ Future<void> initService() async {
   // service init and start
   await service.configure(
     iosConfiguration: IosConfiguration(
+      autoStart: true,
       onBackground: iOSBackground,
       onForeground: onStart,
     ),
@@ -73,52 +77,32 @@ Future<void> initService() async {
       foregroundServiceNotificationId: 90,
     ),
   );
-
-  print('initService 실행 >>> ');
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  final currentStatus = prefs.getBool('isNotificationOn');
-  print(currentStatus);
-  if (currentStatus!) {
-    print(currentStatus);
-    service.startService();
-  }
+  service.startService();
 }
 
 // onstart method
 @pragma("vm:entry-point")
 void onStart(ServiceInstance service) async {
-  DartPluginRegistrant.ensureInitialized();
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  // bool? isNotificationOn = prefs.getBool('isNotificationOn');
-
-  service.on("setAsForeground").listen((event) {});
-
-  service.on("setAsBackground").listen((event) {});
-
+  final prefs = await isNotificationOn();
   service.on("stopService").listen((event) {
+    print('stopService >>> ');
     service.stopSelf();
   });
-
-  // Display Notification as a Service
-  Timer.periodic(Duration(seconds: 5), (timer) async {
-    bool currentStatus = prefs.getBool('isNotificationOn') ?? true;
-    print("currentStatus >>> $currentStatus");
-
-    if (!currentStatus) {
-      return;
-    }
-
-    var now = DateTime.now().toLocal();
-    var currentTime =
-        DateTime(now.year, now.month, now.day, now.hour, now.minute);
-
-    await NotificationService().scheduleNotification(
-      id: 90,
-      title: "Schedule Notification",
-      currentTime: currentTime,
-    );
-    print("background service >> ${currentTime}");
-  });
+  print('MainScreen prefs >>> $prefs');
+  if (prefs) {
+    Timer.periodic(Duration(seconds: 5), (timer) async {
+      var now = DateTime.now().toLocal();
+      var currentTime = TimeOfDay(hour: now.hour, minute: now.minute);
+      var config = Configuration.local([Settings.schema]);
+      var realm = Realm(config);
+      await NotificationService(realm).scheduleNotification(
+        id: 90,
+        title: "Schedule Notification",
+        currentTime: currentTime,
+      );
+      print("background service >> ${currentTime}");
+    });
+  }
 }
 
 // iOSBackground

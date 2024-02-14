@@ -1,16 +1,15 @@
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
-import 'package:morning_weather/services/location_api_service.dart';
+import 'package:morning_weather/services/settings_data_service.dart';
+import 'package:morning_weather/utils/shared_preferences_utils.dart';
 import 'package:morning_weather/widgets/settings_screen/switch_tile.dart';
 import 'package:realm/realm.dart';
 import 'package:uuid/uuid.dart' as uuid_pkg;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-import '../models/location.dart';
 import '../models/settings.dart';
-import '../services/location_data_service.dart';
+import '../services/location_permission_service.dart';
 import '../services/notification_service.dart';
 import '../utils/location_permission_utils.dart';
 
@@ -38,22 +37,25 @@ class _SettingsScreenState extends State<SettingsScreen>
   late bool isLocated = false;
   late TimeOfDay notificationTime =
       TimeOfDay(hour: notificationHour, minute: notificationMinute);
+  late SettingsDataService settingsDataService;
+  late NotificationService notificationService;
   final FlutterLocalNotificationsPlugin localNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
   @override
   void initState() {
     super.initState();
-    _initSettings();
-    _initNotification();
     WidgetsBinding.instance.addObserver(this);
+    _initSettings();
   }
 
   void _initSettings() async {
-    bool located = await requestLocationPermission();
-    var config = Configuration.local([Settings.schema]);
     realm = Realm(config);
-    settings = realm.all<Settings>().lastOrNull;
+    bool located = await requestLocationPermission();
+    notificationService = NotificationService(realm);
+    await notificationService.init();
+    settingsDataService = SettingsDataService(realm);
+    settings = await settingsDataService.fetchSettings();
     if (settings != null) {
       setState(() {
         isLocated = located;
@@ -69,41 +71,12 @@ class _SettingsScreenState extends State<SettingsScreen>
             TimeOfDay(hour: notificationHour, minute: notificationMinute);
       });
     } else {
-      realm.write(() {
-        realm.add(
-            Settings(uid.v4(), true, true, 9, 00, false, false, false, false));
-      });
+      SettingsDataService settingsDataService = SettingsDataService(realm);
+      settingsDataService.createDefaultSettings();
       setState(() {
         isLocated = located;
       });
     }
-  }
-
-  Future<void> _initNotification() async {
-    final initSettings = InitializationSettings(
-        android: AndroidInitializationSettings('@mipmap/ic_launcher'),
-        iOS: DarwinInitializationSettings(
-          requestAlertPermission: true,
-          requestBadgePermission: true,
-          requestSoundPermission: true,
-        ),
-        macOS: DarwinInitializationSettings(
-          requestAlertPermission: true,
-          requestBadgePermission: true,
-          requestSoundPermission: true,
-        ));
-
-    await localNotificationsPlugin.initialize(initSettings);
-
-    const AndroidNotificationChannel channel = AndroidNotificationChannel(
-        'importance_preview_notification', 'weather_preview',
-        description: 'This channel is used for weather preview',
-        importance: Importance.high);
-
-    localNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(channel);
   }
 
   @override
@@ -117,67 +90,15 @@ class _SettingsScreenState extends State<SettingsScreen>
     super.didChangeAppLifecycleState(state);
     if (state == AppLifecycleState.resumed) {
       print(state);
-      refreshLocationPermissionStatus();
+      _refreshLocationPermissionStatus();
     }
   }
 
-  void refreshLocationPermissionStatus() async {
-    var isAllow = await checkLocationPermissionStatus();
-
-    final config = Configuration.local([Location.schema]);
-    final realm = Realm(config);
-    Location location;
-
-    print('refreshLocationPermissionStatus 실행전 >>> ');
-    if (isAllow) {
-      print('refreshLocationPermissionStatus 실행 >>> ');
-      var position = await determinePosition();
-      final latitude = position.latitude;
-      final longitude = position.longitude;
-      final coordinate = '$latitude,$longitude';
-      final locationData = await fetchLocationData(coordinate);
-      location = Location(
-        1,
-        locationData.licence,
-        locationData.latitude,
-        locationData.longitude,
-        locationData.nameDetails.officialNameEn ?? locationData.address.city!,
-        locationData.address.city ?? locationData.name,
-        locationData.address.country,
-      );
-      print('isAllow');
-    } else {
-      final locationData = await fetchLocationData('38.8950368,-77.0365427');
-      location = Location(
-        1,
-        locationData.licence,
-        locationData.latitude,
-        locationData.longitude,
-        locationData.nameDetails.officialNameEn ?? locationData.address.city!,
-        locationData.address.city ?? locationData.name,
-        locationData.address.country,
-      );
-      print('!isAllow');
-    }
-
+  void _refreshLocationPermissionStatus() async {
+    final isAllow = await refreshLocationPermissionStatus();
     setState(() {
       isLocated = isAllow;
     });
-
-    updateLocation(realm, location);
-    print(isLocated);
-  }
-
-  Widget customSwitchTile(
-      String title, bool isEnabled, ValueChanged<bool> onChanged) {
-    return SwitchListTile(
-      title: Text(
-        title,
-        style: const TextStyle(fontSize: 20),
-      ),
-      value: isEnabled,
-      onChanged: onChanged,
-    );
   }
 
   @override
@@ -202,9 +123,8 @@ class _SettingsScreenState extends State<SettingsScreen>
               onChanged: (value) => setState(
                 () {
                   isCelsius = value;
-                  realm.write(() {
-                    settings.isCelsius = value;
-                  });
+                  // settings.isCelsius = value;
+                  settingsDataService.updateSettings(isCelsius: value);
                 },
               ),
             ),
@@ -214,9 +134,7 @@ class _SettingsScreenState extends State<SettingsScreen>
               onChanged: (value) => setState(
                 () {
                   isCelsius = !value;
-                  realm.write(() {
-                    settings.isCelsius = !value;
-                  });
+                  settingsDataService.updateSettings(isCelsius: !value);
                 },
               ),
             ),
@@ -233,17 +151,19 @@ class _SettingsScreenState extends State<SettingsScreen>
                 onChanged: (value) async {
                   setState(() {
                     isNotificationOn = value;
-                    realm.write(() {
-                      settings.isNotificationOn = value;
-                    });
+                    settingsDataService.updateSettings(isNotificationOn: value);
                   });
-                  SharedPreferences prefs = await SharedPreferences.getInstance();
-                  prefs.setBool('isNotificationOn', isNotificationOn);
-                  print(isNotificationOn);
-                  if (value){
-                    await FlutterBackgroundService().startService();
+                  setNotificationOn(isNotificationOn);
+                  if (isNotificationOn) {
+                    print('Notification On----------');
+                    FlutterBackgroundService().startService();
+                    setNotificationOn(true);
+                    print('Notification On----------');
                   } else {
+                    print('Notification Off----------');
                     FlutterBackgroundService().invoke("stopService");
+                    setNotificationOn(false);
+                    print('Notification Off----------');
                   }
                 },
               ),
@@ -254,10 +174,9 @@ class _SettingsScreenState extends State<SettingsScreen>
                   if (picked != null && picked != notificationTime) {
                     setState(() {
                       notificationTime = picked;
-                      realm.write(() {
-                        settings.notificationHour = notificationTime.hour;
-                        settings.notificationMinute = notificationTime.minute;
-                      });
+                      settingsDataService.updateSettings(
+                          notificationHour: notificationTime.hour,
+                          notificationMinute: notificationTime.minute);
                     });
                   }
                 },
@@ -284,9 +203,8 @@ class _SettingsScreenState extends State<SettingsScreen>
               onChanged: (value) => setState(
                 () {
                   isTemperatureEnabled = value;
-                  realm.write(() {
-                    settings.isTemperatureEnabled = value;
-                  });
+                  settingsDataService.updateSettings(
+                      isTemperatureEnabled: value);
                 },
               ),
             ),
@@ -296,9 +214,7 @@ class _SettingsScreenState extends State<SettingsScreen>
               onChanged: (value) => setState(
                 () {
                   isFeelsLikeEnabled = value;
-                  realm.write(() {
-                    settings.isFeelsLikeEnabled = value;
-                  });
+                  settingsDataService.updateSettings(isFeelsLikeEnabled: value);
                 },
               ),
             ),
@@ -308,9 +224,8 @@ class _SettingsScreenState extends State<SettingsScreen>
               onChanged: (value) => setState(
                 () {
                   isSkyConditionEnabled = value;
-                  realm.write(() {
-                    settings.isSkyConditionEnabled = value;
-                  });
+                  settingsDataService.updateSettings(
+                      isSkyConditionEnabled: value);
                 },
               ),
             ),
@@ -320,9 +235,8 @@ class _SettingsScreenState extends State<SettingsScreen>
               onChanged: (value) => setState(
                 () {
                   isWindConditionEnabled = value;
-                  realm.write(() {
-                    settings.isWindConditionEnabled = value;
-                  });
+                  settingsDataService.updateSettings(
+                      isWindConditionEnabled: value);
                 },
               ),
             ),
@@ -337,7 +251,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                     ),
                     onPressed: () async {
                       print('Preview Button Clicked!');
-                      await NotificationService().showNotification();
+                      await notificationService.showNotification();
                     },
                     child: const Text('Preview')),
               ),
