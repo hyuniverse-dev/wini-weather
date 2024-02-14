@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ffi';
 import 'dart:io';
 import 'dart:ui';
 
@@ -8,7 +9,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:morning_weather/models/location_model.dart';
 import 'package:morning_weather/screens/home_screen.dart';
 import 'package:morning_weather/services/notification_service.dart';
-import 'package:morning_weather/utils/geo_utils.dart';
+import 'package:morning_weather/utils/location_permission_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:workmanager/workmanager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -72,7 +73,15 @@ Future<void> initService() async {
       foregroundServiceNotificationId: 90,
     ),
   );
-  service.startService();
+
+  print('initService 실행 >>> ');
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  final currentStatus = prefs.getBool('isNotificationOn');
+  print(currentStatus);
+  if (currentStatus!) {
+    print(currentStatus);
+    service.startService();
+  }
 }
 
 // onstart method
@@ -80,7 +89,7 @@ Future<void> initService() async {
 void onStart(ServiceInstance service) async {
   DartPluginRegistrant.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  bool? isNotificationOn = prefs.getBool('isNotificationOn');
+  // bool? isNotificationOn = prefs.getBool('isNotificationOn');
 
   service.on("setAsForeground").listen((event) {});
 
@@ -91,7 +100,7 @@ void onStart(ServiceInstance service) async {
   });
 
   // Display Notification as a Service
-  Timer.periodic(Duration(seconds: 2), (timer) async {
+  Timer.periodic(Duration(seconds: 5), (timer) async {
     bool currentStatus = prefs.getBool('isNotificationOn') ?? true;
     print("currentStatus >>> $currentStatus");
 

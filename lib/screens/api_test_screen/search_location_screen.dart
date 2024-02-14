@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../models/location_response.dart';
-import '../../services/location_service.dart';
+import '../../services/location_api_service.dart';
 import '../../widgets/details_screen/location_future_builder.dart';
 
 class SearchLocationScreen extends StatefulWidget {

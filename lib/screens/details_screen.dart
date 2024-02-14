@@ -1,16 +1,14 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:morning_weather/models/forecast_weather_response.dart';
-import 'package:morning_weather/services/forecast_weather_service.dart';
+import 'package:morning_weather/services/weather_forecast_api_service.dart';
 import 'package:morning_weather/widgets/details_screen/air_quality_section.dart';
 import 'package:morning_weather/widgets/details_screen/detailed_section.dart';
 import 'package:morning_weather/widgets/details_screen/forecast_section.dart';
 import 'package:morning_weather/widgets/details_screen/today_section.dart';
 import 'package:weather_icons/weather_icons.dart';
 
-import '../utils/calculate_utils.dart';
+import '../utils/date_utils.dart';
 
 class DetailsScreen extends StatefulWidget {
   final String coodinate;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:morning_weather/models/forecast_weather_response.dart';
-import 'package:morning_weather/services/forecast_weather_service.dart';
+import 'package:morning_weather/services/weather_forecast_api_service.dart';
 
 class DetailItem {
   final IconData icon;

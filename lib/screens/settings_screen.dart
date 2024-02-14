@@ -1,9 +1,7 @@
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
-import 'package:morning_weather/services/location_service.dart';
-import 'package:morning_weather/utils/geo_utils.dart';
-import 'package:morning_weather/utils/realm_utils.dart';
+import 'package:morning_weather/services/location_api_service.dart';
 import 'package:morning_weather/widgets/settings_screen/switch_tile.dart';
 import 'package:realm/realm.dart';
 import 'package:uuid/uuid.dart' as uuid_pkg;
@@ -12,7 +10,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/location.dart';
 import '../models/settings.dart';
+import '../services/location_data_service.dart';
 import '../services/notification_service.dart';
+import '../utils/location_permission_utils.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -238,8 +238,8 @@ class _SettingsScreenState extends State<SettingsScreen>
                     });
                   });
                   SharedPreferences prefs = await SharedPreferences.getInstance();
-                  prefs.setBool('isNotificationOn', value);
-                  print(value);
+                  prefs.setBool('isNotificationOn', isNotificationOn);
+                  print(isNotificationOn);
                   if (value){
                     await FlutterBackgroundService().startService();
                   } else {

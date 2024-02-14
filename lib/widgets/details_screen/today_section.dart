@@ -1,12 +1,9 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:morning_weather/models/forecast_weather_response.dart';
-import 'package:morning_weather/services/forecast_weather_service.dart';
-import 'package:morning_weather/utils/calculate_utils.dart';
+import 'package:morning_weather/services/weather_forecast_api_service.dart';
 
 import '../../utils/image_utils.dart';
+import '../../utils/math_utils.dart';
 import 'bar_graph_builder.dart';
 
 class TodaySection extends StatefulWidget {
@@ -171,7 +168,6 @@ class TodaySectionItem extends StatelessWidget {
   }
 
   Widget _formatTime(int time) {
-    final int formmatedTime;
     final int formattedTime = time % 12 == 0 ? 12 : time % 12;
     final String period = time < 12 || time == 24 ? 'AM' : 'PM';
     print('$period ${formattedTime.toString().padLeft(2, '0')}');

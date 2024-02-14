@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:morning_weather/models/forecast_weather_response.dart';
-import 'package:morning_weather/services/forecast_weather_service.dart';
-import 'package:morning_weather/services/location_service.dart';
-import 'package:morning_weather/utils/realm_utils.dart';
+import 'package:morning_weather/services/weather_forecast_api_service.dart';
+import 'package:morning_weather/services/location_api_service.dart';
 import 'package:morning_weather/widgets/home_screen/custom_route.dart';
 import 'package:realm/realm.dart' hide ConnectionState;
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../models/location.dart';
-import '../utils/geo_utils.dart';
-import '../utils/navigation_utils.dart';
-import '../widgets/home_screen/custom_cards.dart';
+import '../services/location_data_service.dart';
+import '../utils/page_navigation_utils.dart';
+import '../utils/screen_navigation_utils.dart';
 import 'details_screen.dart';
 
 class HomeScreen extends StatefulWidget {

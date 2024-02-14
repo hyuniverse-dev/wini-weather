@@ -1,7 +1,6 @@
 import 'package:realm/realm.dart';
 
 import '../models/location.dart';
-import '../models/settings.dart';
 
 void createLocation(Realm realm, Location location) {
   realm.write(() {
@@ -58,9 +57,53 @@ Future<Map<String, dynamic>> removeLocation(int id) async {
   });
 }
 
-Future<Settings> fetchSettings() async {
-  var config = Configuration.local([Settings.schema]);
-  var realm = Realm(config);
-  var settings = realm.all<Settings>().last;
-  return settings;
+int getNextId(Realm realm, int currentId) {
+  var objects = realm.all<Location>();
+  var sortedId = objects.map((e) => e.id).toList()..sort();
+  for (var id in sortedId) {
+    if (id > currentId) {
+      return id;
+    }
+  }
+  return -1;
+}
+
+bool tryFetchFirstLocationId(Realm realm, Location location) {
+  final firstLocation = realm!.all<Location>().firstOrNull;
+  if (firstLocation == null || location == null) {
+    return false;
+  }
+  return firstLocation.id != location.id;
+}
+
+Location? tryUpdateToNextLocation(Realm realm, Location location) {
+  final List<Location> locations = realm!.all<Location>().toList();
+  final currentIndex = locations.indexWhere((loc) => loc.id == location.id);
+  Location currentLocation = locations[currentIndex];
+  if (currentIndex != -1 && currentIndex < locations.length - 1) {
+    var nextLocation = locations[currentIndex + 1];
+    if (location.id != nextLocation.id) {
+      return nextLocation;
+    }
+  }
+  return null;
+}
+
+Location? tryUpdateToBeforeLocation(Realm realm, Location location) {
+  final List<Location> locations = realm!.all<Location>().toList();
+  int currentIndex = locations.indexWhere((loc) => loc.id == location.id);
+  Location currentLocation = locations[currentIndex];
+  if (currentIndex != -1 && currentIndex > 0) {
+    var beforeLocation = locations[currentIndex - 1];
+    if (location.id != beforeLocation.id) {
+      return beforeLocation;
+    }
+  }
+  return null;
+}
+
+Location? handleLocationUpdate(bool isNext, Realm realm, Location location) {
+  return isNext
+      ? tryUpdateToNextLocation(realm, location)
+      : tryUpdateToBeforeLocation(realm, location);
 }

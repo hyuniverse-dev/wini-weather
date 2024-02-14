@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../models/weather.dart';
-import '../../services/weather_service.dart';
+import '../../services/weather_current_api_service.dart';
 import '../../widgets/details_screen/weather_future_builder.dart';
 
 class CurrentWeatherScreen extends StatefulWidget {
