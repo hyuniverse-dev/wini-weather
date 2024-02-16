@@ -199,8 +199,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       alignment: Alignment.center,
       children: [
         _buildBackgroundContainer(),
-        // buildMainCard(screenWidth, screenHeight, country, name, feelsTemp,
-        //     currentTemp, hTemp, lTemp),
         Positioned(
           right: MediaQuery.of(context).size.width * 0.03,
           top: MediaQuery.of(context).size.height * 0.1,

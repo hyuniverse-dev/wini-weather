@@ -1,28 +1,27 @@
 import 'dart:async';
-import 'dart:ffi';
 import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:flutter_background_service_android/flutter_background_service_android.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:morning_weather/models/location_model.dart';
 import 'package:morning_weather/models/settings.dart';
 import 'package:morning_weather/screens/home_screen.dart';
+import 'package:morning_weather/screens/home_screen_v2.dart';
 import 'package:morning_weather/services/notification_service.dart';
+import 'package:morning_weather/services/shared_preferences_service.dart';
 import 'package:morning_weather/utils/location_permission_utils.dart';
-import 'package:morning_weather/utils/shared_preferences_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:realm/realm.dart';
-import 'package:workmanager/workmanager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final FlutterLocalNotificationsPlugin localNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
-const AndroidNotificationChannel notificationChannel =
-    AndroidNotificationChannel("foreground", "foreground service",
-        description: "This is channel foreground notification",
-        importance: Importance.high);
+
+final SharedPreferencesService sharedPreferencesService =
+    SharedPreferencesService();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,12 +44,25 @@ void main() async {
 }
 
 Future<void> initService() async {
-  // set for iOS
-  var service = FlutterBackgroundService();
-  if (Platform.isIOS) {
+  final service = FlutterBackgroundService();
+
+  const AndroidNotificationChannel notificationChannel =
+      AndroidNotificationChannel("foreground", "foreground service",
+          description: "This is channel foreground notification",
+          importance: Importance.high);
+
+  // if (Platform.isIOS) {
+  //   await localNotificationsPlugin.initialize(
+  //     const InitializationSettings(
+  //       iOS: DarwinInitializationSettings(),
+  //     ),
+  //   );
+  // }
+  if (Platform.isIOS || Platform.isAndroid) {
     await localNotificationsPlugin.initialize(
       const InitializationSettings(
         iOS: DarwinInitializationSettings(),
+        android: AndroidInitializationSettings('ic_bg_service_small'),
       ),
     );
   }
@@ -64,7 +76,7 @@ Future<void> initService() async {
   await service.configure(
     iosConfiguration: IosConfiguration(
       autoStart: true,
-      onBackground: iOSBackground,
+      onBackground: onIosBackground,
       onForeground: onStart,
     ),
     androidConfiguration: AndroidConfiguration(
@@ -80,17 +92,60 @@ Future<void> initService() async {
   service.startService();
 }
 
-// onstart method
 @pragma("vm:entry-point")
 void onStart(ServiceInstance service) async {
-  final prefs = await isNotificationOn();
-  service.on("stopService").listen((event) {
-    print('stopService >>> ');
-    service.stopSelf();
+  DartPluginRegistrant.ensureInitialized();
+  if (service is AndroidServiceInstance) {
+    service.on('setAsforeground').listen((event) {
+      service.setAsForegroundService();
+    });
+    service.on('setAsbackground').listen((event) {
+      service.setAsBackgroundService();
+    });
+    service.on('stopService').listen((event) {
+      service.stopSelf();
+    });
+  }
+  Timer.periodic(Duration(seconds: 5), (timer) async {
+    if (service is AndroidServiceInstance) {
+      var now = DateTime.now().toLocal();
+      var currentTime = TimeOfDay(hour: now.hour, minute: now.minute);
+      var config = Configuration.local([Settings.schema]);
+      var realm = Realm(config);
+      await NotificationService(realm).scheduleNotification(
+        id: 90,
+        title: "Schedule Notification",
+        currentTime: currentTime,
+      );
+      print("background service >> ${currentTime}");
+    }
+    service.invoke('update');
   });
+
+  var prefs = await sharedPreferencesService.getNotificationStatus();
+  Timer? periodicTimer;
+
+  service.on("startService").listen((event) async {
+    await FlutterBackgroundService().startService();
+    await sharedPreferencesService.setNotificationStatus(true);
+    service.invoke('update');
+    prefs = true;
+    print("startService >>> ${await FlutterBackgroundService().isRunning()}");
+  });
+
+  service.on("stopService").listen((event) async {
+    periodicTimer?.cancel();
+    await service.stopSelf();
+    await sharedPreferencesService.setNotificationStatus(false);
+    service.invoke('update');
+    prefs = false;
+    var isRunning = await FlutterBackgroundService().isRunning();
+    print('stopService >>> $isRunning');
+  });
+
   print('MainScreen prefs >>> $prefs');
   if (prefs) {
-    Timer.periodic(Duration(seconds: 5), (timer) async {
+    periodicTimer = Timer.periodic(Duration(seconds: 5), (timer) async {
       var now = DateTime.now().toLocal();
       var currentTime = TimeOfDay(hour: now.hour, minute: now.minute);
       var config = Configuration.local([Settings.schema]);
@@ -107,9 +162,13 @@ void onStart(ServiceInstance service) async {
 
 // iOSBackground
 @pragma("vm:entry-point")
-Future<bool> iOSBackground(ServiceInstance service) async {
+Future<bool> onIosBackground(ServiceInstance service) async {
   WidgetsFlutterBinding.ensureInitialized();
   DartPluginRegistrant.ensureInitialized();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.reload();
+  final log = prefs.getStringList('log') ?? <String>[];
+  log.add(DateTime.now().toIso8601String());
   return true;
 }
 
@@ -180,28 +239,9 @@ class MyPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return HomeScreen(
+    return HomeScreenV2(
       initialLatitude: latitude,
       initialLongitude: longitude,
     );
   }
-}
-
-void callbackDispatcher() {
-  Workmanager().executeTask((task, inputData) async {
-    switch (task) {
-      case 'simplePeriodicTask':
-        final hour = 16;
-        final minute = 11;
-        final now = DateTime.now();
-        print(now);
-        print(now.hour);
-        print(now.minute);
-        if (now.hour == hour && now.minute == minute) {
-          // NotificationManager();
-        }
-        break;
-    }
-    return Future.value(true);
-  });
 }

@@ -54,8 +54,8 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
-    	<array>
-    		<string>task-identifier</string>
-      </array>
+    <array>
+        <string>dev.flutter.background.refresh</string>
+    </array>
 </dict>
 </plist>

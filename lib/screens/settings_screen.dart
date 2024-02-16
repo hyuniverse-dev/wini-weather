@@ -1,8 +1,8 @@
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:flutter_background_service_ios/flutter_background_service_ios.dart';
 import 'package:morning_weather/services/settings_data_service.dart';
-import 'package:morning_weather/utils/shared_preferences_utils.dart';
 import 'package:morning_weather/widgets/settings_screen/switch_tile.dart';
 import 'package:realm/realm.dart';
 import 'package:uuid/uuid.dart' as uuid_pkg;
@@ -11,6 +11,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import '../models/settings.dart';
 import '../services/location_permission_service.dart';
 import '../services/notification_service.dart';
+import '../services/shared_preferences_service.dart';
 import '../utils/location_permission_utils.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -153,17 +154,20 @@ class _SettingsScreenState extends State<SettingsScreen>
                     isNotificationOn = value;
                     settingsDataService.updateSettings(isNotificationOn: value);
                   });
-                  setNotificationOn(isNotificationOn);
+                  await SharedPreferencesService().setNotificationStatus(isNotificationOn);
                   if (isNotificationOn) {
                     print('Notification On----------');
-                    FlutterBackgroundService().startService();
-                    setNotificationOn(true);
-                    print('Notification On----------');
+                    // await setNotificationStatus(true);
+                    // FlutterBackgroundService().invoke("startService");
+                    FlutterBackgroundServiceIOS().start();
+                    print(
+                        'Notification On----------> ${await FlutterBackgroundService().isRunning()}');
                   } else {
                     print('Notification Off----------');
+                    // await setNotificationStatus(false);
                     FlutterBackgroundService().invoke("stopService");
-                    setNotificationOn(false);
-                    print('Notification Off----------');
+                    print(
+                        'Notification Off----------> ${await FlutterBackgroundService().isRunning()}');
                   }
                 },
               ),
