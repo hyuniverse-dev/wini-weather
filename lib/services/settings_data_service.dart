@@ -8,8 +8,8 @@ class SettingsDataService {
 
   SettingsDataService(this.realm);
 
-  Future<Settings> fetchSettings() async {
-    return realm.all<Settings>().last;
+  Future<Settings?> fetchSettings() async {
+    return realm.all<Settings>().last ?? null;
   }
 
   void createDefaultSettings() {

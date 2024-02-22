@@ -24,7 +24,6 @@ Future<ForecastWeatherResponse> fetchForecastWeatherData(coordinate, day) async 
       final weatherData = ForecastWeatherResponse.fromJson(data);
       final maxTemps =
           weatherData.forecast.forecastDay.map((e) => e.day.maxTempC).toList();
-      // 이곳에서 데이터를 더 처리하거나 UI에 표시할 수 있습니다.
       return weatherData;
     } else {
       throw Exception('날씨 서버 오류: ${response.statusCode}');

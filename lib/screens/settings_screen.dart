@@ -7,6 +7,7 @@ import 'package:morning_weather/widgets/settings_screen/switch_tile.dart';
 import 'package:realm/realm.dart';
 import 'package:uuid/uuid.dart' as uuid_pkg;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:provider/provider.dart';
 
 import '../models/settings.dart';
 import '../services/location_permission_service.dart';
@@ -27,17 +28,19 @@ class _SettingsScreenState extends State<SettingsScreen>
   var uid = uuid_pkg.Uuid();
   late Realm realm;
   late var settings;
-  late bool isCelsius = true;
-  late bool isNotificationOn = true;
-  late int notificationHour = 0;
-  late int notificationMinute = 0;
-  late bool isTemperatureEnabled = true;
-  late bool isFeelsLikeEnabled = true;
-  late bool isSkyConditionEnabled = true;
-  late bool isWindConditionEnabled = false;
-  late bool isLocated = false;
-  late TimeOfDay notificationTime =
-      TimeOfDay(hour: notificationHour, minute: notificationMinute);
+  late bool? isCelsius = false;
+  late bool? isNotificationOn = false;
+  late int? notificationHour = 00;
+  late int? notificationMinute = 00;
+  late bool? isTemperatureEnabled = false;
+  late bool? isFeelsLikeEnabled = false;
+  late bool? isSkyConditionEnabled = false;
+  late bool? isWindConditionEnabled = false;
+  late bool? isLocated = false;
+
+  // late TimeOfDay? notificationTime =
+  //     TimeOfDay(hour: notificationHour, minute: notificationMinute);
+  late TimeOfDay? notificationTime;
   late SettingsDataService settingsDataService;
   late NotificationService notificationService;
   final FlutterLocalNotificationsPlugin localNotificationsPlugin =
@@ -69,7 +72,7 @@ class _SettingsScreenState extends State<SettingsScreen>
         isSkyConditionEnabled = settings.isSkyConditionEnabled;
         isWindConditionEnabled = settings.isWindConditionEnabled;
         notificationTime =
-            TimeOfDay(hour: notificationHour, minute: notificationMinute);
+            TimeOfDay(hour: notificationHour!, minute: notificationMinute!);
       });
     } else {
       SettingsDataService settingsDataService = SettingsDataService(realm);
@@ -108,6 +111,8 @@ class _SettingsScreenState extends State<SettingsScreen>
       appBar: AppBar(
         title: const Text('Settings'),
       ),
+      // body: settings == null
+      //     ? CircularProgressIndicator()
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: ListView(
@@ -120,18 +125,19 @@ class _SettingsScreenState extends State<SettingsScreen>
             ),
             CustomSwitchTile(
               title: '°C',
-              value: isCelsius,
+              value: isCelsius!,
               onChanged: (value) => setState(
                 () {
                   isCelsius = value;
-                  // settings.isCelsius = value;
                   settingsDataService.updateSettings(isCelsius: value);
+                  Provider.of<SettingsProvider>(context, listen: false)
+                      .isCelsius = value;
                 },
               ),
             ),
             CustomSwitchTile(
               title: '°F',
-              value: !isCelsius,
+              value: !isCelsius!,
               onChanged: (value) => setState(
                 () {
                   isCelsius = !value;
@@ -148,23 +154,21 @@ class _SettingsScreenState extends State<SettingsScreen>
                 ),
               ),
               trailing: Switch(
-                value: isNotificationOn,
+                value: isNotificationOn!,
                 onChanged: (value) async {
                   setState(() {
                     isNotificationOn = value;
                     settingsDataService.updateSettings(isNotificationOn: value);
                   });
-                  await SharedPreferencesService().setNotificationStatus(isNotificationOn);
-                  if (isNotificationOn) {
+                  await SharedPreferencesService()
+                      .setNotificationStatus(isNotificationOn!);
+                  if (isNotificationOn!) {
                     print('Notification On----------');
-                    // await setNotificationStatus(true);
-                    // FlutterBackgroundService().invoke("startService");
                     FlutterBackgroundServiceIOS().start();
                     print(
                         'Notification On----------> ${await FlutterBackgroundService().isRunning()}');
                   } else {
                     print('Notification Off----------');
-                    // await setNotificationStatus(false);
                     FlutterBackgroundService().invoke("stopService");
                     print(
                         'Notification Off----------> ${await FlutterBackgroundService().isRunning()}');
@@ -174,18 +178,18 @@ class _SettingsScreenState extends State<SettingsScreen>
               subtitle: InkWell(
                 onTap: () async {
                   TimeOfDay? picked = await showTimePicker(
-                      context: context, initialTime: notificationTime);
+                      context: context, initialTime: notificationTime!);
                   if (picked != null && picked != notificationTime) {
                     setState(() {
                       notificationTime = picked;
                       settingsDataService.updateSettings(
-                          notificationHour: notificationTime.hour,
-                          notificationMinute: notificationTime.minute);
+                          notificationHour: notificationTime!.hour,
+                          notificationMinute: notificationTime!.minute);
                     });
                   }
                 },
                 child: Text(
-                  '${notificationTime.format(context)}',
+                  '${notificationTime!.format(context)}',
                   style: const TextStyle(
                     fontSize: 50,
                   ),
@@ -203,7 +207,7 @@ class _SettingsScreenState extends State<SettingsScreen>
             ),
             CustomSwitchTile(
               title: 'Temperature',
-              value: isTemperatureEnabled,
+              value: isTemperatureEnabled!,
               onChanged: (value) => setState(
                 () {
                   isTemperatureEnabled = value;
@@ -214,7 +218,7 @@ class _SettingsScreenState extends State<SettingsScreen>
             ),
             CustomSwitchTile(
               title: 'Feels Like',
-              value: isFeelsLikeEnabled,
+              value: isFeelsLikeEnabled!,
               onChanged: (value) => setState(
                 () {
                   isFeelsLikeEnabled = value;
@@ -224,7 +228,7 @@ class _SettingsScreenState extends State<SettingsScreen>
             ),
             CustomSwitchTile(
               title: 'Sky Condition',
-              value: isSkyConditionEnabled,
+              value: isSkyConditionEnabled!,
               onChanged: (value) => setState(
                 () {
                   isSkyConditionEnabled = value;
@@ -235,7 +239,7 @@ class _SettingsScreenState extends State<SettingsScreen>
             ),
             CustomSwitchTile(
               title: 'Wind Condition',
-              value: isWindConditionEnabled,
+              value: isWindConditionEnabled!,
               onChanged: (value) => setState(
                 () {
                   isWindConditionEnabled = value;
@@ -269,7 +273,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               trailing: Switch(
-                value: isLocated,
+                value: isLocated!,
                 onChanged: (value) async {
                   await AppSettings.openAppSettings();
                   bool permissionStatus = await checkLocationPermissionStatus();
@@ -291,5 +295,32 @@ class _SettingsScreenState extends State<SettingsScreen>
         ),
       ),
     );
+  }
+}
+
+class SettingsProvider with ChangeNotifier {
+  late bool _isCelsius = true;
+
+  SettingsProvider() {
+    _loadInitialSettings();
+  }
+
+  void _loadInitialSettings() async {
+    var config = Configuration.local([Settings.schema]);
+    var realm = Realm(config);
+    var settings = realm.all<Settings>().lastOrNull;
+    if (settings != null) {
+      _isCelsius = settings.isCelsius;
+    } else {
+      _isCelsius = true;
+    }
+    notifyListeners();
+  }
+
+  bool get isCelsius => _isCelsius;
+
+  set isCelsius(bool value) {
+    _isCelsius = value;
+    notifyListeners();
   }
 }

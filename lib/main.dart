@@ -10,6 +10,7 @@ import 'package:morning_weather/models/location_model.dart';
 import 'package:morning_weather/models/settings.dart';
 import 'package:morning_weather/screens/home_screen.dart';
 import 'package:morning_weather/screens/home_screen_v2.dart';
+import 'package:morning_weather/screens/settings_screen.dart';
 import 'package:morning_weather/services/notification_service.dart';
 import 'package:morning_weather/services/shared_preferences_service.dart';
 import 'package:morning_weather/utils/location_permission_utils.dart';
@@ -183,11 +184,18 @@ class MyProviderApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => LocationModel(
-        latitude: latitude,
-        longitude: longitude,
-      ),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => LocationModel(
+            latitude: latitude,
+            longitude: longitude,
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => SettingsProvider(),
+        ),
+      ],
       child: MyApp(
         latitude: latitude,
         longitude: longitude,

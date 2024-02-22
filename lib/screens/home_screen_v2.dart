@@ -1,11 +1,15 @@
-import 'dart:ffi';
-import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:morning_weather/models/forecast_weather_response.dart';
+import 'package:morning_weather/models/settings.dart';
+import 'package:morning_weather/screens/settings_screen.dart';
+import 'package:morning_weather/services/settings_data_service.dart';
 import 'package:morning_weather/services/weather_forecast_api_service.dart';
 import 'package:morning_weather/services/location_api_service.dart';
+import 'package:morning_weather/widgets/home_screen/custom_day_cloud.dart';
+import 'package:morning_weather/widgets/home_screen/custom_night_sunny.dart';
 import 'package:morning_weather/widgets/home_screen/custom_route.dart';
+import 'package:provider/provider.dart';
 import 'package:realm/realm.dart' hide ConnectionState;
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -13,7 +17,6 @@ import '../models/location.dart';
 import '../services/location_data_service.dart';
 import '../utils/page_navigation_utils.dart';
 import '../utils/screen_navigation_utils.dart';
-import '../widgets/home_screen/custom_images.dart';
 import 'details_screen.dart';
 
 class HomeScreenV2 extends StatefulWidget {
@@ -31,7 +34,7 @@ class HomeScreenV2 extends StatefulWidget {
 }
 
 class _HomeScreenV2State extends State<HomeScreenV2>
-    with WidgetsBindingObserver, SingleTickerProviderStateMixin {
+    with WidgetsBindingObserver, TickerProviderStateMixin {
   Location? location;
   var isLoading = false;
   var isDragging = false;
@@ -39,78 +42,38 @@ class _HomeScreenV2State extends State<HomeScreenV2>
   var latitude = '0.0';
   var longitude = '0.0';
   var currentIndex = 0;
-  var pageIndex = 0;
   var pageLength = 0;
-  final config = Configuration.local([Location.schema]);
-  final pageController = PageController(viewportFraction: 1.0, keepPage: true);
+  var isLastPage = false;
+  var hasSettingsInit = true;
+
+  var pageController = PageController(viewportFraction: 1.0, keepPage: true);
+  final locationConfig = Configuration.local([Location.schema]);
+  final settingsConfig = Configuration.local([Settings.schema]);
   final int sensitivity = 20;
 
-  late Realm realm;
+  late Realm locationRealm;
+  late Realm settingsRealm;
   late LocationDataService locationDataService;
   late String coordinate = '';
+  late bool isCelsius;
+  late int isDay = 1;
   late ForecastWeatherResponse? forecastWeatherData;
   late Future<ForecastWeatherResponse>? _forecastFuture;
-  late final Stream<RealmResultsChanges<Location>> stream;
-  late AnimationController _rotateController;
-
-  // late AnimationController _rotationController1;
-  // late AnimationController _rotationController2;
-  // late AnimationController _rotationController3;
-  late Animation<double> _animation;
+  late Stream<RealmResultsChanges<Location>> locationStream;
+  late Stream<RealmResultsChanges<Settings>> settingsStream;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-
-    _rotateController = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 6000),
-    )..repeat();
-
-    _animation = Tween<double>(begin: 0.0, end: 2 * pi).animate(CurvedAnimation(
-      parent: _rotateController,
-      curve: Curves.linear,
-    ));
-
-    realm = Realm(config);
-    stream = realm.all<Location>().changes;
-    locationDataService = LocationDataService(realm);
-    final firstLocation = realm.all<Location>().firstOrNull;
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      coordinate =
-          '${widget.initialLatitude.toStringAsFixed(7)},${widget.initialLongitude.toStringAsFixed(7)}';
-      print(coordinate);
-      final initialLocation = await fetchLocationData(coordinate);
-      final currentLocation = Location(
-        1,
-        initialLocation.licence,
-        initialLocation.latitude.substring(0, 7),
-        initialLocation.longitude.substring(0, 7),
-        initialLocation.nameDetails.officialNameEn ??
-            initialLocation.address.city!,
-        initialLocation.address.city ?? initialLocation.name,
-        initialLocation.address.country,
-      );
-
-      if (firstLocation == null) {
-        locationDataService.createLocation(currentLocation);
-      } else {
-        locationDataService.updateLocation(currentLocation);
-      }
-      setState(() {
-        final locations = realm.all<Location>().toList();
-        pageLength = locations.length;
-        location = currentLocation;
-        _forecastFuture = fetchForecastWeatherData(coordinate, 1);
-      });
-    });
+    _loadInitLocationData();
+    _loadInitSettingsData();
   }
 
   @override
   void dispose() {
-    realm.close();
-    _rotateController.dispose();
+    locationRealm.close();
+    settingsRealm.close();
     super.dispose();
   }
 
@@ -118,11 +81,8 @@ class _HomeScreenV2State extends State<HomeScreenV2>
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     super.didChangeAppLifecycleState(state);
     if (state == AppLifecycleState.resumed) {
-      print('didChangeAppLifecycleState 실행 >>> ');
-      print('current index >>> $currentIndex');
-      print('page index >>> $pageIndex');
-      if (pageIndex == 0) {
-        location = realm.all<Location>().first;
+      if (currentIndex == 0) {
+        location = locationRealm.all<Location>().first;
       }
       _loadForecastWeatherData();
     }
@@ -130,41 +90,78 @@ class _HomeScreenV2State extends State<HomeScreenV2>
 
   @override
   Widget build(BuildContext context) {
+    print('>>>> hasSettingsInit [$hasSettingsInit]');
+    if (!hasSettingsInit == true) {
+      final settingsProvider = Provider.of<SettingsProvider>(context);
+      isCelsius = settingsProvider.isCelsius;
+      print('>>> build isCelsius [$isCelsius]');
+    }
     return StreamBuilder<RealmResultsChanges<Location>>(
-      stream: stream,
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) return RefreshProgressIndicator();
+      stream: locationStream,
+      builder: (context, locationSnapshot) {
+        if (locationSnapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator();
+        }
+
+        if (locationSnapshot.hasError) {
+          return Text('>>> locationSnapshot Error: ${locationSnapshot.error}');
+        }
+
+        Color backgroundColor =
+            isDay == 1 ? Color(0xFFFFFFFF) : Color(0xFF231823);
+
         return Scaffold(
           appBar: _buildAppBar(context),
-          body: location == null
-              ? Center(
-                  child: RefreshProgressIndicator(),
-                )
-              : Column(
-                  children: [
-                    Expanded(
-                      child: PageView.builder(
-                        controller: pageController,
-                        itemCount: pageLength,
-                        itemBuilder: (context, index) {
-                          return _buildBody(context);
-                        },
-                      ),
-                    ),
-                    _buildIndicator()
-                  ],
-                ),
+          backgroundColor: backgroundColor,
+          body: StreamBuilder<RealmResultsChanges<Settings>>(
+              stream: settingsStream,
+              builder: (context, snapshot) {
+                return PageView.builder(
+                  controller: pageController,
+                  itemCount: pageLength,
+                  onPageChanged: _onPageChanged,
+                  itemBuilder: (context, index) => _buildBody(context),
+                );
+              }),
+          bottomNavigationBar: _buildIndicator(),
         );
       },
     );
   }
 
+  void _onPageChanged(int index) {
+    setState(() {
+      currentIndex = index;
+    });
+
+    final newLocation = locationRealm.all<Location>().elementAt(index);
+    _updateLocationAndWeatherData(newLocation);
+    isLastPage = false;
+
+    if (index >= pageLength - 1) {
+      isLastPage = true;
+    }
+  }
+
   AppBar _buildAppBar(BuildContext context) {
     return AppBar(
+      elevation: 0,
+      backgroundColor: Colors.transparent,
+      systemOverlayStyle: SystemUiOverlayStyle(
+        statusBarBrightness: isDay == 1 ? Brightness.light : Brightness.dark,
+      ),
       actions: [
         IconButton(
-          onPressed: () => navigateToSettingsScreen(context),
-          icon: Icon(Icons.settings),
+          onPressed: () {
+            setState(() {
+              hasSettingsInit = false;
+            });
+            navigateToSettingsScreen(context);
+          },
+          icon: Icon(
+            Icons.settings_outlined,
+            color: Color(0xFF909090),
+          ),
         ),
       ],
     );
@@ -195,6 +192,7 @@ class _HomeScreenV2State extends State<HomeScreenV2>
               return Text('Error: ${snapshot.error}');
             } else if (snapshot.hasData) {
               ForecastWeatherResponse forecastWeather = snapshot.data!;
+              isDay = forecastWeather.current.isDay;
               return _buildContent(context, forecastWeather, location!);
             } else {
               return Text('Loading...');
@@ -207,134 +205,198 @@ class _HomeScreenV2State extends State<HomeScreenV2>
 
   Widget _buildContent(BuildContext context,
       ForecastWeatherResponse forecastWeatherData, Location location) {
+    final forecast = forecastWeatherData.forecast.forecastDay[0].day;
+    final current = forecastWeatherData.current;
+    final location = forecastWeatherData.location;
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Stack(
         children: [
-          _buildTempWeatherContent(),
-          Expanded(
-            child: Stack(
-              children: [
-                _buildAnimationContent(),
-                _buildBackgroundContent(),
-              ],
+          _buildTempWeatherContent(
+              isDay: current.isDay,
+              locationName: location.name,
+              lowValue: isCelsius
+                  ? forecast.minTempC.toInt()
+                  : forecast.minTempF.toInt(),
+              highValue: isCelsius
+                  ? forecast.maxTempC.toInt()
+                  : forecast.maxTempF.toInt(),
+              feelsValue:
+                  isCelsius ? current.feelsC.toInt() : current.feelsF.toInt()),
+          isDay == 1 ? CustomDayCloud() : CustomNightSunny(),
+          _buildDetailWeatherContent(context)
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTempWeatherContent(
+      {required int isDay,
+      required String locationName,
+      required int lowValue,
+      required int highValue,
+      required int feelsValue}) {
+    return Positioned(
+      top: 0,
+      bottom: 0,
+      left: 0,
+      right: 0,
+      child: Container(
+        alignment: Alignment.center,
+        child: Column(
+          children: [
+            Text(
+              locationName,
+              style: TextStyle(
+                  fontSize: 32.0,
+                  color: isDay == 1 ? Colors.black : Colors.white,
+                  fontWeight: FontWeight.bold),
             ),
-          ),
-          _buildDetailWeatherContent(),
-        ],
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
+              children: [
+                Text(
+                  '$lowValue',
+                  style: TextStyle(
+                      fontSize: 20.0,
+                      color: isDay == 1 ? Colors.grey : Colors.white),
+                ),
+                _rowSpace(1.5),
+                Text(
+                  '$feelsValue',
+                  style: TextStyle(
+                      fontSize: 64.0,
+                      fontWeight: FontWeight.bold,
+                      color: isDay == 1 ? Colors.black : Colors.white),
+                ),
+                _rowSpace(1.5),
+                Text(
+                  '$highValue',
+                  style: TextStyle(
+                      fontSize: 20.0,
+                      color: isDay == 1 ? Colors.grey : Colors.white),
+                ),
+              ],
+            )
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildTempWeatherContent() {
-    return Container(
-      alignment: Alignment.topCenter,
-      child: Column(
-        children: [
-          Text('마포구 상암동'),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('-1°'),
-              _space(1.0),
-              Text('2°'),
-              _space(1.0),
-              Text('7°'),
-            ],
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDetailWeatherContent() {
-    return Container(
-      alignment: Alignment.bottomCenter,
+  Widget _buildDetailWeatherContent(BuildContext context) {
+    Color color = isDay == 1 ? Color(0xFFF5EBE8) : Color(0xFF302837);
+    return Positioned(
+      bottom: 0,
+      left: 0,
+      right: 0,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          _buildDetailWeatherContentItem(),
-          _space(2.5),
-          _buildDetailWeatherContentItem(),
-          _space(2.5),
-          _buildDetailWeatherContentItem(),
-          _space(2.5),
-          _buildDetailWeatherContentItem(),
+          _buildDetailWeatherContentItem(
+              'assets/images/wini/wind1.png', color, "18km/h"),
+          _rowSpace(2.5),
+          _buildDetailWeatherContentItem(
+              'assets/images/wini/humidity2.png', color, "60%"),
+          _rowSpace(2.5),
+          _buildDetailWeatherContentItem(
+              'assets/images/wini/rain.png', color, "18%"),
+          _rowSpace(2.5),
+          _buildDetailWeatherContentItem(
+              'assets/images/wini/fine_dust1.png', color, "50g/m³"),
         ],
       ),
     );
   }
 
-  Widget _space(double interval) {
-    return SizedBox(
-      width: 10 * interval,
-    );
-  }
-
-  Widget _buildDetailWeatherContentItem() {
+  Widget _buildDetailWeatherContentItem(
+      String asset, Color color, String value) {
     return Column(
       children: [
         Container(
           width: 50,
           height: 50,
-          decoration: BoxDecoration(color: Colors.grey, shape: BoxShape.circle),
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
           child: Stack(
-            alignment: Alignment.centerRight,
+            alignment: Alignment.center,
             children: [
               Image.asset(
-                'assets/images/wini/wind1.png',
-                width: 40,
+                asset,
+                width: 25,
               ),
             ],
           ),
         ),
-        Text('18Km'),
+        _columnSpace(1),
+        Text(
+          value,
+          style: TextStyle(
+              fontSize: 18.0, color: isDay == 1 ? Colors.black : Colors.white),
+        ),
       ],
     );
   }
 
-  Widget _buildBackgroundContent() {
-    return Center(
-      child: Image.asset(
-        'assets/images/backgrounds/day_sunny.png',
-        width: MediaQuery.of(context).size.width,
-        // height: MediaQuery.of(context).size.height * 0.5,
-        fit: BoxFit.cover,
-      ),
-    );
-  }
-
-  Widget _buildAnimationContent() {
-    return Positioned(
-      top: MediaQuery.of(context).size.width.toInt() * 0.07,
-      right: MediaQuery.of(context).size.height * 0.225,
-      width: MediaQuery.of(context).size.width * 0.45,
-      height: MediaQuery.of(context).size.height * 0.45,
-      child: Stack(
-        children: [
-          buildImageWithOpacityDefault(
-              'assets/images/elements/day_sunny1.png', 4),
-          rotationAnimation('assets/images/elements/day_sunny2.png', _animation,
-              true, 4, _rotateController),
-          buildImageWithOpacityDefault(
-              'assets/images/elements/day_sunny3.png', 4),
-          rotationAnimation('assets/images/elements/day_sunny4.png', _animation,
-              false, 4, _rotateController),
-          buildImageWithOpacityDefault(
-              'assets/images/elements/day_sunny5.png', 4),
-          rotationAnimation('assets/images/elements/day_sunny6.png', _animation,
-              true, 4, _rotateController),
-          buildImageWithOpacityDefault(
-              'assets/images/elements/day_sunny7.png', 4),
-        ],
-      ),
-    );
-  }
-
-  void _loadForecastWeatherData() {
+  void _loadForecastWeatherData() async {
     _forecastFuture = fetchForecastWeatherData(coordinate, 1);
+    final newWeatherData = await fetchForecastWeatherData(coordinate, 1);
+    setState(() {
+      forecastWeatherData = newWeatherData;
+      isDay = newWeatherData.current.isDay;
+    });
+  }
+
+  void _loadInitLocationData() async {
+    locationRealm = Realm(locationConfig);
+    locationStream = locationRealm.all<Location>().changes;
+    locationDataService = LocationDataService(locationRealm);
+    final firstLocation = locationRealm.all<Location>().firstOrNull;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      coordinate =
+          '${widget.initialLatitude.toStringAsFixed(7)},${widget.initialLongitude.toStringAsFixed(7)}';
+      print(coordinate);
+      final initialLocation = await fetchLocationData(coordinate);
+      final currentLocation = Location(
+        1,
+        initialLocation.licence,
+        initialLocation.latitude.substring(0, 7),
+        initialLocation.longitude.substring(0, 7),
+        initialLocation.nameDetails.officialNameEn ??
+            initialLocation.address.city!,
+        initialLocation.address.city ?? initialLocation.name,
+        initialLocation.address.country,
+      );
+
+      if (firstLocation == null) {
+        locationDataService.createLocation(currentLocation);
+      } else {
+        locationDataService.updateLocation(currentLocation);
+      }
+      setState(() {
+        final locations = locationRealm.all<Location>().toList();
+        pageLength = locations.length;
+        location = currentLocation;
+        _forecastFuture = fetchForecastWeatherData(coordinate, 1);
+      });
+    });
+  }
+
+  void _loadInitSettingsData() async {
+    settingsRealm = Realm(settingsConfig);
+    settingsStream = settingsRealm.all<Settings>().changes;
+    final settingsData = SettingsDataService(settingsRealm);
+    final settings = await settingsData.fetchSettings();
+    if (settings != null) {
+      isCelsius = settings.isCelsius;
+      print('_loadInitSettingsData isCelsius [$isCelsius]');
+    } else {
+      isCelsius = false;
+    }
+    hasSettingsInit = true;
   }
 
   void _handleVerticalSwipe(DragUpdateDetails details, BuildContext context) {
@@ -345,91 +407,80 @@ class _HomeScreenV2State extends State<HomeScreenV2>
     }
   }
 
-  void _updateLocationAndWeatherData(Location newLocation) {
+  void _updateLocationAndWeatherData(Location location) async {
     setState(() {
-      location = newLocation;
-      latitude = newLocation.latitude;
-      longitude = newLocation.longitude;
-      coordinate = '${newLocation.latitude},${newLocation.longitude}';
-      _loadForecastWeatherData();
+      location = location;
+      latitude = location.latitude;
+      longitude = location.longitude;
+      coordinate = '${location.latitude},${location.longitude}';
     });
+    _loadForecastWeatherData();
   }
 
   void _handleHorizontalSwipe(DragUpdateDetails details, BuildContext context) {
     final bool isSwipeRight = details.delta.dx > sensitivity;
     final bool isSwipeLeft = details.delta.dx < -sensitivity;
-
     if ((isSwipeRight || isSwipeLeft) && !isDragging && !isLoading) {
-      if (isSwipeLeft) {
-        pageIndex++;
-        print(pageIndex);
-      } else {
-        pageIndex--;
-        print(pageIndex);
-      }
-      navigateToPage(pageController, pageLength, isSwipeLeft);
-      final updatedLocation =
-          locationDataService.handleLocationUpdate(isSwipeLeft, location!);
-      if (updatedLocation != null) {
-        _updateLocationAndWeatherData(updatedLocation);
-      }
+      // Todo Navigate To AddScreen
+      print('>>> currentIndex: $currentIndex');
+      print('>>> pageLength: $pageLength');
 
-      isDragging = true;
-      isLoading = true;
-
-      if (updatedLocation == null) {
-        navigateToNewScreen(context, isSwipeLeft, (value) {
-          if (isSwipeLeft) {
-            if (value != null && value == true) {
-              setState(() {
-                final config = Configuration.local([Location.schema]);
-                Realm realm = Realm(config);
-                final locations = realm.all<Location>();
-
-                // pageLength Update
-                pageLength = locations.length;
-
-                // pagePoint Update to last
-                if (pageController.hasClients && pageLength > 0) {
-                  pageController.animateToPage(
-                    pageLength - 1,
-                    duration: Duration(milliseconds: 500),
-                    curve: Curves.easeOut,
-                  );
-                }
-                location = locations.lastOrNull!;
-                _updateLocationAndWeatherData(location!);
-              });
-            }
-          } else {
-            isLoading = false;
-            isDragging = false;
-            print('BeforeLocation is null');
+      if (currentIndex == pageLength - 1 && isSwipeLeft) {
+        print('Navigate To AddScreen');
+        navigateToNewScreen(context, true, (value) {
+          if (value) {
+            final newConfig = Configuration.local([Location.schema]);
+            final newRealm = Realm(newConfig);
+            final newLocationData = LocationDataService(newRealm);
+            final newLocations = newLocationData.fetchLocations();
+            setState(() {
+              _updateLocationAndWeatherData(newLocations.last);
+              pageLength = newLocations.length;
+              currentIndex = pageLength - 1;
+              pageController.animateToPage(
+                currentIndex,
+                duration: Duration(milliseconds: 500),
+                curve: Curves.easeInOut,
+              );
+            });
           }
         });
+      } else if (currentIndex == 0 && isSwipeRight) {
+        // Todo Navigate To IntroduceScreen
+        print('IntroduceScreen');
+        navigateToNewScreen(context, false, (value) => () {});
+      } else {
+        navigateToPage(pageController, pageLength, isSwipeLeft);
       }
+      isDragging = true;
+      isLoading = true;
     }
   }
 
   Widget _buildIndicator() {
-    if (pageLength == null || pageLength.isNaN || pageLength <= 0) {
-      return SizedBox.shrink();
-    }
-    return Padding(
-      padding: EdgeInsets.only(bottom: 30.0),
-      child: Align(
-        alignment: Alignment.bottomCenter,
-        child: SmoothPageIndicator(
-          controller: pageController,
-          count: pageLength,
-          effect: const JumpingDotEffect(
-            dotHeight: 6,
-            dotWidth: 6,
-            verticalOffset: 16,
-            jumpScale: .7,
-          ),
-        ),
-      ),
+    return pageLength > 0
+        ? Container(
+            alignment: Alignment.topCenter,
+            height: MediaQuery.of(context).size.height * 0.07,
+            child: SmoothPageIndicator(
+              controller: pageController,
+              count: pageLength,
+              effect: JumpingDotEffect(
+                  dotHeight: 6, dotWidth: 6, verticalOffset: 10, jumpScale: 3),
+            ),
+          )
+        : SizedBox.shrink();
+  }
+
+  Widget _rowSpace(double interval) {
+    return SizedBox(
+      width: 10 * interval,
+    );
+  }
+
+  Widget _columnSpace(double interval) {
+    return SizedBox(
+      height: 10 * interval,
     );
   }
 }

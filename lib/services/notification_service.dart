@@ -62,6 +62,7 @@ class NotificationService {
   Future<void> showNotification() async {
     SettingsDataService settingsDataService = SettingsDataService(realm);
     final settings = await settingsDataService.fetchSettings();
+    settings!;
     final isTemperatureEnabled = settings.isTemperatureEnabled;
     final isFeelsLikeEnabled = settings.isFeelsLikeEnabled;
     final isSkyConditionEnabled = settings.isSkyConditionEnabled;
