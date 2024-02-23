@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'custom_animation_content.dart';
 import 'custom_background.dart';
 
-class CustomDayCloud extends StatefulWidget {
-  const CustomDayCloud({super.key});
+class CustomNightCloud extends StatefulWidget {
+  const CustomNightCloud({super.key});
 
   @override
-  State<CustomDayCloud> createState() => _CustomDayCloudState();
+  State<CustomNightCloud> createState() => _CustomNightCloudState();
 }
 
-class _CustomDayCloudState extends State<CustomDayCloud>
+class _CustomNightCloudState extends State<CustomNightCloud>
     with TickerProviderStateMixin {
   // Controller
   late AnimationController _leftToRightSlowController;
@@ -34,32 +34,32 @@ class _CustomDayCloudState extends State<CustomDayCloud>
   void _initializeAnimation() {
     // Move left to right slow
     _leftToRightSlowController =
-        AnimationController(vsync: this, duration: Duration(minutes: 2))
-          ..repeat();
+    AnimationController(vsync: this, duration: Duration(minutes: 2))
+      ..repeat();
 
     _leftToRightSlowAnimation =
         Tween<double>(begin: 0, end: 2).animate(_leftToRightSlowController);
 
     // Move right to left slow
     _rightToLeftSlowController =
-        AnimationController(vsync: this, duration: Duration(minutes: 2))
-          ..repeat();
+    AnimationController(vsync: this, duration: Duration(minutes: 2))
+      ..repeat();
 
     _rightToLeftSlowAnimation =
         Tween<double>(begin: 2, end: 0).animate(_rightToLeftSlowController);
 
     // Move left to right fast
     _leftToRightFastController =
-        AnimationController(vsync: this, duration: Duration(seconds: 50))
-          ..repeat();
+    AnimationController(vsync: this, duration: Duration(seconds: 50))
+      ..repeat();
 
     _leftToRightFastAnimation =
         Tween<double>(begin: 0, end: 2).animate(_leftToRightFastController);
 
     // Move right to left fast
     _rightToLeftFastController =
-        AnimationController(vsync: this, duration: Duration(seconds: 35))
-          ..repeat();
+    AnimationController(vsync: this, duration: Duration(seconds: 35))
+      ..repeat();
 
     _rightToLeftFastAnimation =
         Tween<double>(begin: 2, end: 0).animate(_rightToLeftFastController);
@@ -97,21 +97,21 @@ class _CustomDayCloudState extends State<CustomDayCloud>
       bottom: MediaQuery.of(context).size.height.toInt() * 0.125,
       left: 0,
       right: 0,
-      child: Center(child: dayCloudBackground()),
+      child: Center(child: nightCloudBackground()),
     );
   }
 
   Widget _buildFrontElements(BuildContext context) {
     return Stack(children: [
       CustomAnimationContent()
-          .dayCloudAnimationFrontContent(context, _moveAnimations),
+          .nightCloudAnimationFrontContent(context, _moveAnimations),
     ]);
   }
 
   Widget _buildBackElements(BuildContext context) {
     return Stack(children: [
       CustomAnimationContent()
-          .dayCloudAnimationBackContent(context, _moveAnimations),
+          .nightCloudAnimationBackContent(context, _moveAnimations),
     ]);
   }
 }

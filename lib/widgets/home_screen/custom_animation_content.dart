@@ -100,4 +100,30 @@ class CustomAnimationContent {
       ],
     );
   }
+
+  Widget nightCloudAnimationFrontContent(
+      BuildContext context, List<Animation<double>> animation) {
+    final height = (MediaQuery.of(context).size.height);
+    return Stack(
+      children: [
+        moveAnimation(
+            'assets/images/elements/day_cloud1.png', animation[3], 0.4),
+        moveAnimation(
+            'assets/images/elements/day_cloud4.png', animation[2], 0.4),
+      ],
+    );
+  }
+
+  Widget nightCloudAnimationBackContent(
+      BuildContext context, List<Animation<double>> animation) {
+    final height = (MediaQuery.of(context).size.height);
+    return Stack(
+      children: [
+        moveAnimation(
+            'assets/images/elements/day_cloud2.png', animation[0], 0.4),
+        moveAnimation(
+            'assets/images/elements/day_cloud3.png', animation[1], 0.6),
+      ],
+    );
+  }
 }

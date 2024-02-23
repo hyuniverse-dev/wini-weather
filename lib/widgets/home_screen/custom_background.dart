@@ -26,3 +26,12 @@ Widget dayCloudBackground(){
     ),
   );
 }
+
+Widget nightCloudBackground(){
+  return Center(
+    child: Image.asset(
+      'assets/images/backgrounds/night_cloud_background.png',
+      fit: BoxFit.cover,
+    ),
+  );
+}

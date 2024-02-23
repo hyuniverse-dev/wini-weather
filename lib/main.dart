@@ -8,8 +8,8 @@ import 'package:flutter_background_service_android/flutter_background_service_an
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:morning_weather/models/location_model.dart';
 import 'package:morning_weather/models/settings.dart';
+import 'package:morning_weather/screens/home_screen_deprecated.dart';
 import 'package:morning_weather/screens/home_screen.dart';
-import 'package:morning_weather/screens/home_screen_v2.dart';
 import 'package:morning_weather/screens/settings_screen.dart';
 import 'package:morning_weather/services/notification_service.dart';
 import 'package:morning_weather/services/shared_preferences_service.dart';
