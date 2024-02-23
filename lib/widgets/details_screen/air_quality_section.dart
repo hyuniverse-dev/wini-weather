@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:frino_icons/frino_icons.dart';
 import 'package:morning_weather/models/forecast_weather_response.dart';
 import 'package:morning_weather/services/weather_forecast_api_service.dart';
-import 'package:weather_icons/weather_icons.dart';
 
 class DetailItem {
   final IconData icon;
@@ -113,53 +112,57 @@ class _AirQualitySectionState extends State<AirQualitySection> {
               // Air Quality Data
               var co = weatherData.current.airQuality.co;
               var o3 = weatherData.current.airQuality.o3;
-              var pm10 = weatherData.current.airQuality.pm10;
-              var pm2_5 = weatherData.current.airQuality.pm2_5;
-              IconData pm10Icon, pm2_5Icon, o3Icon;
-              Color pm10Color, pm2_5Color, o3Color;
+              var finedust = weatherData.current.airQuality.pm10;
+              var ultraFinedust = weatherData.current.airQuality.pm2_5;
+              IconData finedustIcon, ultraFinedustIcon, o3Icon;
+              Color finedustColor, ultraFinedustColor, o3Color;
 
               // 미세먼지 분기
-              if (pm10 >= 100.0) { // 나쁨
-                pm10Icon = FrinoIcons.f_3d;
-                pm10Color = Colors.red;
-              } else if (pm10 >= 50) { // 다소 나쁨
-                pm10Icon = FrinoIcons.f_3d;
-                pm10Color = Colors.orange;
-              } else if (pm10 >= 25) { // 보통
-                pm10Icon = FrinoIcons.f_3d;
-                pm10Color = Colors.blue;
-              } else { // 좋음
-                pm10Icon = FrinoIcons.f_3d;
-                pm10Color = Colors.green;
+              if (finedust >= 100.0) {
+                // 나쁨
+                finedustIcon = FrinoIcons.f_3d;
+                finedustColor = Colors.red;
+              } else if (finedust >= 50) {
+                // 다소 나쁨
+                finedustIcon = FrinoIcons.f_3d;
+                finedustColor = Colors.orange;
+              } else if (finedust >= 25) {
+                // 보통
+                finedustIcon = FrinoIcons.f_3d;
+                finedustColor = Colors.blue;
+              } else {
+                // 좋음
+                finedustIcon = FrinoIcons.f_3d;
+                finedustColor = Colors.green;
               }
 
               // 초미세먼지 분기
-              if (pm2_5 >= 56.0) {
-                pm2_5Icon = FrinoIcons.f_3d;
-                pm2_5Color = Colors.red;
-              } else if (pm2_5 >= 25.0) {
-                pm2_5Icon = FrinoIcons.f_3d;
-                pm2_5Color = Colors.orange;
+              if (ultraFinedust >= 56.0) {
+                ultraFinedustIcon = FrinoIcons.f_3d;
+                ultraFinedustColor = Colors.red;
+              } else if (ultraFinedust >= 25.0) {
+                ultraFinedustIcon = FrinoIcons.f_3d;
+                ultraFinedustColor = Colors.orange;
               } else {
-                pm2_5Icon = FrinoIcons.f_3d;
-                pm2_5Color = Colors.green;
+                ultraFinedustIcon = FrinoIcons.f_3d;
+                ultraFinedustColor = Colors.green;
               }
 
               // 오존 농도 분기
-              if(o3 > 90.0) {
+              if (o3 > 90.0) {
                 o3Color = Colors.red;
-              }else if(o3 > 30.0) {
+              } else if (o3 > 30.0) {
                 o3Color = Colors.orange;
-              }else{
+              } else {
                 o3Color = Colors.green;
               }
 
               var leftColumnItems = [
                 DetailItem(
-                  icon: pm10Icon, //WeatherIcons.dust,
-                  color: pm10Color,
+                  icon: finedustIcon, //WeatherIcons.dust,
+                  color: finedustColor,
                   title: 'Fine dust',
-                  value: '${pm10}',
+                  value: '${finedust}',
                 ),
                 DetailItem(
                   icon: FrinoIcons.f_3d,
@@ -171,10 +174,10 @@ class _AirQualitySectionState extends State<AirQualitySection> {
 
               var rightColumnItems = [
                 DetailItem(
-                  icon: pm2_5Icon,
-                  color: pm2_5Color,
+                  icon: ultraFinedustIcon,
+                  color: ultraFinedustColor,
                   title: 'Ultrafine dust',
-                  value: '${pm2_5}',
+                  value: '${ultraFinedust}',
                 ),
                 DetailItem(
                   icon: FrinoIcons.f_3d,

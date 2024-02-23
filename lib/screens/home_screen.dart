@@ -216,63 +216,12 @@ class _HomeScreenV2State extends State<HomeScreenV2>
             weatherData: weatherData,
           ),
           isDay == 1 ? CustomDayCloud() : CustomNightCloud(),
-          _buildDetailWeatherContent(context)
+          buildSubWeatherContent(
+            context: context,
+            weatherData: weatherData,
+          )
         ],
       ),
-    );
-  }
-
-  Widget _buildDetailWeatherContent(BuildContext context) {
-    Color color = isDay == 1 ? Color(0xFFF5EBE8) : Color(0xFF302837);
-    return Positioned(
-      bottom: 0,
-      left: 0,
-      right: 0,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          _buildDetailWeatherContentItem(
-              'assets/images/wini/wind1.png', color, "18km/h"),
-          rowSpace(2.5),
-          _buildDetailWeatherContentItem(
-              'assets/images/wini/humidity2.png', color, "60%"),
-          rowSpace(2.5),
-          _buildDetailWeatherContentItem(
-              'assets/images/wini/rain.png', color, "18%"),
-          rowSpace(2.5),
-          _buildDetailWeatherContentItem(
-              'assets/images/wini/fine_dust1.png', color, "50g/m³"),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDetailWeatherContentItem(
-      String asset, Color color, String value) {
-    return Column(
-      children: [
-        Container(
-          width: 50,
-          height: 50,
-          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              Image.asset(
-                asset,
-                width: 25,
-              ),
-            ],
-          ),
-        ),
-        columnSpace(1),
-        Text(
-          value,
-          style: TextStyle(
-              fontSize: 18.0, color: isDay == 1 ? Colors.black : Colors.white),
-        ),
-      ],
     );
   }
 
