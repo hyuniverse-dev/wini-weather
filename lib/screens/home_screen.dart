@@ -15,10 +15,9 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../models/location.dart';
 import '../services/location_data_service.dart';
-import '../utils/common_utils.dart';
 import '../utils/page_navigation_utils.dart';
 import '../utils/screen_navigation_utils.dart';
-import '../widgets/home_screen/custom_main_weather_content.dart';
+import '../widgets/home_screen/custom_weather_content.dart';
 import 'details_screen.dart';
 
 class HomeScreenV2 extends StatefulWidget {
@@ -197,7 +196,7 @@ class _HomeScreenV2State extends State<HomeScreenV2>
               isDay = forecastWeather.current.isDay;
               return _buildContent(context, forecastWeather, location!);
             } else {
-              return Text('Loading...');
+              return SizedBox.shrink();
             }
           },
         ),

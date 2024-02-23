@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:frino_icons/frino_icons.dart';
 import 'package:morning_weather/models/forecast_weather_response.dart';
 import 'package:morning_weather/services/weather_forecast_api_service.dart';
+import 'package:morning_weather/utils/weahter_utils.dart';
+
+import 'custom_details_item.dart';
 
 class DetailItem {
   final IconData icon;
@@ -109,94 +112,45 @@ class _AirQualitySectionState extends State<AirQualitySection> {
               return Text('Error == ${snapshot.error}');
             } else if (snapshot.hasData) {
               ForecastWeatherResponse weatherData = snapshot.data!;
-              // Air Quality Data
-              var co = weatherData.current.airQuality.co;
-              var o3 = weatherData.current.airQuality.o3;
-              var finedust = weatherData.current.airQuality.pm10;
-              var ultraFinedust = weatherData.current.airQuality.pm2_5;
-              IconData finedustIcon, ultraFinedustIcon, o3Icon;
-              Color finedustColor, ultraFinedustColor, o3Color;
-
-              // 미세먼지 분기
-              if (finedust >= 100.0) {
-                // 나쁨
-                finedustIcon = FrinoIcons.f_3d;
-                finedustColor = Colors.red;
-              } else if (finedust >= 50) {
-                // 다소 나쁨
-                finedustIcon = FrinoIcons.f_3d;
-                finedustColor = Colors.orange;
-              } else if (finedust >= 25) {
-                // 보통
-                finedustIcon = FrinoIcons.f_3d;
-                finedustColor = Colors.blue;
-              } else {
-                // 좋음
-                finedustIcon = FrinoIcons.f_3d;
-                finedustColor = Colors.green;
-              }
-
-              // 초미세먼지 분기
-              if (ultraFinedust >= 56.0) {
-                ultraFinedustIcon = FrinoIcons.f_3d;
-                ultraFinedustColor = Colors.red;
-              } else if (ultraFinedust >= 25.0) {
-                ultraFinedustIcon = FrinoIcons.f_3d;
-                ultraFinedustColor = Colors.orange;
-              } else {
-                ultraFinedustIcon = FrinoIcons.f_3d;
-                ultraFinedustColor = Colors.green;
-              }
-
-              // 오존 농도 분기
-              if (o3 > 90.0) {
-                o3Color = Colors.red;
-              } else if (o3 > 30.0) {
-                o3Color = Colors.orange;
-              } else {
-                o3Color = Colors.green;
-              }
-
-              var leftColumnItems = [
-                DetailItem(
-                  icon: finedustIcon, //WeatherIcons.dust,
-                  color: finedustColor,
-                  title: 'Fine dust',
-                  value: '${finedust}',
-                ),
-                DetailItem(
-                  icon: FrinoIcons.f_3d,
-                  color: Colors.blueGrey,
-                  title: 'CO',
-                  value: '${co}',
-                ),
-              ];
-
-              var rightColumnItems = [
-                DetailItem(
-                  icon: ultraFinedustIcon,
-                  color: ultraFinedustColor,
-                  title: 'Ultrafine dust',
-                  value: '${ultraFinedust}',
-                ),
-                DetailItem(
-                  icon: FrinoIcons.f_3d,
-                  color: o3Color,
-                  title: 'OZone',
-                  value: '${o3}',
-                ),
-              ];
+              var weather = WeatherUtils(weatherData: weatherData);
+              final finedustValue = weather.getFinedustData().value;
+              final finedustAsset = weather.getFinedustData().asset;
+              final ultraFinedustValue = weather.getUltraFinedustData().value;
+              final ultraFinedustAsset = weather.getUltraFinedustData().asset;
+              final coValue = weather.getCOData().value;
+              final coAsset = weather.getCOData().asset;
+              final oThreeValue = weather.getOThreeData().value;
+              final oThreeAsset = weather.getOThreeData().asset;
 
               return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: _buildDetailItems(leftColumnItems),
+                  Expanded(
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomDetailsItem(
+                            asset: '$finedustAsset',
+                            title: 'Feels Like',
+                            value: '$finedustValue',
+                          ),
+                          CustomDetailsItem(
+                              asset: '$coAsset', title: 'CO', value: '$coValue')
+                        ]),
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: _buildDetailItems(rightColumnItems),
+                  Expanded(
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomDetailsItem(
+                              asset: '$ultraFinedustAsset',
+                              title: 'Ultra Fine dust',
+                              value: '$ultraFinedustValue'),
+                          CustomDetailsItem(
+                              asset: '$oThreeAsset',
+                              title: 'OZone',
+                              value: '$oThreeValue')
+                        ]),
                   ),
                 ],
               );

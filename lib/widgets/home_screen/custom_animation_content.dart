@@ -107,9 +107,9 @@ class CustomAnimationContent {
     return Stack(
       children: [
         moveAnimation(
-            'assets/images/elements/day_cloud1.png', animation[3], 0.4),
+            'assets/images/elements/day_cloud1.png', animation[3], 0.7),
         moveAnimation(
-            'assets/images/elements/day_cloud4.png', animation[2], 0.4),
+            'assets/images/elements/day_cloud4.png', animation[2], 0.7),
       ],
     );
   }
