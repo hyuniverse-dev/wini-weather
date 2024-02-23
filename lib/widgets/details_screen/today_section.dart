@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:morning_weather/models/forecast_weather_response.dart';
 import 'package:morning_weather/services/weather_forecast_api_service.dart';
 
-import '../../utils/image_utils.dart';
+import '../../utils/common_utils.dart';
 import '../../utils/math_utils.dart';
 import 'bar_graph_builder.dart';
 
@@ -152,7 +152,7 @@ class TodaySectionItem extends StatelessWidget {
               SizedBox(
                 height: 20,
               ),
-              getAssestImage('images/Member${iconNum}.png', 40, 40),
+              getAssetImage('images/Member${iconNum}.png', 40, 40),
               SizedBox(
                 height: 20,
               ),

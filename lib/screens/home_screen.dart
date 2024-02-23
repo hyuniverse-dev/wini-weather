@@ -8,7 +8,6 @@ import 'package:morning_weather/services/weather_forecast_api_service.dart';
 import 'package:morning_weather/services/location_api_service.dart';
 import 'package:morning_weather/widgets/home_screen/custom_day_cloud.dart';
 import 'package:morning_weather/widgets/home_screen/custom_night_cloud.dart';
-import 'package:morning_weather/widgets/home_screen/custom_night_sunny.dart';
 import 'package:morning_weather/widgets/home_screen/custom_route.dart';
 import 'package:provider/provider.dart';
 import 'package:realm/realm.dart' hide ConnectionState;
@@ -16,8 +15,10 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../models/location.dart';
 import '../services/location_data_service.dart';
+import '../utils/common_utils.dart';
 import '../utils/page_navigation_utils.dart';
 import '../utils/screen_navigation_utils.dart';
+import '../widgets/home_screen/custom_main_weather_content.dart';
 import 'details_screen.dart';
 
 class HomeScreenV2 extends StatefulWidget {
@@ -205,84 +206,18 @@ class _HomeScreenV2State extends State<HomeScreenV2>
   }
 
   Widget _buildContent(BuildContext context,
-      ForecastWeatherResponse forecastWeatherData, Location location) {
-    final forecast = forecastWeatherData.forecast.forecastDay[0].day;
-    final current = forecastWeatherData.current;
-    final location = forecastWeatherData.location;
+      ForecastWeatherResponse weatherData, Location location) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Stack(
         children: [
-          _buildTempWeatherContent(
-              isDay: current.isDay,
-              locationName: location.name,
-              lowValue: isCelsius
-                  ? forecast.minTempC.toInt()
-                  : forecast.minTempF.toInt(),
-              highValue: isCelsius
-                  ? forecast.maxTempC.toInt()
-                  : forecast.maxTempF.toInt(),
-              feelsValue:
-                  isCelsius ? current.feelsC.toInt() : current.feelsF.toInt()),
+          buildMainWeatherContent(
+            isCelsius: isCelsius,
+            weatherData: weatherData,
+          ),
           isDay == 1 ? CustomDayCloud() : CustomNightCloud(),
           _buildDetailWeatherContent(context)
         ],
-      ),
-    );
-  }
-
-  Widget _buildTempWeatherContent(
-      {required int isDay,
-      required String locationName,
-      required int lowValue,
-      required int highValue,
-      required int feelsValue}) {
-    return Positioned(
-      top: 0,
-      bottom: 0,
-      left: 0,
-      right: 0,
-      child: Container(
-        alignment: Alignment.center,
-        child: Column(
-          children: [
-            Text(
-              locationName,
-              style: TextStyle(
-                  fontSize: 32.0,
-                  color: isDay == 1 ? Colors.black : Colors.white,
-                  fontWeight: FontWeight.bold),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.baseline,
-              textBaseline: TextBaseline.alphabetic,
-              children: [
-                Text(
-                  '$lowValue',
-                  style: TextStyle(
-                      fontSize: 20.0,
-                      color: isDay == 1 ? Colors.grey : Colors.white),
-                ),
-                _rowSpace(1.5),
-                Text(
-                  '$feelsValue',
-                  style: TextStyle(
-                      fontSize: 64.0,
-                      fontWeight: FontWeight.bold,
-                      color: isDay == 1 ? Colors.black : Colors.white),
-                ),
-                _rowSpace(1.5),
-                Text(
-                  '$highValue',
-                  style: TextStyle(
-                      fontSize: 20.0,
-                      color: isDay == 1 ? Colors.grey : Colors.white),
-                ),
-              ],
-            )
-          ],
-        ),
       ),
     );
   }
@@ -299,13 +234,13 @@ class _HomeScreenV2State extends State<HomeScreenV2>
         children: [
           _buildDetailWeatherContentItem(
               'assets/images/wini/wind1.png', color, "18km/h"),
-          _rowSpace(2.5),
+          rowSpace(2.5),
           _buildDetailWeatherContentItem(
               'assets/images/wini/humidity2.png', color, "60%"),
-          _rowSpace(2.5),
+          rowSpace(2.5),
           _buildDetailWeatherContentItem(
               'assets/images/wini/rain.png', color, "18%"),
-          _rowSpace(2.5),
+          rowSpace(2.5),
           _buildDetailWeatherContentItem(
               'assets/images/wini/fine_dust1.png', color, "50g/m³"),
         ],
@@ -331,7 +266,7 @@ class _HomeScreenV2State extends State<HomeScreenV2>
             ],
           ),
         ),
-        _columnSpace(1),
+        columnSpace(1),
         Text(
           value,
           style: TextStyle(
@@ -471,17 +406,5 @@ class _HomeScreenV2State extends State<HomeScreenV2>
             ),
           )
         : SizedBox.shrink();
-  }
-
-  Widget _rowSpace(double interval) {
-    return SizedBox(
-      width: 10 * interval,
-    );
-  }
-
-  Widget _columnSpace(double interval) {
-    return SizedBox(
-      height: 10 * interval,
-    );
   }
 }
