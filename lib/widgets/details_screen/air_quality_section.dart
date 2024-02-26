@@ -4,6 +4,7 @@ import 'package:morning_weather/models/forecast_weather_response.dart';
 import 'package:morning_weather/services/weather_forecast_api_service.dart';
 import 'package:morning_weather/utils/weahter_utils.dart';
 
+import 'custom_airquality_item.dart';
 import 'custom_details_item.dart';
 
 class DetailItem {
@@ -129,12 +130,12 @@ class _AirQualitySectionState extends State<AirQualitySection> {
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          CustomDetailsItem(
+                          CustomAirQualityItem(
                             asset: '$finedustAsset',
-                            title: 'Feels Like',
+                            title: 'Fine dust',
                             value: '$finedustValue',
                           ),
-                          CustomDetailsItem(
+                          CustomAirQualityItem(
                               asset: '$coAsset', title: 'CO', value: '$coValue')
                         ]),
                   ),
@@ -142,11 +143,11 @@ class _AirQualitySectionState extends State<AirQualitySection> {
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          CustomDetailsItem(
+                          CustomAirQualityItem(
                               asset: '$ultraFinedustAsset',
-                              title: 'Ultra Fine dust',
+                              title: 'Ultra Fine\n     Dust',
                               value: '$ultraFinedustValue'),
-                          CustomDetailsItem(
+                          CustomAirQualityItem(
                               asset: '$oThreeAsset',
                               title: 'OZone',
                               value: '$oThreeValue')
@@ -161,20 +162,5 @@ class _AirQualitySectionState extends State<AirQualitySection> {
         ),
       ],
     );
-  }
-
-  List<Widget> _buildDetailItems(List<DetailItem> items) {
-    return items
-        .map((item) => Padding(
-              padding: const EdgeInsets.only(
-                  bottom: AirQualitySection.columnSpacing),
-              child: AirQualitySectionItem(
-                icon: item.icon,
-                color: item.color,
-                title: item.title,
-                value: item.value,
-              ),
-            ))
-        .toList();
   }
 }

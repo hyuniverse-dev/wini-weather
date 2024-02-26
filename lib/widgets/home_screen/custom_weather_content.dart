@@ -122,19 +122,20 @@ Widget _buildSubWeatherContentItem(
   Color color = isDay == 1 ? Color(0xFFF5EBE8) : Color(0xFF302837);
   return Column(
     children: [
-      Container(
-        width: 50,
-        height: 50,
-        decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            Image.asset(
-              asset,
-              width: 40,
-            ),
-          ],
-        ),
+      Stack(
+        alignment: Alignment.center,
+        children: [
+          Container(
+            width: 50,
+            height: 50,
+            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+          ),
+          Image.asset(
+            asset,
+            height: 36,
+            width: 36,
+          ),
+        ],
       ),
       columnSpace(1),
       Text(

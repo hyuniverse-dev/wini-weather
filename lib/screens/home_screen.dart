@@ -7,7 +7,9 @@ import 'package:morning_weather/services/settings_data_service.dart';
 import 'package:morning_weather/services/weather_forecast_api_service.dart';
 import 'package:morning_weather/services/location_api_service.dart';
 import 'package:morning_weather/widgets/home_screen/custom_day_cloud.dart';
+import 'package:morning_weather/widgets/home_screen/custom_day_sunny.dart';
 import 'package:morning_weather/widgets/home_screen/custom_night_cloud.dart';
+import 'package:morning_weather/widgets/home_screen/custom_night_sunny.dart';
 import 'package:morning_weather/widgets/home_screen/custom_route.dart';
 import 'package:provider/provider.dart';
 import 'package:realm/realm.dart' hide ConnectionState;
@@ -214,7 +216,7 @@ class _HomeScreenV2State extends State<HomeScreenV2>
             isCelsius: isCelsius,
             weatherData: weatherData,
           ),
-          isDay == 1 ? CustomDayCloud() : CustomNightCloud(),
+          isDay == 1 ? CustomDaySunny() : CustomNightSunny(),
           buildSubWeatherContent(
             context: context,
             weatherData: weatherData,
