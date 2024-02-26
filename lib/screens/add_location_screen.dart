@@ -136,7 +136,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                                                     .localtimeEpoch *
                                                 1000,
                                             isUtc: true);
-                                    var weekday = getCurrentWeekday(date);
+                                    var weekday = getWeekdays(date);
                                     return CityWeatherTile(
                                       index: index,
                                       city: location.name,

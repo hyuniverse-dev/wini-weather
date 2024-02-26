@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:morning_weather/models/forecast_weather_response.dart';
 import 'package:morning_weather/services/weather_forecast_api_service.dart';
+import 'package:morning_weather/utils/weather_utils.dart';
 
 import '../../utils/common_utils.dart';
 import '../../utils/math_utils.dart';
@@ -64,18 +65,25 @@ class _TodaySectionState extends State<TodaySection> {
                 } else if (snapshot.hasError) {
                   return Text('Error == ${snapshot.hasError}');
                 } else if (snapshot.hasData) {
+                  ForecastWeatherResponse weatherData = snapshot.data!;
+                  final forecast = weatherData.forecast.forecastDay;
+                  var weather = WeatherUtils(weatherData: weatherData);
+                  List<String> skyConditions = weather.getDailySkyCondition();
                   List<double> tempsC = [];
                   List<double> tempsF = [];
-                  ForecastWeatherResponse weatherData = snapshot.data!;
-                  for (var forecastDays in weatherData.forecast.forecastDay) {
-                    for (int i = 0; i < forecastDays.hour.length; i += 3) {
-                      var hour = forecastDays.hour[i];
+                  print('>>>>> skyConditions.length [${skyConditions.length}]');
+
+                  for (var days in forecast) {
+                    for (int i = 0; i < days.hour.length; i += interval) {
+                      var hour = days.hour[i];
                       tempsC.add(hour.tempC);
                       tempsF.add(hour.tempF);
                     }
                   }
+
                   final List<double> tempsRatios =
                       calculateRatios(tempsC, widget.base);
+
                   return SingleChildScrollView(
                     controller: _scrollController,
                     scrollDirection: Axis.horizontal,
@@ -87,7 +95,7 @@ class _TodaySectionState extends State<TodaySection> {
                           return TodaySectionItem(
                             temp: tempsC[i],
                             graphValues: tempsRatios[i],
-                            iconNum: (i < 10) ? i + 1 : (i % 10) + 1,
+                            asset: skyConditions[i],
                             time: time,
                           );
                         },
@@ -109,14 +117,14 @@ class _TodaySectionState extends State<TodaySection> {
 class TodaySectionItem extends StatelessWidget {
   final double temp;
   final double graphValues;
-  final int iconNum;
+  final String asset;
   final int time;
 
   const TodaySectionItem({
     super.key,
     required this.temp,
     required this.graphValues,
-    required this.iconNum,
+    required this.asset,
     required this.time,
   });
 
@@ -130,32 +138,20 @@ class TodaySectionItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Spacer(),
-              Text(temp.toStringAsFixed(1)),
-              SizedBox(
-                height: 20,
+              Text(
+                temp.toStringAsFixed(1),
+                style: TextStyle(
+                  color: Color(0xFF6D6D6D),
+                  fontWeight: FontWeight.bold,
+                ),
               ),
+              columnSpace(2.0),
               BarGraphBuilder(
                 values: graphValues,
               ),
-              // TweenAnimationBuilder(
-              //   tween: Tween<double>(begin: 0.3, end: 1.0),
-              //   duration: Duration(milliseconds: 1000),
-              //   builder: (context, double scale, child) {
-              //     return Transform.scale(
-              //       scale: scale,
-              //       child: BarGraphBuilder(
-              //         values: graphValues,
-              //       ),
-              //     );
-              //   },
-              // ),
-              SizedBox(
-                height: 20,
-              ),
-              getAssetImage('images/Member${iconNum}.png', 40, 40),
-              SizedBox(
-                height: 20,
-              ),
+              columnSpace(2.0),
+              getAssetImage('images/weather/$asset.png', 36, 36),
+              columnSpace(2.0),
               _formatTime(time),
             ],
           ),
@@ -170,7 +166,11 @@ class TodaySectionItem extends StatelessWidget {
   Widget _formatTime(int time) {
     final int formattedTime = time % 12 == 0 ? 12 : time % 12;
     final String period = time < 12 || time == 24 ? 'AM' : 'PM';
-    print('$period ${formattedTime.toString().padLeft(2, '0')}');
-    return Text('$period ${formattedTime.toString().padLeft(2, '0')}');
+    final formatted = '$period ${formattedTime.toString().padLeft(2, '0')}';
+    return Text(formatted,
+        style: TextStyle(
+          color: Color(0xFF6D6D6D),
+          fontWeight: FontWeight.bold,
+        ));
   }
 }

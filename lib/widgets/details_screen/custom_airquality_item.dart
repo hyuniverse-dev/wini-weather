@@ -5,12 +5,14 @@ Widget CustomAirQualityItem({
   required String title,
   required String value,
 }) {
+  Color color = Colors.blueGrey;
+
   return Container(
     padding: EdgeInsets.all(18.0),
     margin: EdgeInsets.all(8.0),
     alignment: Alignment.center,
     decoration: BoxDecoration(
-      color: Colors.white,
+      color: Color(0xFFFFF9F6),
       border: Border.all(
         color: Color(0xFFF7EEEC),
         width: 1.0,
@@ -26,10 +28,10 @@ Widget CustomAirQualityItem({
           alignment: Alignment.center,
           children: [
             Container(
-              width: 50,
-              height: 50,
+              width: 36,
+              height: 36,
               decoration: BoxDecoration(
-                color: Colors.grey.withOpacity(0.5),
+                color: color.withOpacity(0.1),
                 shape: BoxShape.circle,
               ),
             ),
@@ -43,7 +45,8 @@ Widget CustomAirQualityItem({
         Spacer(),
         Container(
           decoration: BoxDecoration(
-              color: Colors.white, borderRadius: BorderRadius.circular(8.0)),
+            borderRadius: BorderRadius.circular(8.0),
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.end,

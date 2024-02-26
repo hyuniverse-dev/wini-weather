@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:morning_weather/utils/weahter_utils.dart';
+import 'package:morning_weather/utils/weather_utils.dart';
 
 import '../../models/forecast_weather_response.dart';
 import '../../utils/common_utils.dart';
@@ -74,13 +74,15 @@ Widget buildSubWeatherContent({
   final isDay = current.isDay;
   final windSpeedValue = weather.getWindSpeedData().value;
   final windSpeedAsset = weather.getWindSpeedData().asset;
+  final windSpeedText = weather.getWindSpeedData().text;
   final humidityValue = weather.getHumidityData().value;
   final humidityAsset = weather.getHumidityData().asset;
+  final humidityText = weather.getHumidityData().text;
   final rainSnowChanceValue = weather.getRainSnowChanceData().value;
   final rainSnowChanceAsset = weather.getRainSnowChanceData().asset;
   final finedustValue = weather.getFinedustData().value;
   final finedustAsset = weather.getFinedustData().asset;
-
+  final finedustText = weather.getFinedustData().text;
   return Positioned(
     bottom: 0,
     left: 0,
@@ -91,13 +93,13 @@ Widget buildSubWeatherContent({
       children: [
         _buildSubWeatherContentItem(
           asset: windSpeedAsset,
-          value: windSpeedValue,
+          value: windSpeedText!,
           isDay: isDay,
         ),
         rowSpace(2.5),
         _buildSubWeatherContentItem(
           asset: humidityAsset,
-          value: humidityValue,
+          value: humidityText!,
           isDay: isDay,
         ),
         rowSpace(2.5),
@@ -109,7 +111,7 @@ Widget buildSubWeatherContent({
         rowSpace(2.5),
         _buildSubWeatherContentItem(
           asset: finedustAsset,
-          value: finedustValue,
+          value: finedustText!,
           isDay: isDay,
         ),
       ],

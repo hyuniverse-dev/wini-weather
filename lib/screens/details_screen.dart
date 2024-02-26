@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:morning_weather/models/forecast_weather_response.dart';
 import 'package:morning_weather/services/weather_forecast_api_service.dart';
+import 'package:morning_weather/utils/common_utils.dart';
 import 'package:morning_weather/widgets/details_screen/air_quality_section.dart';
 import 'package:morning_weather/widgets/details_screen/details_section.dart';
 import 'package:morning_weather/widgets/details_screen/forecast_section.dart';
 import 'package:morning_weather/widgets/details_screen/today_section.dart';
-import 'package:weather_icons/weather_icons.dart';
 
 import '../utils/date_utils.dart';
 
 class DetailsScreen extends StatefulWidget {
-  final String coodinate;
+  final String coordinate;
 
-  const DetailsScreen({super.key, required this.coodinate});
+  const DetailsScreen({super.key, required this.coordinate});
 
   @override
   State<DetailsScreen> createState() => _DetailsScreenState();
@@ -32,7 +32,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
   @override
   void initState() {
     super.initState();
-    fetchForecastWeatherData(widget.coodinate, day).then((data) {
+    fetchForecastWeatherData(widget.coordinate, day).then((data) {
       setState(() {
         hourlyWeatherData = data;
         isLoading = false;
@@ -43,11 +43,12 @@ class _DetailsScreenState extends State<DetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFFFF9F6),
       body: SafeArea(
         child: NotificationListener(
           onNotification: _handleScrollNotification,
           child: FutureBuilder<ForecastWeatherResponse>(
-            future: fetchForecastWeatherData(widget.coodinate, day),
+            future: fetchForecastWeatherData(widget.coordinate, day),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return SizedBox();
@@ -55,7 +56,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 return Text('Error == ${snapshot.error}');
               } else if (snapshot.hasData) {
                 return DetailsScreenContent(
-                  location: widget.coodinate,
+                  location: widget.coordinate,
                   base: base,
                 );
               } else {
@@ -105,34 +106,21 @@ class DetailsScreenContent extends StatelessWidget {
               dayCount: 1,
               base: base,
             ),
-            SizedBox(
-              height: 50.0,
-            ),
+            columnSpace(3.0),
             ForecastSection(
-              weatherIcons: [
-                WeatherIcons.cloud,
-                WeatherIcons.day_sunny,
-                WeatherIcons.sunrise,
-                WeatherIcons.day_cloudy_gusts,
-                WeatherIcons.day_fog,
-                WeatherIcons.cloudy_windy,
-                WeatherIcons.day_haze
-              ],
-              days: getCurrentWeekday(DateTime.now()),
+              // Todo : 저장한 지역의 날짜를 기준으로 날씨 출력하도록 변경 필요
+              days: getWeekdays(DateTime.now()),
+              date: getWeekdates(DateTime.now()),
               location: location,
               base: (base - 10.0),
               dayCount: 7,
             ),
-            SizedBox(
-              height: 50,
-            ),
+            columnSpace(3.0),
             DetailsSection(
               location: location,
               dayCount: 1,
             ),
-            SizedBox(
-              height: 50,
-            ),
+            columnSpace(3.0),
             AirQualitySection(
               location: location,
               dayCount: 1,

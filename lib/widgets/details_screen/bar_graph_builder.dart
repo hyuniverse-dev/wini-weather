@@ -68,7 +68,7 @@ class _AnimatedBarState extends State<AnimatedBar>
         width: 10,
         height: widget.value,
         decoration: BoxDecoration(
-          color: Colors.blueAccent,
+          color: Color(0xFFA49696),
           borderRadius: BorderRadius.circular(4),
         ),
       ),

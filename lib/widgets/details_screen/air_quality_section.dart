@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frino_icons/frino_icons.dart';
 import 'package:morning_weather/models/forecast_weather_response.dart';
 import 'package:morning_weather/services/weather_forecast_api_service.dart';
-import 'package:morning_weather/utils/weahter_utils.dart';
+import 'package:morning_weather/utils/weather_utils.dart';
 
 import 'custom_airquality_item.dart';
 import 'custom_details_item.dart';
@@ -116,8 +116,8 @@ class _AirQualitySectionState extends State<AirQualitySection> {
               var weather = WeatherUtils(weatherData: weatherData);
               final finedustValue = weather.getFinedustData().value;
               final finedustAsset = weather.getFinedustData().asset;
-              final ultraFinedustValue = weather.getUltraFinedustData().value;
-              final ultraFinedustAsset = weather.getUltraFinedustData().asset;
+              final ultrafineDustValue = weather.getUltraFinedustData().value;
+              final ultrafineDustAsset = weather.getUltraFinedustData().asset;
               final coValue = weather.getCOData().value;
               final coAsset = weather.getCOData().asset;
               final oThreeValue = weather.getOThreeData().value;
@@ -144,9 +144,9 @@ class _AirQualitySectionState extends State<AirQualitySection> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           CustomAirQualityItem(
-                              asset: '$ultraFinedustAsset',
-                              title: 'Ultra Fine\n     Dust',
-                              value: '$ultraFinedustValue'),
+                              asset: '$ultrafineDustAsset',
+                              title: '     Ultra Dust',
+                              value: '$ultrafineDustValue'),
                           CustomAirQualityItem(
                               asset: '$oThreeAsset',
                               title: 'OZone',

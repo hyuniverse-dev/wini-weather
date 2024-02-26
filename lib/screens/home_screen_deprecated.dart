@@ -225,7 +225,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   void _handleVerticalSwipe(DragUpdateDetails details, BuildContext context) {
     if (details.delta.dy < -sensitivity) {
       Navigator.of(context).push(
-        createSwipeRoute(DetailsScreen(coodinate: coordinate), 'up'),
+        createSwipeRoute(DetailsScreen(coordinate: coordinate), 'up'),
       );
     }
   }

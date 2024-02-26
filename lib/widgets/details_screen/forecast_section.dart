@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:morning_weather/models/forecast_weather_response.dart';
 import 'package:morning_weather/services/weather_forecast_api_service.dart';
+import 'package:morning_weather/utils/common_utils.dart';
+import 'package:morning_weather/utils/weather_utils.dart';
 import 'package:morning_weather/widgets/details_screen/bar_graph_builder.dart';
 
 import '../../utils/math_utils.dart';
 
 class ForecastSection extends StatefulWidget {
-  final List<IconData> weatherIcons;
+  // final List<IconData> weatherIcons;
   final List<String> days;
+  final List<String> date;
   final String location;
   final double base;
   final int dayCount;
 
   const ForecastSection({
     super.key,
-    required this.weatherIcons,
+    // required this.weatherIcons,
     required this.days,
+    required this.date,
     required this.location,
     required this.base,
     required this.dayCount,
@@ -64,10 +68,14 @@ class _ForecastSectionState extends State<ForecastSection> {
                 } else if (snapshot.hasError) {
                   return Text('Error == ${snapshot.error}');
                 } else if (snapshot.hasData) {
+                  ForecastWeatherResponse weatherData = snapshot.data!;
+
+                  var weather = WeatherUtils(weatherData: weatherData);
+                  List<String> skyConditions = weather.getWeeklySkyCondition();
                   List<double> hTemps = [];
                   List<double> lTemps = [];
                   List<double> tempsDiffer = [];
-                  ForecastWeatherResponse weatherData = snapshot.data!;
+
                   for (var forecastDays in weatherData.forecast.forecastDay) {
                     double maxTemp = forecastDays.day.maxTempC;
                     double minTemp = forecastDays.day.minTempC;
@@ -75,6 +83,8 @@ class _ForecastSectionState extends State<ForecastSection> {
                     lTemps.add(minTemp);
                     tempsDiffer.add((maxTemp - minTemp).abs());
                   }
+                  print('>>> skyConditions.length [${skyConditions.length}]');
+                  print('>>> skyConditions [${skyConditions[2]}]');
                   final List<double> tempsDifferRatios =
                       calculateRatios(tempsDiffer, widget.base);
                   return SingleChildScrollView(
@@ -83,11 +93,13 @@ class _ForecastSectionState extends State<ForecastSection> {
                       children: [
                         for (int i = 0; i < tempsDiffer.length; i++) ...[
                           ForecastSectionItem(
-                              icon: widget.weatherIcons[i],
-                              highTemp: hTemps[i],
-                              lowTemp: lTemps[i],
-                              graphValues: tempsDifferRatios[i],
-                              day: widget.days[i]),
+                            asset: skyConditions[i],
+                            highTemp: hTemps[i],
+                            lowTemp: lTemps[i],
+                            graphValues: tempsDifferRatios[i],
+                            day: widget.days[i],
+                            date: widget.date[i],
+                          ),
                           SizedBox(
                             width: 25,
                           )
@@ -108,19 +120,21 @@ class _ForecastSectionState extends State<ForecastSection> {
 }
 
 class ForecastSectionItem extends StatelessWidget {
-  final IconData icon;
+  final String asset;
   final double highTemp;
   final double lowTemp;
   final double graphValues;
   final String day;
+  final String date;
 
   const ForecastSectionItem({
     super.key,
-    required this.icon,
+    required this.asset,
     required this.highTemp,
     required this.lowTemp,
     required this.graphValues,
     required this.day,
+    required this.date,
   });
 
   @override
@@ -131,30 +145,34 @@ class ForecastSectionItem extends StatelessWidget {
           height: 250,
           child: Column(
             children: [
-              Icon(icon),
+              Text(
+                day,
+                style: const TextStyle(
+                  color: Color(0xFF6D6D6D),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              rowSpace(1.0),
+              Text(
+                date,
+                style: const TextStyle(
+                  color: Color(0xFF6D6D6D),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              columnSpace(1.0),
+              Image.asset('assets/images/weather/$asset.png',
+              width: 36.0,
+              height: 36.0,),
               Spacer(),
-              SizedBox(
-                height: 20,
-              ),
               Text(highTemp.toStringAsFixed(0)),
-              SizedBox(
-                height: 5,
-              ),
+              columnSpace(1.0),
               BarGraphBuilder(values: graphValues),
-              SizedBox(
-                height: 5,
-              ),
+              columnSpace(1.0),
               Text(lowTemp.toStringAsFixed(0)),
               SizedBox(
                 height: 20,
               ),
-              Spacer(),
-              Text(
-                day,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
-              )
             ],
           ),
         ),

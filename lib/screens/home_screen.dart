@@ -6,9 +6,7 @@ import 'package:morning_weather/screens/settings_screen.dart';
 import 'package:morning_weather/services/settings_data_service.dart';
 import 'package:morning_weather/services/weather_forecast_api_service.dart';
 import 'package:morning_weather/services/location_api_service.dart';
-import 'package:morning_weather/widgets/home_screen/custom_day_cloud.dart';
 import 'package:morning_weather/widgets/home_screen/custom_day_sunny.dart';
-import 'package:morning_weather/widgets/home_screen/custom_night_cloud.dart';
 import 'package:morning_weather/widgets/home_screen/custom_night_sunny.dart';
 import 'package:morning_weather/widgets/home_screen/custom_route.dart';
 import 'package:provider/provider.dart';
@@ -111,7 +109,7 @@ class _HomeScreenV2State extends State<HomeScreenV2>
         }
 
         Color backgroundColor =
-            isDay == 1 ? Color(0xFFFFFFFF) : Color(0xFF231823);
+            isDay == 1 ? Color(0xFFFFF9F6) : Color(0xFF231823);
 
         return Scaffold(
           appBar: _buildAppBar(context),
@@ -288,7 +286,7 @@ class _HomeScreenV2State extends State<HomeScreenV2>
   void _handleVerticalSwipe(DragUpdateDetails details, BuildContext context) {
     if (details.delta.dy < -sensitivity) {
       Navigator.of(context).push(
-        createSwipeRoute(DetailsScreen(coodinate: coordinate), 'up'),
+        createSwipeRoute(DetailsScreen(coordinate: coordinate), 'up'),
       );
     }
   }

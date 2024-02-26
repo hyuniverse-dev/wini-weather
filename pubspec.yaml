@@ -82,6 +82,7 @@ flutter:
     - assets/images/backgrounds/
     - assets/images/elements/
     - assets/images/wini/
+    - assets/images/weather/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
