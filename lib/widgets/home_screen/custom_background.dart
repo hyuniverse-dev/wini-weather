@@ -35,3 +35,12 @@ Widget nightCloudBackground(){
     ),
   );
 }
+
+Widget dayMistBackground(){
+  return Center(
+    child: Image.asset(
+      'assets/images/backgrounds/day_mist_background.png',
+      fit: BoxFit.cover,
+    ),
+  );
+}

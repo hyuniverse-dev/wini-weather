@@ -71,8 +71,33 @@ Widget fadeAnimation(String asset, Animation<double> animation,
   );
 }
 
-Widget moveAnimation(
-    String asset, Animation<double> animation, double opacity) {
+Widget movePartScreenAnimation(
+  String asset,
+  Animation<double> animation,
+  double opacity,
+) {
+  return AnimatedBuilder(
+      animation: animation,
+      builder: (context, child) {
+        final screenHeight = MediaQuery.of(context).size.height;
+        final screenWidth = MediaQuery.of(context).size.width;
+        final movement = (animation.value * screenWidth) - (screenWidth);
+        return Positioned(
+          left: movement,
+          height: screenHeight * 0.35,
+          child: Opacity(
+            opacity: opacity,
+            child: Image.asset(asset),
+          ),
+        );
+      });
+}
+
+Widget moveFullScreenAnimation(
+    String asset,
+    Animation<double> animation,
+    double opacity,
+    ) {
   return AnimatedBuilder(
       animation: animation,
       builder: (context, child) {
@@ -80,11 +105,36 @@ Widget moveAnimation(
         final movement = (animation.value * screenWidth) - (screenWidth);
         return Positioned(
           left: movement,
-          height: MediaQuery.of(context).size.height * 0.35,
+          top: 0,
+          bottom: 40,
           child: Opacity(
             opacity: opacity,
             child: Image.asset(asset),
           ),
         );
       });
+}
+
+Widget moveWithOpacityAnimation(String asset, Animation<double> animation) {
+  var opacity;
+  opacity = Tween<double>(begin: 0.2, end: 0.8).animate(
+    CurvedAnimation(
+        parent: animation, curve: Interval(0.0, 0.5, curve: Curves.easeIn)),
+  );
+  return AnimatedBuilder(
+    animation: animation,
+    builder: (context, child) {
+      final screenWidth = MediaQuery.of(context).size.width;
+      final movement = (animation.value * screenWidth) - (screenWidth);
+      return Positioned(
+        left: movement,
+        top: 10,
+        bottom: 40,
+        child: Opacity(
+          opacity: opacity.value,
+          child: Image.asset(asset),
+        ),
+      );
+    },
+  );
 }
