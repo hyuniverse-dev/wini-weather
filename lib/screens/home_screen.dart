@@ -10,8 +10,10 @@ import 'package:morning_weather/widgets/home_screen/custom_day_cloud.dart';
 import 'package:morning_weather/widgets/home_screen/custom_day_mist.dart';
 import 'package:morning_weather/widgets/home_screen/custom_day_sunny.dart';
 import 'package:morning_weather/widgets/home_screen/custom_night_cloud.dart';
+import 'package:morning_weather/widgets/home_screen/custom_night_mist.dart';
 import 'package:morning_weather/widgets/home_screen/custom_night_sunny.dart';
 import 'package:morning_weather/widgets/home_screen/custom_route.dart';
+import 'package:morning_weather/widgets/home_screen/custom_weather_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:realm/realm.dart' hide ConnectionState;
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -47,6 +49,7 @@ class _HomeScreenV2State extends State<HomeScreenV2>
   var longitude = '0.0';
   var currentIndex = 0;
   var pageLength = 0;
+  var weatherCondition = "";
   var isLastPage = false;
   var hasSettingsInit = true;
 
@@ -217,7 +220,7 @@ class _HomeScreenV2State extends State<HomeScreenV2>
             isCelsius: isCelsius,
             weatherData: weatherData,
           ),
-          isDay == 1 ? CustomDayMist() : CustomNightCloud(),
+          buildBackgroundContent(weatherData: weatherData),
           buildSubWeatherContent(
             context: context,
             weatherData: weatherData,
@@ -225,6 +228,16 @@ class _HomeScreenV2State extends State<HomeScreenV2>
         ],
       ),
     );
+  }
+
+  Widget buildBackgroundContent({
+    required ForecastWeatherResponse weatherData,
+  }) {
+    final code = weatherData.current.condition.code;
+    print(code);
+    var customWeatherScreen =
+        CustomWeatherScreen(isDay).getCustomWeatherScreen(code: code);
+    return customWeatherScreen;
   }
 
   void _loadForecastWeatherData() async {
@@ -308,12 +321,7 @@ class _HomeScreenV2State extends State<HomeScreenV2>
     final bool isSwipeRight = details.delta.dx > sensitivity;
     final bool isSwipeLeft = details.delta.dx < -sensitivity;
     if ((isSwipeRight || isSwipeLeft) && !isDragging && !isLoading) {
-      // Todo Navigate To AddScreen
-      print('>>> currentIndex: $currentIndex');
-      print('>>> pageLength: $pageLength');
-
       if (currentIndex == pageLength - 1 && isSwipeLeft) {
-        print('Navigate To AddScreen');
         navigateToNewScreen(context, true, (value) {
           if (value) {
             final newConfig = Configuration.local([Location.schema]);

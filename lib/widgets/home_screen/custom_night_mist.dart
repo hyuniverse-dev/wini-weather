@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'custom_animation_content.dart';
 import 'custom_background.dart';
 
-class CustomDayMist extends StatefulWidget {
-  const CustomDayMist({super.key});
+class CustomNightMist extends StatefulWidget {
+  const CustomNightMist({super.key});
 
   @override
-  State<CustomDayMist> createState() => _CustomDayMistState();
+  State<CustomNightMist> createState() => _CustomNightMistState();
 }
 
-class _CustomDayMistState extends State<CustomDayMist>
+class _CustomNightMistState extends State<CustomNightMist>
     with TickerProviderStateMixin {
   // Controller
   late AnimationController _leftToRightSlowController;
@@ -87,7 +87,7 @@ class _CustomDayMistState extends State<CustomDayMist>
       right: 0,
       child: Center(
         child: getBackgroundImage(
-          status: 'day_mist',
+          status: "night_mist",
         ),
       ),
     );

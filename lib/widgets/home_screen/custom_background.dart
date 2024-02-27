@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 Widget daySunnyBackground() {
   return Center(
     child: Image.asset(
-      'assets/images/backgrounds/day_sunny_content.png',
+      'assets/images/backgrounds/day_sunny_background.png',
       fit: BoxFit.cover,
     ),
   );
@@ -12,13 +12,13 @@ Widget daySunnyBackground() {
 Widget nightSunnyBackground() {
   return Center(
     child: Image.asset(
-      'assets/images/backgrounds/night_sunny_content.png',
+      'assets/images/backgrounds/night_sunny_background.png',
       fit: BoxFit.cover,
     ),
   );
 }
 
-Widget dayCloudBackground(){
+Widget dayCloudBackground() {
   return Center(
     child: Image.asset(
       'assets/images/backgrounds/day_cloud_background.png',
@@ -27,7 +27,7 @@ Widget dayCloudBackground(){
   );
 }
 
-Widget nightCloudBackground(){
+Widget nightCloudBackground() {
   return Center(
     child: Image.asset(
       'assets/images/backgrounds/night_cloud_background.png',
@@ -36,10 +36,19 @@ Widget nightCloudBackground(){
   );
 }
 
-Widget dayMistBackground(){
+Widget dayMistBackground() {
   return Center(
     child: Image.asset(
       'assets/images/backgrounds/day_mist_background.png',
+      fit: BoxFit.cover,
+    ),
+  );
+}
+
+Widget getBackgroundImage({required String status}) {
+  return Center(
+    child: Image.asset(
+      'assets/images/backgrounds/${status}_background.png',
       fit: BoxFit.cover,
     ),
   );

@@ -3,7 +3,6 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:geolocator/geolocator.dart';
 
 import '../../services/image_painter_service.dart';
 import 'custom_images.dart';
@@ -164,7 +163,7 @@ class CustomAnimationContent {
             ),
           ),
           Opacity(
-            opacity: 0.1,
+            opacity: 0.15,
             child: ColorFiltered(
                 colorFilter: ColorFilter.mode(
                   Colors.transparent,

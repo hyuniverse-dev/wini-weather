@@ -58,7 +58,11 @@ class _CustomNightSunnyState extends State<CustomNightSunny>
       bottom: MediaQuery.of(context).size.height.toInt() * 0.125,
       left: 0,
       right: 0,
-      child: Center(child: nightSunnyBackground()),
+      child: Center(
+        child: getBackgroundImage(
+          status: 'night_sunny',
+        ),
+      ),
     );
   }
 

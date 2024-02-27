@@ -136,7 +136,7 @@ class WeatherUtils {
     List<String> conditions = [];
     for (var days in weatherData.forecast.forecastDay) {
       var code = days.day.condition.code;
-      _divisionWeatherCode(code, conditions);
+      _divisionWeatherCodeToText(code, conditions);
     }
     return conditions;
   }
@@ -147,96 +147,47 @@ class WeatherUtils {
     for (var days in forecast) {
       for (int i = 0; i < days.hour.length; i += 3) {
         var code = days.hour[i].condition.code;
-        _divisionWeatherCode(code, conditions);
+        _divisionWeatherCodeToText(code, conditions);
       }
     }
     return conditions;
   }
 
-  void _divisionWeatherCode(int code, List<String> conditions) {
-    switch (code) {
-      case 1117:
-        conditions.add("blizzard");
-        break;
-      case 1003:
-        conditions.add("briefly_cloudy");
-        break;
-      case 1006:
-      case 1009:
-        conditions.add("cloudy");
-        break;
-      case 113:
-        conditions.add("day_sunny");
-        break;
-      case 1135:
-      case 1147:
-      case 1030:
-        conditions.add("fog");
-        break;
-      case 1237:
-      case 1261:
-      case 1264:
-        conditions.add("hail_with_snow");
-        break;
-      case 1282:
-        conditions.add("heavy_snowfall_with_thunder");
-        break;
-      case 1150:
-      case 1153:
-      case 1168:
-      case 1171:
-        conditions.add("light_drizzle");
-        break;
-      case 1210:
-      case 1213:
-      case 1255:
-        conditions.add("light_snow");
-        break;
-      case 1087:
-      case 1273:
-      case 1279:
-        conditions.add("lightning");
-        break;
-      case 1180:
-      case 1183:
-      case 1186:
-      case 1189:
-      case 1192:
-      case 1195:
-      case 1240:
-      case 1243:
-      case 1246:
-        conditions.add("moderate_rain");
-        break;
-      case 1216:
-      case 1219:
-      case 1222:
-      case 1225:
-      case 1258:
-        conditions.add("moderate_snow");
-        break;
-      case 1063:
-      case 1066:
-      case 1069:
-      case 1072:
-      case 1249:
-      case 1252:
-        conditions.add("shower");
-        break;
-      case 1114:
-        conditions.add("strong_wind");
-        break;
-      case 1276:
-        conditions.add("torrential_rain_with_thunder");
-        break;
-      case 1198:
-      case 1201:
-      case 1204:
-      case 1207:
-        conditions.add("torrential_rain");
-        break;
-      default:
-        conditions.add("day_sunny");
+  void _divisionWeatherCodeToText(int code, List<String> conditions) {
+    if (code case 1117) {
+      conditions.add("blizzard");
+    } else if (code case 1003) {
+      conditions.add("briefly_cloudy");
+    } else if (code case 1006 || 1009) {
+      conditions.add("cloudy");
+    } else if (code case 113) {
+      conditions.add("day_sunny");
+    } else if (code case 1135 || 1147 || 1030) {
+      conditions.add("fog");
+    } else if (code case 1237 || 1261 || 1264) {
+      conditions.add("hail_with_snow");
+    } else if (code case 1282) {
+      conditions.add("heavy_snowfall_with_thunder");
+    } else if (code case 1150 || 1153 || 1168 || 1171) {
+      conditions.add("light_drizzle");
+    } else if (code case 1210 || 1213 || 1255) {
+      conditions.add("light_snow");
+    } else if (code case 1087 || 1273 || 1279) {
+      conditions.add("lightning");
+    } else if (code case 1180 || 1183 || 1186 || 1189 || 1192 || 1195 || 1240 || 1243 || 1246) {
+      conditions.add("moderate_rain");
+    } else if (code case 1216 || 1219 || 1222 || 1225 || 1258) {
+      conditions.add("moderate_snow");
+    } else if (code case 1063 || 1066 || 1069 || 1072 || 1249 || 1252) {
+      conditions.add("shower");
+    } else if (code case 1114) {
+      conditions.add("strong_wind");
+    } else if (code case 1276) {
+      conditions.add("torrential_rain_with_thunder");
+    } else if (code case 1198 || 1201 || 1204 || 1207) {
+      conditions.add("torrential_rain");
+    } else {
+      conditions.add("day_sunny");
     }
   }
 }

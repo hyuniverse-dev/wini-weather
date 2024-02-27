@@ -97,7 +97,11 @@ class _CustomDayCloudState extends State<CustomDayCloud>
       bottom: MediaQuery.of(context).size.height.toInt() * 0.125,
       left: 0,
       right: 0,
-      child: Center(child: dayCloudBackground()),
+      child: Center(
+        child: getBackgroundImage(
+          status: "day_cloud",
+        ),
+      ),
     );
   }
 

@@ -12,8 +12,8 @@ class CustomDaySunny extends StatefulWidget {
   State<CustomDaySunny> createState() => _CustomDaySunnyState();
 }
 
-class _CustomDaySunnyState extends State<CustomDaySunny> with TickerProviderStateMixin{
-
+class _CustomDaySunnyState extends State<CustomDaySunny>
+    with TickerProviderStateMixin {
   // Rotate Controller & Animation
   late AnimationController _rotateController;
   late Animation<double> _rotateAnimation;
@@ -24,7 +24,7 @@ class _CustomDaySunnyState extends State<CustomDaySunny> with TickerProviderStat
     super.initState();
   }
 
-  void _initializeAnimation(){
+  void _initializeAnimation() {
     // Initialize Rotate Controller & Animation
     _rotateController = AnimationController(
       vsync: this,
@@ -33,9 +33,9 @@ class _CustomDaySunnyState extends State<CustomDaySunny> with TickerProviderStat
 
     _rotateAnimation =
         Tween<double>(begin: 0.0, end: 2 * pi).animate(CurvedAnimation(
-          parent: _rotateController,
-          curve: Curves.linear,
-        ));
+      parent: _rotateController,
+      curve: Curves.linear,
+    ));
   }
 
   @override
@@ -59,7 +59,11 @@ class _CustomDaySunnyState extends State<CustomDaySunny> with TickerProviderStat
       bottom: MediaQuery.of(context).size.height.toInt() * 0.125,
       left: 0,
       right: 0,
-      child: Center(child: daySunnyBackground()),
+      child: Center(
+        child: getBackgroundImage(
+          status: 'day_sunny',
+        ),
+      ),
     );
   }
 
