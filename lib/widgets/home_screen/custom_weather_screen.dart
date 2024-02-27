@@ -6,6 +6,20 @@ import 'package:morning_weather/widgets/home_screen/custom_night_cloud.dart';
 import 'package:morning_weather/widgets/home_screen/custom_night_mist.dart';
 import 'package:morning_weather/widgets/home_screen/custom_night_sunny.dart';
 
+import '../../models/forecast_weather_response.dart';
+
+Widget buildBackgroundContent({
+  required int isDay,
+  required ForecastWeatherResponse weatherData,
+}) {
+  final code = weatherData.current.condition.code;
+  print(code);
+  var customWeatherScreen =
+  CustomWeatherScreen(isDay).getCustomWeatherScreen(code: code);
+  return customWeatherScreen;
+}
+
+
 class CustomWeatherScreen {
   final int isDay;
 

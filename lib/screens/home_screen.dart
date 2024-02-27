@@ -214,7 +214,7 @@ class _HomeScreenV2State extends State<HomeScreenV2>
             isCelsius: isCelsius,
             weatherData: weatherData,
           ),
-          buildBackgroundContent(weatherData: weatherData),
+          buildBackgroundContent(isDay: isDay, weatherData: weatherData),
           buildSubWeatherContent(
             context: context,
             weatherData: weatherData,
@@ -222,16 +222,6 @@ class _HomeScreenV2State extends State<HomeScreenV2>
         ],
       ),
     );
-  }
-
-  Widget buildBackgroundContent({
-    required ForecastWeatherResponse weatherData,
-  }) {
-    final code = weatherData.current.condition.code;
-    print(code);
-    var customWeatherScreen =
-        CustomWeatherScreen(isDay).getCustomWeatherScreen(code: code);
-    return customWeatherScreen;
   }
 
   void _loadForecastWeatherData() async {
