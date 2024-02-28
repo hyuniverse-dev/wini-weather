@@ -6,6 +6,9 @@ import 'package:morning_weather/screens/settings_screen.dart';
 import 'package:morning_weather/services/settings_data_service.dart';
 import 'package:morning_weather/services/weather_forecast_api_service.dart';
 import 'package:morning_weather/services/location_api_service.dart';
+import 'package:morning_weather/widgets/home_screen/custom_day_drizzle.dart';
+import 'package:morning_weather/widgets/home_screen/custom_night_drizzle.dart';
+import 'package:morning_weather/widgets/home_screen/custom_night_mist.dart';
 import 'package:morning_weather/widgets/home_screen/custom_route.dart';
 import 'package:morning_weather/widgets/home_screen/custom_weather_screen.dart';
 import 'package:provider/provider.dart';
@@ -58,6 +61,7 @@ class _HomeScreenV2State extends State<HomeScreenV2>
   late String coordinate = '';
   late bool isCelsius;
   late int isDay = 1;
+  late int code = 113;
   late ForecastWeatherResponse? forecastWeatherData;
   late Future<ForecastWeatherResponse>? _forecastFuture;
   late Stream<RealmResultsChanges<Location>> locationStream;
@@ -91,26 +95,23 @@ class _HomeScreenV2State extends State<HomeScreenV2>
 
   @override
   Widget build(BuildContext context) {
-    print('>>>> hasSettingsInit [$hasSettingsInit]');
     if (!hasSettingsInit == true) {
       final settingsProvider = Provider.of<SettingsProvider>(context);
       isCelsius = settingsProvider.isCelsius;
-      print('>>> build isCelsius [$isCelsius]');
     }
+
     return StreamBuilder<RealmResultsChanges<Location>>(
       stream: locationStream,
       builder: (context, locationSnapshot) {
         if (locationSnapshot.connectionState == ConnectionState.waiting) {
           return CircularProgressIndicator();
         }
-
         if (locationSnapshot.hasError) {
           return Text('>>> locationSnapshot Error: ${locationSnapshot.error}');
         }
 
         Color backgroundColor =
-            isDay == 1 ? Color(0xFFFFF9F6) : Color(0xFF231823);
-
+            CustomWeatherScreen(isDay).getCustomWeatherBackground(code: code);
         return Scaffold(
           appBar: _buildAppBar(context),
           backgroundColor: backgroundColor,
@@ -194,6 +195,7 @@ class _HomeScreenV2State extends State<HomeScreenV2>
             } else if (snapshot.hasData) {
               ForecastWeatherResponse forecastWeather = snapshot.data!;
               isDay = forecastWeather.current.isDay;
+              code = forecastWeather.current.condition.code;
               return _buildContent(context, forecastWeather, location!);
             } else {
               return SizedBox.shrink();
@@ -214,7 +216,8 @@ class _HomeScreenV2State extends State<HomeScreenV2>
             isCelsius: isCelsius,
             weatherData: weatherData,
           ),
-          buildBackgroundContent(isDay: isDay, weatherData: weatherData),
+          // buildBackgroundContent(isDay: isDay, weatherData: weatherData),
+          isDay == 1 ? CustomDayDrizzle() : CustomNightDrizzle(),
           buildSubWeatherContent(
             context: context,
             weatherData: weatherData,
@@ -230,6 +233,7 @@ class _HomeScreenV2State extends State<HomeScreenV2>
     setState(() {
       forecastWeatherData = newWeatherData;
       isDay = newWeatherData.current.isDay;
+      code = newWeatherData.current.condition.code;
     });
   }
 

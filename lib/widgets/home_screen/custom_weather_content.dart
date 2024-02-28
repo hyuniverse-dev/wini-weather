@@ -121,7 +121,7 @@ Widget buildSubWeatherContent({
 
 Widget _buildSubWeatherContentItem(
     {required String asset, required String value, required int isDay}) {
-  Color color = isDay == 1 ? Color(0xFFF5EBE8) : Color(0xFF302837);
+  Color color = isDay == 1 ? Color(0xFFF5EBE8) : Color(0xFF343438);
   return Column(
     children: [
       Stack(

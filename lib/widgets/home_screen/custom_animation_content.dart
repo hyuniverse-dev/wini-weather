@@ -134,17 +134,26 @@ class CustomAnimationContent {
     return Stack(
       children: [
         moveWithOpacityAnimation(
-            'assets/images/elements/day_mist1.png', animation[1]),
+            asset: 'assets/images/elements/day_mist1.png',
+            animation: animation[1],
+            top: 10,
+            bottom: 40),
         moveFullScreenAnimation(
-            'assets/images/elements/day_mist2.png', animation[0], 1.0),
+            asset: 'assets/images/elements/day_mist2.png',
+            animation: animation[0],
+            opacity: 1.0,
+            top: 0,
+            bottom: 40),
         moveWithOpacityAnimation(
-            'assets/images/elements/day_mist3.png', animation[2]),
+            asset: 'assets/images/elements/day_mist3.png',
+            animation: animation[2],
+            top: 10,
+            bottom: 40)
       ],
     );
   }
 
-  Widget dayMistAnimationBackContent(
-      BuildContext context) {
+  Widget dayMistAnimationBackContent(BuildContext context) {
     return Positioned(
       height: 130,
       left: 50,
@@ -173,6 +182,130 @@ class CustomAnimationContent {
           ),
         ],
       ),
+    );
+  }
+
+  Widget dayDrizzleAnimationFrontContent(
+      BuildContext context, List<Animation<double>> animation) {
+    final lowHeight = (MediaQuery.of(context).size.height) * 0.55;
+    final highHeight = (MediaQuery.of(context).size.height) * 0.45;
+    final fullHeight = (MediaQuery.of(context).size.height);
+    return Stack(
+      children: [
+        fadeInOutAnimation(
+          asset: 'assets/images/elements/drizzle1.png',
+          animation: animation[4],
+          bottom: 5,
+        ),
+        fadeInOutAnimation(
+          asset: 'assets/images/elements/drizzle2.png',
+          animation: animation[5],
+          bottom: 5,
+        ),
+        fadeInOutAnimation(
+          asset: 'assets/images/elements/drizzle3.png',
+          animation: animation[4],
+          bottom: 50,
+        ),
+        fadeInOutAnimation(
+          asset: 'assets/images/elements/drizzle4.png',
+          animation: animation[5],
+          bottom: 5,
+        ),
+        moveWithOpacityPartAnimation(
+            asset: 'assets/images/elements/drizzle_mist1.png',
+            animation: animation[2],
+            height: fullHeight,
+            isFullOpacity: false),
+        moveWithOpacityPartAnimation(
+            asset: 'assets/images/elements/drizzle_mist2.png',
+            animation: animation[3],
+            height: fullHeight,
+            isFullOpacity: true),
+        moveWithOpacityPartAnimation(
+            asset: 'assets/images/elements/drizzle_cloud3.png',
+            animation: animation[1],
+            height: lowHeight,
+            isFullOpacity: true),
+        moveWithOpacityPartAnimation(
+            asset: 'assets/images/elements/drizzle_cloud2.png',
+            animation: animation[1],
+            height: highHeight,
+            isFullOpacity: false)
+      ],
+    );
+  }
+
+  Widget dayDrizzleAnimationBackContent(
+      BuildContext context, List<Animation<double>> animation) {
+    final height = (MediaQuery.of(context).size.height);
+    return Stack(
+      children: [
+        movePartScreenAnimation(
+            'assets/images/elements/drizzle_cloud1.png', animation[0], 0.7),
+      ],
+    );
+  }
+
+  Widget nightDrizzleAnimationFrontContent(
+      BuildContext context, List<Animation<double>> animation) {
+    final lowHeight = (MediaQuery.of(context).size.height) * 0.45;
+    final highHeight = (MediaQuery.of(context).size.height) * 0.35;
+    final fullHeight = (MediaQuery.of(context).size.height);
+    return Stack(
+      children: [
+        fadeInOutAnimation(
+          asset: 'assets/images/elements/drizzle3.png',
+          animation: animation[4],
+          bottom: 50,
+        ),
+        moveWithOpacityPartAnimation(
+            asset: 'assets/images/elements/drizzle_mist1.png',
+            animation: animation[0],
+            height: fullHeight,
+            isFullOpacity: false),
+        moveWithOpacityPartAnimation(
+            asset: 'assets/images/elements/drizzle_mist2.png',
+            animation: animation[1],
+            height: fullHeight,
+            isFullOpacity: true),
+        moveWithOpacityPartAnimation(
+            asset: 'assets/images/elements/drizzle_cloud3.png',
+            animation: animation[1],
+            height: lowHeight,
+            isFullOpacity: true),
+      ],
+    );
+  }
+
+  Widget nightDrizzleAnimationBackContent(
+      BuildContext context, List<Animation<double>> animation) {
+    final highHeight = (MediaQuery.of(context).size.height) * 0.35;
+    return Stack(
+      children: [
+        fadeInOutAnimation(
+          asset: 'assets/images/elements/drizzle1.png',
+          animation: animation[4],
+          bottom: 5,
+        ),
+        fadeInOutAnimation(
+          asset: 'assets/images/elements/drizzle2.png',
+          animation: animation[5],
+          bottom: 5,
+        ),
+        fadeInOutAnimation(
+          asset: 'assets/images/elements/drizzle4.png',
+          animation: animation[5],
+          bottom: 5,
+        ),
+        movePartScreenAnimation(
+            'assets/images/elements/drizzle_cloud1.png', animation[0], 0.7),
+        moveWithOpacityPartAnimation(
+            asset: 'assets/images/elements/drizzle_cloud2.png',
+            animation: animation[3],
+            height: highHeight,
+            isFullOpacity: true)
+      ],
     );
   }
 }

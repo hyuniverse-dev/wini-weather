@@ -1,0 +1,145 @@
+import 'package:flutter/material.dart';
+
+import 'custom_animation_content.dart';
+import 'custom_background.dart';
+
+class CustomDayThunder extends StatefulWidget {
+  const CustomDayThunder({super.key});
+
+  @override
+  State<CustomDayThunder> createState() => _CustomDayThunderState();
+}
+
+class _CustomDayThunderState extends State<CustomDayThunder>
+    with TickerProviderStateMixin {
+  // Controller
+  late AnimationController _leftToRightSlowController;
+  late AnimationController _rightToLeftSlowController;
+  late AnimationController _leftToRightFastController;
+  late AnimationController _rightToLeftFastController;
+  late AnimationController _thunderController;
+
+  // Animation
+  late Animation<double> _leftToRightSlowAnimation;
+  late Animation<double> _rightToLeftSlowAnimation;
+  late Animation<double> _leftToRightFastAnimation;
+  late Animation<double> _rightToLeftFastAnimation;
+  late Animation<double> _thunderFirstAnimation;
+  late Animation<double> _thunderSecondAnimation;
+
+  late List<Animation<double>> _moveAnimations = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeAnimation();
+  }
+
+  void _initializeAnimation() {
+    // Move left to right slow
+    _leftToRightSlowController =
+    AnimationController(vsync: this, duration: Duration(minutes: 2))
+      ..repeat();
+
+    _leftToRightSlowAnimation =
+        Tween<double>(begin: 0, end: 1).animate(_leftToRightSlowController);
+
+    // Move left to right fast
+    _leftToRightFastController =
+    AnimationController(vsync: this, duration: Duration(minutes: 2))
+      ..repeat();
+
+    _leftToRightFastAnimation =
+        Tween<double>(begin: -2, end: 2).animate(_leftToRightFastController);
+
+    // Move right to left fast
+    _rightToLeftSlowController =
+    AnimationController(vsync: this, duration: Duration(minutes: 3))
+      ..repeat();
+
+    _rightToLeftSlowAnimation =
+        Tween<double>(begin: 2, end: -2).animate(_rightToLeftSlowController);
+
+    // Move right to left fast
+    _rightToLeftFastController =
+    AnimationController(vsync: this, duration: Duration(minutes: 2))
+      ..repeat();
+
+    _rightToLeftFastAnimation =
+        Tween<double>(begin: -1, end: 2).animate(_rightToLeftFastController);
+
+    _thunderController = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 1),
+    )..repeat(reverse: true);
+
+    _thunderFirstAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+          parent: _thunderController,
+          curve: Interval(0.0, 0.5, curve: Curves.easeInOut)),
+    );
+
+    _thunderSecondAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
+      CurvedAnimation(
+          parent: _thunderController,
+          curve: Interval(0.0, 0.5, curve: Curves.easeInOut)),
+    );
+
+    _moveAnimations.addAll([
+      _leftToRightSlowAnimation,
+      _rightToLeftSlowAnimation,
+      _leftToRightFastAnimation,
+      _rightToLeftFastAnimation,
+      _thunderFirstAnimation,
+      _thunderSecondAnimation
+    ]);
+  }
+
+  @override
+  void dispose() {
+    _leftToRightSlowController.dispose();
+    _rightToLeftSlowController.dispose();
+    _rightToLeftFastController.dispose();
+    _leftToRightFastController.dispose();
+    _thunderController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        _buildBackElements(context),
+        _buildBackgroundContent(context),
+        _buildFrontElements(context),
+      ],
+    );
+  }
+
+  Widget _buildBackgroundContent(BuildContext context) {
+    return Positioned(
+      bottom: MediaQuery.of(context).size.height.toInt() * 0.125,
+      left: 0,
+      right: 0,
+      child: Center(
+        child: getBackgroundImage(
+          status: 'day_thunder',
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFrontElements(BuildContext context) {
+    return Stack(children: [
+      CustomAnimationContent()
+          .dayDrizzleAnimationFrontContent(context, _moveAnimations),
+    ]);
+  }
+
+  Widget _buildBackElements(BuildContext context) {
+    return Stack(children: [
+      CustomAnimationContent()
+          .dayDrizzleAnimationBackContent(context, _moveAnimations)
+    ]);
+  }
+}

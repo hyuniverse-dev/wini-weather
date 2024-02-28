@@ -146,7 +146,7 @@ void onStart(ServiceInstance service) async {
 
   print('MainScreen prefs >>> $prefs');
   if (prefs) {
-    periodicTimer = Timer.periodic(Duration(seconds: 5), (timer) async {
+    periodicTimer = Timer.periodic(Duration(minutes: 1), (timer) async {
       var now = DateTime.now().toLocal();
       var currentTime = TimeOfDay(hour: now.hour, minute: now.minute);
       var config = Configuration.local([Settings.schema]);
@@ -227,6 +227,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "MORNING WEATHER",
+      theme: ThemeData(
+        fontFamily: 'Gamja Flower',
+      ),
       home: MyPage(
         latitude: latitude,
         longitude: longitude,

@@ -93,11 +93,13 @@ Widget movePartScreenAnimation(
       });
 }
 
-Widget moveFullScreenAnimation(
-    String asset,
-    Animation<double> animation,
-    double opacity,
-    ) {
+Widget moveFullScreenAnimation({
+  required String asset,
+  required Animation<double> animation,
+  required double opacity,
+  required double top,
+  required double bottom,
+}) {
   return AnimatedBuilder(
       animation: animation,
       builder: (context, child) {
@@ -105,8 +107,8 @@ Widget moveFullScreenAnimation(
         final movement = (animation.value * screenWidth) - (screenWidth);
         return Positioned(
           left: movement,
-          top: 0,
-          bottom: 40,
+          top: top, // 0,
+          bottom: bottom, // 40,
           child: Opacity(
             opacity: opacity,
             child: Image.asset(asset),
@@ -115,26 +117,103 @@ Widget moveFullScreenAnimation(
       });
 }
 
-Widget moveWithOpacityAnimation(String asset, Animation<double> animation) {
+Widget moveWithOpacityFullAnimation({
+  required String asset,
+  required Animation<double> animation,
+  // required double opacity,
+  required double top,
+  required double bottom,
+}) {
+  return AnimatedBuilder(
+      animation: animation,
+      builder: (context, child) {
+        final screenWidth = MediaQuery.of(context).size.width;
+        final movement = (animation.value * screenWidth) - (screenWidth);
+        final opacity = (0.2 + animation.value * 0.9).abs().clamp(0.0, 1.0);
+        return Positioned(
+          left: movement,
+          top: top, // 0,
+          bottom: bottom, // 40,
+          child: Opacity(
+            opacity: opacity,
+            child: Image.asset(asset),
+          ),
+        );
+      });
+}
+
+Widget moveWithOpacityPartAnimation({
+  required String asset,
+  required Animation<double> animation,
+  required double height,
+  required bool isFullOpacity,
+}) {
+  return AnimatedBuilder(
+      animation: animation,
+      builder: (context, child) {
+        final screenWidth = MediaQuery.of(context).size.width;
+        final movement = (animation.value * screenWidth) - (screenWidth);
+        final opacity = isFullOpacity
+            ? (0.2 + animation.value * 0.9).abs().clamp(0.0, 1.0)
+            : (1.0 - animation.value * 0.9).abs().clamp(0.0, 1.0);
+        return Positioned(
+          left: movement,
+          height: height,
+          child: Opacity(
+            opacity: opacity,
+            child: Image.asset(asset),
+          ),
+        );
+      });
+}
+
+Widget moveWithOpacityAnimation(
+    {required String asset,
+    required Animation<double> animation,
+    required double top,
+    required double bottom}) {
   var opacity;
-  opacity = Tween<double>(begin: 0.2, end: 0.8).animate(
+  opacity = Tween<double>(begin: 0.2, end: 1.0).animate(
     CurvedAnimation(
-        parent: animation, curve: Interval(0.0, 0.5, curve: Curves.easeIn)),
+      parent: animation,
+      curve: Curves.easeOutSine,
+    ),
   );
   return AnimatedBuilder(
     animation: animation,
     builder: (context, child) {
       final screenWidth = MediaQuery.of(context).size.width;
-      final movement = (animation.value * screenWidth) - (screenWidth);
+      final movement = (animation.value * screenWidth) - (screenWidth * 0.4);
       return Positioned(
         left: movement,
-        top: 10,
-        bottom: 40,
+        top: top, // 10,
+        bottom: bottom, // 40,
         child: Opacity(
           opacity: opacity.value,
           child: Image.asset(asset),
         ),
       );
     },
+  );
+}
+
+Widget fadeInOutAnimation({
+  required String asset,
+  required Animation<double> animation,
+  required double bottom,
+}) {
+  return Positioned(
+    bottom: bottom,
+    left: 10,
+    right: 10,
+    child: AnimatedBuilder(
+      animation: animation,
+      builder: (context, child) {
+        return Opacity(
+          opacity: animation.value,
+          child: Image.asset(asset),
+        );
+      },
+    ),
   );
 }
