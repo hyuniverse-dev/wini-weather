@@ -13,7 +13,7 @@ class CustomNightThunder extends StatefulWidget {
 class _CustomNightThunderState extends State<CustomNightThunder>
     with TickerProviderStateMixin {
   // Controller
-  late AnimationController _shakingController1;
+  late AnimationController _shakingController;
   late AnimationController _thunderController;
 
   // Animation
@@ -35,19 +35,19 @@ class _CustomNightThunderState extends State<CustomNightThunder>
 
   void _initializeAnimation() {
     // Move left to right slow
-    _shakingController1 =
+    _shakingController =
         AnimationController(vsync: this, duration: Duration(seconds: 4))
           ..repeat(reverse: true);
 
     _shakingAnimation1 =
-        Tween<double>(begin: 1.1, end: 1.2).animate(_shakingController1);
+        Tween<double>(begin: 1.1, end: 1.2).animate(_shakingController);
 
     _shakingAnimation2 =
-        Tween<double>(begin: 0.95, end: 0.85).animate(_shakingController1);
+        Tween<double>(begin: 0.95, end: 0.85).animate(_shakingController);
 
     _shakingAnimation3 =
         Tween<double>(begin: 1.2, end: 1.3).animate(CurvedAnimation(
-      parent: _shakingController1,
+      parent: _shakingController,
       curve: Interval(
         0.0,
         0.7,
@@ -57,7 +57,7 @@ class _CustomNightThunderState extends State<CustomNightThunder>
 
     _shakingAnimation4 =
         Tween<double>(begin: 0.85, end: 0.75).animate(CurvedAnimation(
-      parent: _shakingController1,
+      parent: _shakingController,
       curve: Interval(
         0.0,
         0.9,
@@ -101,7 +101,7 @@ class _CustomNightThunderState extends State<CustomNightThunder>
 
   @override
   void dispose() {
-    _shakingController1.dispose();
+    _shakingController.dispose();
     _thunderController.dispose();
     super.dispose();
   }
@@ -133,14 +133,14 @@ class _CustomNightThunderState extends State<CustomNightThunder>
   Widget _buildFrontElements(BuildContext context) {
     return Stack(children: [
       CustomAnimationContent()
-          .dayThunderAnimationFrontContent(context, _moveAnimations),
+          .dayAndNightThunderAnimationFrontContent(context, _moveAnimations),
     ]);
   }
 
   Widget _buildBackElements(BuildContext context) {
     return Stack(children: [
       CustomAnimationContent()
-          .dayThunderAnimationBackContent(context, _moveAnimations)
+          .dayAndNightThunderAnimationBackContent(context, _moveAnimations)
     ]);
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:morning_weather/utils/weather_utils.dart';
+import 'package:morning_weather/widgets/home_screen/custom_weather_screen.dart';
 
 import '../../models/forecast_weather_response.dart';
 import '../../utils/common_utils.dart';
@@ -72,6 +73,7 @@ Widget buildSubWeatherContent({
   var weather = WeatherUtils(weatherData: weatherData);
   final current = weatherData.current;
   final isDay = current.isDay;
+  final code = current.condition.code;
   final windSpeedValue = weather.getWindSpeedData().value;
   final windSpeedAsset = weather.getWindSpeedData().asset;
   final windSpeedText = weather.getWindSpeedData().text;
@@ -95,24 +97,28 @@ Widget buildSubWeatherContent({
           asset: windSpeedAsset,
           value: windSpeedText!,
           isDay: isDay,
+          code: code,
         ),
         rowSpace(2.5),
         _buildSubWeatherContentItem(
           asset: humidityAsset,
           value: humidityText!,
           isDay: isDay,
+          code: code,
         ),
         rowSpace(2.5),
         _buildSubWeatherContentItem(
           asset: rainSnowChanceAsset,
           value: '$rainSnowChanceValue%',
           isDay: isDay,
+          code: code,
         ),
         rowSpace(2.5),
         _buildSubWeatherContentItem(
           asset: finedustAsset,
           value: finedustText!,
           isDay: isDay,
+          code: code,
         ),
       ],
     ),
@@ -120,8 +126,9 @@ Widget buildSubWeatherContent({
 }
 
 Widget _buildSubWeatherContentItem(
-    {required String asset, required String value, required int isDay}) {
-  Color color = isDay == 1 ? Color(0xFFF5EBE8) : Color(0xFF343438);
+    {required String asset, required String value, required int isDay, required int code}) {
+  // Color color = isDay == 1 ? Color(0xFFF5EBE8) : Color(0xFF343438);
+  final color = CustomWeatherScreen(isDay).getCustomSubContentColor(code: code);
   return Column(
     children: [
       Stack(

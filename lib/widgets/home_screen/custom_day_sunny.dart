@@ -14,7 +14,6 @@ class CustomDaySunny extends StatefulWidget {
 
 class _CustomDaySunnyState extends State<CustomDaySunny>
     with TickerProviderStateMixin {
-  // Rotate Controller & Animation
   late AnimationController _rotateController;
   late Animation<double> _rotateAnimation;
 
@@ -48,7 +47,7 @@ class _CustomDaySunnyState extends State<CustomDaySunny>
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        _buildElements(context, _rotateAnimation, _rotateController),
+        _buildBackElements(context, _rotateAnimation, _rotateController),
         _buildBackgroundContent(context),
       ],
     );
@@ -67,21 +66,16 @@ class _CustomDaySunnyState extends State<CustomDaySunny>
     );
   }
 
-  Widget _buildElements(BuildContext context, Animation<double> animation,
+  Widget _buildBackElements(BuildContext context, Animation<double> animation,
       AnimationController controller) {
     return Stack(children: [
-      _buildAnimationContentItem(context, animation, controller),
+      Positioned(
+          top: MediaQuery.of(context).size.width.toInt() * 0.325,
+          right: MediaQuery.of(context).size.height * 0.225,
+          width: MediaQuery.of(context).size.width * 0.45,
+          height: MediaQuery.of(context).size.height * 0.45,
+          child:
+              CustomAnimationContent().daySunnyAnimationBackContent(animation)),
     ]);
-  }
-
-  Widget _buildAnimationContentItem(BuildContext context,
-      Animation<double> animation, AnimationController controller) {
-    return Positioned(
-        top: MediaQuery.of(context).size.width.toInt() * 0.325,
-        right: MediaQuery.of(context).size.height * 0.225,
-        width: MediaQuery.of(context).size.width * 0.45,
-        height: MediaQuery.of(context).size.height * 0.45,
-        child: CustomAnimationContent()
-            .daySunnyAnimationContent(animation, controller));
   }
 }

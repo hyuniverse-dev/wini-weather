@@ -133,14 +133,14 @@ class _CustomDayThunderState extends State<CustomDayThunder>
   Widget _buildFrontElements(BuildContext context) {
     return Stack(children: [
       CustomAnimationContent()
-          .dayThunderAnimationFrontContent(context, _moveAnimations),
+          .dayAndNightThunderAnimationFrontContent(context, _moveAnimations),
     ]);
   }
 
   Widget _buildBackElements(BuildContext context) {
     return Stack(children: [
       CustomAnimationContent()
-          .dayThunderAnimationBackContent(context, _moveAnimations)
+          .dayAndNightThunderAnimationBackContent(context, _moveAnimations)
     ]);
   }
 }

@@ -9,24 +9,28 @@ import 'custom_images.dart';
 
 class CustomAnimationContent {
   // Day Sunny Content
-  Widget daySunnyAnimationContent(
-      Animation<double> animation, AnimationController controller) {
+  Widget daySunnyAnimationBackContent(Animation<double> animation) {
     return Stack(
       children: [
-        buildImageWithOpacityDefault(
-            'assets/images/elements/day_sunny1.png', 4),
-        rotationAnimation('assets/images/elements/day_sunny2.png', animation,
-            true, 4, controller),
-        buildImageWithOpacityDefault(
-            'assets/images/elements/day_sunny3.png', 4),
-        rotationAnimation('assets/images/elements/day_sunny4.png', animation,
-            false, 4, controller),
-        buildImageWithOpacityDefault(
-            'assets/images/elements/day_sunny5.png', 4),
-        rotationAnimation('assets/images/elements/day_sunny6.png', animation,
-            true, 4, controller),
-        buildImageWithOpacityDefault(
-            'assets/images/elements/day_sunny7.png', 4),
+        Image.asset('assets/images/elements/day_sunny1.png'),
+        rotationAnimation(
+          asset: 'assets/images/elements/day_sunny2.png',
+          animation: animation,
+          clockwise: true,
+        ),
+        Image.asset('assets/images/elements/day_sunny3.png'),
+        rotationAnimation(
+          asset: 'assets/images/elements/day_sunny4.png',
+          animation: animation,
+          clockwise: false,
+        ),
+        Image.asset('assets/images/elements/day_sunny5.png'),
+        rotationAnimation(
+          asset: 'assets/images/elements/day_sunny6.png',
+          animation: animation,
+          clockwise: true,
+        ),
+        Image.asset('assets/images/elements/day_sunny7.png'),
       ],
     );
   }
@@ -345,7 +349,7 @@ class CustomAnimationContent {
     );
   }
 
-  Widget dayThunderAnimationFrontContent(
+  Widget dayAndNightThunderAnimationFrontContent(
       BuildContext context, List<Animation<double>> animation) {
     final height = (MediaQuery.of(context).size.height);
     final width = MediaQuery.of(context).size.width;
@@ -415,12 +419,138 @@ class CustomAnimationContent {
     );
   }
 
-  Widget dayThunderAnimationBackContent(
+  Widget dayAndNightThunderAnimationBackContent(
       BuildContext context, List<Animation<double>> animation) {
     final highHeight = (MediaQuery.of(context).size.height) * 0.35;
     return Stack(
       children: [
         // Todo : Add more images
+      ],
+    );
+  }
+
+  Widget dayRainAnimationFrontContent(
+      BuildContext context, List<Animation<double>> animation) {
+    final height = (MediaQuery.of(context).size.height);
+    final width = MediaQuery.of(context).size.width;
+    return Stack(
+      children: [
+        moveWithOpacityPartAnimation(
+          asset: 'assets/images/elements/day_rain_cloud1.png',
+          animation: animation[0],
+          height: height * 0.3,
+          isFullOpacity: false,
+        ),
+        moveWithOpacityPartAnimation(
+          asset: 'assets/images/elements/day_rain_cloud1.png',
+          animation: animation[1],
+          height: height * 0.4,
+          isFullOpacity: true,
+        ),
+        movePartScreenAnimation(
+            asset: 'assets/images/elements/day_rain_cloud3.png',
+            animation: animation[3],
+            opacity: 1.0,
+            height: height * 0.35,
+            width: width),
+        fadeInOutAnimation(
+            asset: 'assets/images/elements/day_rain1.png',
+            animation: animation[4],
+            width: width,
+            bottom: 10),
+        fadeInOutAnimation(
+            asset: 'assets/images/elements/day_rain2.png',
+            animation: animation[5],
+            width: width,
+            bottom: 10),
+        fadeInOutAnimation(
+            asset: 'assets/images/elements/day_rain3.png',
+            animation: animation[6],
+            width: width,
+            bottom: 10),
+        fadeInOutAnimation(
+            asset: 'assets/images/elements/day_rain4.png',
+            animation: animation[7],
+            width: width,
+            bottom: 10)
+      ],
+    );
+  }
+
+  Widget dayRainAnimationBackContent(
+      BuildContext context, List<Animation<double>> animation) {
+    final height = (MediaQuery.of(context).size.height);
+    return Stack(
+      children: [
+        movePartScreenAnimation(
+          asset: 'assets/images/elements/day_rain_cloud2.png',
+          animation: animation[2],
+          opacity: 0.7,
+          height: height * 0.35,
+        ),
+      ],
+    );
+  }
+
+  Widget nightRainAnimationFrontContent(
+      BuildContext context, List<Animation<double>> animation) {
+    final height = (MediaQuery.of(context).size.height);
+    final width = MediaQuery.of(context).size.width;
+    return Stack(
+      children: [],
+    );
+  }
+
+  Widget nightRainAnimationBackContent(
+      BuildContext context, List<Animation<double>> animation) {
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
+    return Stack(
+      children: [
+        fadeInOutAnimation(
+            asset: 'assets/images/elements/night_rain1.png',
+            animation: animation[4],
+            width: width,
+            bottom: 10),
+        fadeInOutAnimation(
+            asset: 'assets/images/elements/night_rain2.png',
+            animation: animation[5],
+            width: width,
+            bottom: 10),
+        fadeInOutAnimation(
+            asset: 'assets/images/elements/night_rain3.png',
+            animation: animation[6],
+            width: width,
+            bottom: 10),
+        fadeInOutAnimation(
+            asset: 'assets/images/elements/night_rain4.png',
+            animation: animation[7],
+            width: width,
+            bottom: 10),
+        moveWithOpacityPartAnimation(
+          asset: 'assets/images/elements/night_rain_cloud1.png',
+          animation: animation[0],
+          height: height * 0.3,
+          isFullOpacity: false,
+        ),
+        moveWithOpacityPartAnimation(
+          asset: 'assets/images/elements/night_rain_cloud1.png',
+          animation: animation[1],
+          height: height * 0.4,
+          isFullOpacity: true,
+        ),
+        movePartScreenAnimation(
+            asset: 'assets/images/elements/night_rain_cloud3.png',
+            animation: animation[3],
+            opacity: 1.0,
+            height: height * 0.35,
+            width: width),
+        movePartScreenAnimation(
+          asset: 'assets/images/elements/night_rain_cloud4.png',
+          animation: animation[2],
+          opacity: 0.7,
+          height: height * 0.35,
+        ),
       ],
     );
   }

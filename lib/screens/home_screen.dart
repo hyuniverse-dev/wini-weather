@@ -111,7 +111,7 @@ class _HomeScreenV2State extends State<HomeScreenV2>
         }
         print('>>>>> isDay in builder [$isDay]');
         Color backgroundColor =
-            CustomWeatherScreen(isDay).getCustomWeatherBackground(code: code);
+            CustomWeatherScreen(isDay).getCustomWeatherBackgroundColor(code: code);
         return Scaffold(
           appBar: _buildAppBar(context),
           backgroundColor: backgroundColor,
