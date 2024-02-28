@@ -5,7 +5,7 @@ import 'package:morning_weather/utils/weather_utils.dart';
 
 import '../../utils/common_utils.dart';
 import '../../utils/math_utils.dart';
-import 'bar_graph_builder.dart';
+import 'custom_bar_graph_builder.dart';
 
 class TodaySection extends StatefulWidget {
   final double base;

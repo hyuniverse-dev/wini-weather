@@ -3,7 +3,7 @@ import 'package:morning_weather/models/forecast_weather_response.dart';
 import 'package:morning_weather/services/weather_forecast_api_service.dart';
 import 'package:morning_weather/utils/common_utils.dart';
 import 'package:morning_weather/utils/weather_utils.dart';
-import 'package:morning_weather/widgets/details_screen/bar_graph_builder.dart';
+import 'package:morning_weather/widgets/details_screen/custom_bar_graph_builder.dart';
 
 import '../../utils/math_utils.dart';
 

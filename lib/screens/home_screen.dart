@@ -6,10 +6,9 @@ import 'package:morning_weather/screens/settings_screen.dart';
 import 'package:morning_weather/services/settings_data_service.dart';
 import 'package:morning_weather/services/weather_forecast_api_service.dart';
 import 'package:morning_weather/services/location_api_service.dart';
-import 'package:morning_weather/widgets/home_screen/custom_day_drizzle.dart';
 import 'package:morning_weather/widgets/home_screen/custom_day_thunder.dart';
 import 'package:morning_weather/widgets/home_screen/custom_night_drizzle.dart';
-import 'package:morning_weather/widgets/home_screen/custom_night_mist.dart';
+import 'package:morning_weather/widgets/home_screen/custom_night_thunder.dart';
 import 'package:morning_weather/widgets/home_screen/custom_route.dart';
 import 'package:morning_weather/widgets/home_screen/custom_weather_screen.dart';
 import 'package:provider/provider.dart';
@@ -110,7 +109,7 @@ class _HomeScreenV2State extends State<HomeScreenV2>
         if (locationSnapshot.hasError) {
           return Text('>>> locationSnapshot Error: ${locationSnapshot.error}');
         }
-
+        print('>>>>> isDay in builder [$isDay]');
         Color backgroundColor =
             CustomWeatherScreen(isDay).getCustomWeatherBackground(code: code);
         return Scaffold(
@@ -134,6 +133,7 @@ class _HomeScreenV2State extends State<HomeScreenV2>
 
   void _onPageChanged(int index) {
     setState(() {
+      print('>>>> _onPageChanged [실행]');
       currentIndex = index;
     });
 
@@ -195,8 +195,9 @@ class _HomeScreenV2State extends State<HomeScreenV2>
               return Text('Error: ${snapshot.error}');
             } else if (snapshot.hasData) {
               ForecastWeatherResponse forecastWeather = snapshot.data!;
-              isDay = forecastWeather.current.isDay;
-              code = forecastWeather.current.condition.code;
+              // _refreshIsDay(forecastWeather);
+                isDay = forecastWeather.current.isDay;
+                code = forecastWeather.current.condition.code;
               return _buildContent(context, forecastWeather, location!);
             } else {
               return SizedBox.shrink();
@@ -217,8 +218,8 @@ class _HomeScreenV2State extends State<HomeScreenV2>
             isCelsius: isCelsius,
             weatherData: weatherData,
           ),
-          // buildBackgroundContent(isDay: isDay, weatherData: weatherData),
-          isDay == 1 ? CustomDayThunder() : CustomNightDrizzle(),
+          buildBackgroundContent(isDay: isDay, weatherData: weatherData),
+          // isDay == 1 ? CustomDayThunder() : CustomNightThunder(),
           buildSubWeatherContent(
             context: context,
             weatherData: weatherData,
@@ -232,8 +233,10 @@ class _HomeScreenV2State extends State<HomeScreenV2>
     _forecastFuture = fetchForecastWeatherData(coordinate, 1);
     final newWeatherData = await fetchForecastWeatherData(coordinate, 1);
     setState(() {
+      print('>>>>> isDay [$isDay]');
       forecastWeatherData = newWeatherData;
       isDay = newWeatherData.current.isDay;
+      print('>>>>> isDay [$isDay]');
       code = newWeatherData.current.condition.code;
     });
   }

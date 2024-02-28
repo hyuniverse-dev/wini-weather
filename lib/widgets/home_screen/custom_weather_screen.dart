@@ -8,6 +8,8 @@ import 'package:morning_weather/widgets/home_screen/custom_night_sunny.dart';
 
 import '../../models/forecast_weather_response.dart';
 import 'custom_day_drizzle.dart';
+import 'custom_day_thunder.dart';
+import 'custom_night_thunder.dart';
 
 Widget buildBackgroundContent({
   required int isDay,
@@ -34,7 +36,10 @@ class CustomWeatherScreen {
     final customCloudScreen =
         isDay == 1 ? CustomDayCloud() : CustomNightCloud();
     final customMistScreen = isDay == 1 ? CustomDayMist() : CustomNightMist();
-    final customDrizzleScreen = isDay == 1 ? CustomDayDrizzle() : CustomDayDrizzle();
+    final customDrizzleScreen =
+        isDay == 1 ? CustomDayDrizzle() : CustomDayDrizzle();
+    final customThunderScreen =
+        isDay == 1 ? CustomDayThunder() : CustomNightThunder();
 
     if (code case 1117) {
     } else if (code case 1003 || 1006 || 1009) {
@@ -45,6 +50,8 @@ class CustomWeatherScreen {
       return customMistScreen;
     } else if (code case 1150 || 1153 || 1168 || 1171) {
       return customDrizzleScreen;
+    } else if (code case 1087 || 1273 || 1279) {
+      return customThunderScreen;
     }
     return customSunnyScreen;
 
