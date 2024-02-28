@@ -71,11 +71,13 @@ Widget fadeAnimation(String asset, Animation<double> animation,
   );
 }
 
-Widget movePartScreenAnimation(
-  String asset,
-  Animation<double> animation,
-  double opacity,
-) {
+Widget movePartScreenAnimation({
+  required String asset,
+  required Animation<double> animation,
+  required double opacity,
+  double? width,
+  double? height,
+}) {
   return AnimatedBuilder(
       animation: animation,
       builder: (context, child) {
@@ -84,7 +86,8 @@ Widget movePartScreenAnimation(
         final movement = (animation.value * screenWidth) - (screenWidth);
         return Positioned(
           left: movement,
-          height: screenHeight * 0.35,
+          height: height ?? screenHeight * 0.35,
+          width: width,
           child: Opacity(
             opacity: opacity,
             child: Image.asset(asset),
@@ -200,12 +203,20 @@ Widget moveWithOpacityAnimation(
 Widget fadeInOutAnimation({
   required String asset,
   required Animation<double> animation,
-  required double bottom,
+  double? height,
+  double? width,
+  double? top,
+  double? bottom,
+  double? left,
+  double? right,
 }) {
   return Positioned(
+    top: top,
     bottom: bottom,
-    left: 10,
-    right: 10,
+    left: left,
+    right: right,
+    height: height,
+    width: width,
     child: AnimatedBuilder(
       animation: animation,
       builder: (context, child) {

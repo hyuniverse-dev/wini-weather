@@ -13,19 +13,17 @@ class CustomDayThunder extends StatefulWidget {
 class _CustomDayThunderState extends State<CustomDayThunder>
     with TickerProviderStateMixin {
   // Controller
-  late AnimationController _leftToRightSlowController;
-  late AnimationController _rightToLeftSlowController;
-  late AnimationController _leftToRightFastController;
-  late AnimationController _rightToLeftFastController;
+  late AnimationController _shakingController1;
   late AnimationController _thunderController;
 
   // Animation
-  late Animation<double> _leftToRightSlowAnimation;
-  late Animation<double> _rightToLeftSlowAnimation;
-  late Animation<double> _leftToRightFastAnimation;
-  late Animation<double> _rightToLeftFastAnimation;
+  late Animation<double> _shakingAnimation1;
+  late Animation<double> _shakingAnimation2;
+  late Animation<double> _shakingAnimation3;
+  late Animation<double> _shakingAnimation4;
   late Animation<double> _thunderFirstAnimation;
   late Animation<double> _thunderSecondAnimation;
+  late Animation<double> _thunderThirdAnimation;
 
   late List<Animation<double>> _moveAnimations = [];
 
@@ -37,70 +35,73 @@ class _CustomDayThunderState extends State<CustomDayThunder>
 
   void _initializeAnimation() {
     // Move left to right slow
-    _leftToRightSlowController =
-    AnimationController(vsync: this, duration: Duration(minutes: 2))
-      ..repeat();
+    _shakingController1 =
+        AnimationController(vsync: this, duration: Duration(seconds: 4))
+          ..repeat(reverse: true);
 
-    _leftToRightSlowAnimation =
-        Tween<double>(begin: 0, end: 1).animate(_leftToRightSlowController);
+    _shakingAnimation1 =
+        Tween<double>(begin: 1.1, end: 1.2).animate(_shakingController1);
 
-    // Move left to right fast
-    _leftToRightFastController =
-    AnimationController(vsync: this, duration: Duration(minutes: 2))
-      ..repeat();
+    _shakingAnimation2 =
+        Tween<double>(begin: 0.95, end: 0.85).animate(_shakingController1);
 
-    _leftToRightFastAnimation =
-        Tween<double>(begin: -2, end: 2).animate(_leftToRightFastController);
+    _shakingAnimation3 =
+        Tween<double>(begin: 1.2, end: 1.3).animate(CurvedAnimation(
+      parent: _shakingController1,
+      curve: Interval(
+        0.0,
+        0.7,
+        curve: Curves.easeInOut,
+      ),
+    ));
 
-    // Move right to left fast
-    _rightToLeftSlowController =
-    AnimationController(vsync: this, duration: Duration(minutes: 3))
-      ..repeat();
-
-    _rightToLeftSlowAnimation =
-        Tween<double>(begin: 2, end: -2).animate(_rightToLeftSlowController);
-
-    // Move right to left fast
-    _rightToLeftFastController =
-    AnimationController(vsync: this, duration: Duration(minutes: 2))
-      ..repeat();
-
-    _rightToLeftFastAnimation =
-        Tween<double>(begin: -1, end: 2).animate(_rightToLeftFastController);
+    _shakingAnimation4 =
+        Tween<double>(begin: 0.85, end: 0.75).animate(CurvedAnimation(
+      parent: _shakingController1,
+      curve: Interval(
+        0.0,
+        0.9,
+        curve: Curves.easeInOut,
+      ),
+    ));
 
     _thunderController = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 1),
-    )..repeat(reverse: true);
+      duration: Duration(seconds: 5),
+    )..repeat();
 
-    _thunderFirstAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+    _thunderFirstAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
       CurvedAnimation(
           parent: _thunderController,
-          curve: Interval(0.0, 0.5, curve: Curves.easeInOut)),
+          curve: Interval(0.0, 0.3, curve: Curves.easeOut)),
     );
 
     _thunderSecondAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
       CurvedAnimation(
           parent: _thunderController,
-          curve: Interval(0.0, 0.5, curve: Curves.easeInOut)),
+          curve: Interval(0.3, 0.8, curve: Curves.easeOut)),
+    );
+
+    _thunderThirdAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
+      CurvedAnimation(
+          parent: _thunderController,
+          curve: Interval(0.0, 0.2, curve: Curves.easeOut)),
     );
 
     _moveAnimations.addAll([
-      _leftToRightSlowAnimation,
-      _rightToLeftSlowAnimation,
-      _leftToRightFastAnimation,
-      _rightToLeftFastAnimation,
+      _shakingAnimation1,
+      _shakingAnimation2,
+      _shakingAnimation3,
+      _shakingAnimation4,
       _thunderFirstAnimation,
-      _thunderSecondAnimation
+      _thunderSecondAnimation,
+      _thunderThirdAnimation
     ]);
   }
 
   @override
   void dispose() {
-    _leftToRightSlowController.dispose();
-    _rightToLeftSlowController.dispose();
-    _rightToLeftFastController.dispose();
-    _leftToRightFastController.dispose();
+    _shakingController1.dispose();
     _thunderController.dispose();
     super.dispose();
   }
@@ -132,14 +133,14 @@ class _CustomDayThunderState extends State<CustomDayThunder>
   Widget _buildFrontElements(BuildContext context) {
     return Stack(children: [
       CustomAnimationContent()
-          .dayDrizzleAnimationFrontContent(context, _moveAnimations),
+          .dayThunderAnimationFrontContent(context, _moveAnimations),
     ]);
   }
 
   Widget _buildBackElements(BuildContext context) {
     return Stack(children: [
       CustomAnimationContent()
-          .dayDrizzleAnimationBackContent(context, _moveAnimations)
+          .dayThunderAnimationBackContent(context, _moveAnimations)
     ]);
   }
 }

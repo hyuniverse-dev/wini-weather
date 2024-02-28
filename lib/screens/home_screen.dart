@@ -7,6 +7,7 @@ import 'package:morning_weather/services/settings_data_service.dart';
 import 'package:morning_weather/services/weather_forecast_api_service.dart';
 import 'package:morning_weather/services/location_api_service.dart';
 import 'package:morning_weather/widgets/home_screen/custom_day_drizzle.dart';
+import 'package:morning_weather/widgets/home_screen/custom_day_thunder.dart';
 import 'package:morning_weather/widgets/home_screen/custom_night_drizzle.dart';
 import 'package:morning_weather/widgets/home_screen/custom_night_mist.dart';
 import 'package:morning_weather/widgets/home_screen/custom_route.dart';
@@ -217,7 +218,7 @@ class _HomeScreenV2State extends State<HomeScreenV2>
             weatherData: weatherData,
           ),
           // buildBackgroundContent(isDay: isDay, weatherData: weatherData),
-          isDay == 1 ? CustomDayDrizzle() : CustomNightDrizzle(),
+          isDay == 1 ? CustomDayThunder() : CustomNightDrizzle(),
           buildSubWeatherContent(
             context: context,
             weatherData: weatherData,

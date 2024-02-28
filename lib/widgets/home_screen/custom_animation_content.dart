@@ -81,9 +81,13 @@ class CustomAnimationContent {
     return Stack(
       children: [
         movePartScreenAnimation(
-            'assets/images/elements/day_cloud1.png', animation[3], 1.0),
+            asset: 'assets/images/elements/day_cloud1.png',
+            animation: animation[3],
+            opacity: 1.0),
         movePartScreenAnimation(
-            'assets/images/elements/day_cloud4.png', animation[2], 1.0),
+            asset: 'assets/images/elements/day_cloud4.png',
+            animation: animation[2],
+            opacity: 1.0),
       ],
     );
   }
@@ -94,9 +98,13 @@ class CustomAnimationContent {
     return Stack(
       children: [
         movePartScreenAnimation(
-            'assets/images/elements/day_cloud2.png', animation[0], 0.7),
+            asset: 'assets/images/elements/day_cloud2.png',
+            animation: animation[0],
+            opacity: 0.7),
         movePartScreenAnimation(
-            'assets/images/elements/day_cloud3.png', animation[1], 1.0),
+            asset: 'assets/images/elements/day_cloud3.png',
+            animation: animation[1],
+            opacity: 1.0),
       ],
     );
   }
@@ -107,9 +115,13 @@ class CustomAnimationContent {
     return Stack(
       children: [
         movePartScreenAnimation(
-            'assets/images/elements/day_cloud1.png', animation[3], 0.7),
+            asset: 'assets/images/elements/day_cloud1.png',
+            animation: animation[3],
+            opacity: 0.7),
         movePartScreenAnimation(
-            'assets/images/elements/day_cloud4.png', animation[2], 0.7),
+            asset: 'assets/images/elements/day_cloud4.png',
+            animation: animation[2],
+            opacity: 0.7),
       ],
     );
   }
@@ -120,9 +132,13 @@ class CustomAnimationContent {
     return Stack(
       children: [
         movePartScreenAnimation(
-            'assets/images/elements/day_cloud2.png', animation[0], 0.4),
+            asset: 'assets/images/elements/day_cloud2.png',
+            animation: animation[0],
+            opacity: 0.4),
         movePartScreenAnimation(
-            'assets/images/elements/day_cloud3.png', animation[1], 0.6),
+            asset: 'assets/images/elements/day_cloud3.png',
+            animation: animation[1],
+            opacity: 0.6),
       ],
     );
   }
@@ -196,21 +212,29 @@ class CustomAnimationContent {
           asset: 'assets/images/elements/drizzle1.png',
           animation: animation[4],
           bottom: 5,
+          left: 10,
+          right: 10,
         ),
         fadeInOutAnimation(
           asset: 'assets/images/elements/drizzle2.png',
           animation: animation[5],
           bottom: 5,
+          left: 10,
+          right: 10,
         ),
         fadeInOutAnimation(
           asset: 'assets/images/elements/drizzle3.png',
           animation: animation[4],
           bottom: 50,
+          left: 10,
+          right: 10,
         ),
         fadeInOutAnimation(
           asset: 'assets/images/elements/drizzle4.png',
           animation: animation[5],
           bottom: 5,
+          left: 10,
+          right: 10,
         ),
         moveWithOpacityPartAnimation(
             asset: 'assets/images/elements/drizzle_mist1.png',
@@ -242,7 +266,9 @@ class CustomAnimationContent {
     return Stack(
       children: [
         movePartScreenAnimation(
-            'assets/images/elements/drizzle_cloud1.png', animation[0], 0.7),
+            asset: 'assets/images/elements/drizzle_cloud1.png',
+            animation: animation[0],
+            opacity: 0.7),
       ],
     );
   }
@@ -258,6 +284,8 @@ class CustomAnimationContent {
           asset: 'assets/images/elements/drizzle3.png',
           animation: animation[4],
           bottom: 50,
+          left: 10,
+          right: 10,
         ),
         moveWithOpacityPartAnimation(
             asset: 'assets/images/elements/drizzle_mist1.png',
@@ -287,24 +315,112 @@ class CustomAnimationContent {
           asset: 'assets/images/elements/drizzle1.png',
           animation: animation[4],
           bottom: 5,
+          left: 10,
+          right: 10,
         ),
         fadeInOutAnimation(
           asset: 'assets/images/elements/drizzle2.png',
           animation: animation[5],
           bottom: 5,
+          left: 10,
+          right: 10,
         ),
         fadeInOutAnimation(
           asset: 'assets/images/elements/drizzle4.png',
           animation: animation[5],
           bottom: 5,
+          left: 10,
+          right: 10,
         ),
         movePartScreenAnimation(
-            'assets/images/elements/drizzle_cloud1.png', animation[0], 0.7),
+            asset: 'assets/images/elements/drizzle_cloud1.png',
+            animation: animation[0],
+            opacity: 0.7),
         moveWithOpacityPartAnimation(
             asset: 'assets/images/elements/drizzle_cloud2.png',
             animation: animation[3],
             height: highHeight,
             isFullOpacity: true)
+      ],
+    );
+  }
+
+  Widget dayThunderAnimationFrontContent(
+      BuildContext context, List<Animation<double>> animation) {
+    final height = (MediaQuery.of(context).size.height);
+    final width = MediaQuery.of(context).size.width;
+    final lowHeight = (MediaQuery.of(context).size.height) * 0.45;
+    final highHeight = (MediaQuery.of(context).size.height) * 0.35;
+    return Stack(
+      children: [
+        movePartScreenAnimation(
+            asset: 'assets/images/elements/day_thunder1.png',
+            animation: animation[0],
+            opacity: 1.0,
+            height: height * 0.39,
+            width: width),
+        movePartScreenAnimation(
+            asset: 'assets/images/elements/day_thunder2.png',
+            animation: animation[3],
+            opacity: 1.0,
+            height: height * 0.35,
+            width: width),
+        fadeInOutAnimation(
+          asset: 'assets/images/elements/day_thunder7.png',
+          animation: animation[5],
+          top: height * 0.25,
+          left: width * 0.5,
+          width: width * 0.2,
+        ),
+        fadeInOutAnimation(
+          asset: 'assets/images/elements/day_thunder7.png',
+          animation: animation[6],
+          top: height * 0.2,
+          left: width * 0.6,
+          width: width * 0.2,
+        ),
+        fadeInOutAnimation(
+          asset: 'assets/images/elements/day_thunder6.png',
+          animation: animation[4],
+          top: height * 0.2,
+          left: width * 0.25,
+          width: width * 0.2,
+        ),
+        fadeInOutAnimation(
+          asset: 'assets/images/elements/day_thunder6.png',
+          animation: animation[5],
+          top: height * 0.3,
+          left: width * 0.3,
+          width: width * 0.2,
+        ),
+        movePartScreenAnimation(
+            asset: 'assets/images/elements/day_thunder3.png',
+            animation: animation[2],
+            opacity: 1.0,
+            height: height * 0.35,
+            width: width),
+        movePartScreenAnimation(
+            asset: 'assets/images/elements/day_thunder3.png',
+            animation: animation[1],
+            opacity: 1.0,
+            height: height * 0.4,
+            width: width),
+        movePartScreenAnimation(
+            asset: 'assets/images/elements/day_thunder1.png',
+            animation: animation[0],
+            opacity: 1.0,
+            height: height * 0.5,
+            width: width),
+      ],
+    );
+  }
+
+  Widget dayThunderAnimationBackContent(
+      BuildContext context, List<Animation<double>> animation) {
+    final highHeight = (MediaQuery.of(context).size.height) * 0.35;
+    return Stack(
+      children: [
+        // Todo : Add more images
       ],
     );
   }
