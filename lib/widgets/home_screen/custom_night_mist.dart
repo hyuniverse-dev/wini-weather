@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'custom_animation_content.dart';
+import 'custom_weather_animations.dart';
 import 'custom_background.dart';
 
 class CustomNightMist extends StatefulWidget {
@@ -21,7 +21,7 @@ class _CustomNightMistState extends State<CustomNightMist>
   late Animation<double> _leftToRightSlowAnimation;
   late Animation<double> _rightToLeftFastAnimation;
   late Animation<double> _leftToRightFastAnimation;
-  late List<Animation<double>> _moveAnimations = [];
+  late List<Animation<double>> _animations = [];
 
   @override
   void initState() {
@@ -54,7 +54,7 @@ class _CustomNightMistState extends State<CustomNightMist>
     _rightToLeftFastAnimation =
         Tween<double>(begin: 1, end: 0).animate(_rightToLeftFastController);
 
-    _moveAnimations.addAll([
+    _animations.addAll([
       _leftToRightSlowAnimation,
       _leftToRightFastAnimation,
       _rightToLeftFastAnimation,
@@ -96,7 +96,7 @@ class _CustomNightMistState extends State<CustomNightMist>
   Widget _buildFrontElements(BuildContext context) {
     return Stack(children: [
       CustomAnimationContent()
-          .dayMistAnimationFrontContent(context, _moveAnimations),
+          .dayMistAnimationFrontContent(context, _animations),
     ]);
   }
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'custom_animation_content.dart';
+import 'custom_weather_animations.dart';
 import 'custom_background.dart';
 
 class CustomDayThunder extends StatefulWidget {
@@ -25,7 +25,7 @@ class _CustomDayThunderState extends State<CustomDayThunder>
   late Animation<double> _thunderSecondAnimation;
   late Animation<double> _thunderThirdAnimation;
 
-  late List<Animation<double>> _moveAnimations = [];
+  late List<Animation<double>> _animations = [];
 
   @override
   void initState() {
@@ -88,7 +88,7 @@ class _CustomDayThunderState extends State<CustomDayThunder>
           curve: Interval(0.0, 0.2, curve: Curves.easeOut)),
     );
 
-    _moveAnimations.addAll([
+    _animations.addAll([
       _shakingAnimation1,
       _shakingAnimation2,
       _shakingAnimation3,
@@ -133,14 +133,14 @@ class _CustomDayThunderState extends State<CustomDayThunder>
   Widget _buildFrontElements(BuildContext context) {
     return Stack(children: [
       CustomAnimationContent()
-          .dayAndNightThunderAnimationFrontContent(context, _moveAnimations),
+          .dayAndNightThunderAnimationFrontContent(context, _animations),
     ]);
   }
 
   Widget _buildBackElements(BuildContext context) {
     return Stack(children: [
       CustomAnimationContent()
-          .dayAndNightThunderAnimationBackContent(context, _moveAnimations)
+          .dayAndNightThunderAnimationBackContent(context, _animations)
     ]);
   }
 }

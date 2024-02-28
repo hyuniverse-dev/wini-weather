@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'custom_animation_content.dart';
+import 'custom_weather_animations.dart';
 import 'custom_background.dart';
 
 class CustomNightSunny extends StatefulWidget {
@@ -12,9 +12,11 @@ class CustomNightSunny extends StatefulWidget {
 
 class _CustomNightSunnyState extends State<CustomNightSunny>
     with TickerProviderStateMixin {
-  // Fade Controller & Animation
   late AnimationController _fadeController;
-  late Animation<double> _fadeAnimation;
+  late Animation<double> _fadeAnimation1;
+  late Animation<double> _fadeAnimation2;
+
+  late List<Animation<double>> _animations = [];
 
   @override
   void initState() {
@@ -23,18 +25,29 @@ class _CustomNightSunnyState extends State<CustomNightSunny>
   }
 
   void _initializeAnimation() {
-    // Initialize Fade Controller & Animation
     _fadeController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 2000),
+      duration: Duration(seconds: 2),
     )..repeat(reverse: true);
 
-    _fadeAnimation =
-        Tween<double>(begin: 0.4, end: 1.0).animate(CurvedAnimation(
+    _fadeAnimation1 =
+        Tween<double>(begin: 0.2, end: 1.0).animate(CurvedAnimation(
       parent: _fadeController,
       curve: Curves.easeInOut,
-      reverseCurve: Curves.easeOut,
+      reverseCurve: Curves.bounceIn,
     ));
+
+    _fadeAnimation2 =
+        Tween<double>(begin: 1.0, end: 0.2).animate(CurvedAnimation(
+      parent: _fadeController,
+      curve: Curves.easeInOut,
+      reverseCurve: Curves.bounceIn,
+    ));
+
+    _animations.addAll([
+      _fadeAnimation1,
+      _fadeAnimation2,
+    ]);
   }
 
   @override
@@ -47,7 +60,7 @@ class _CustomNightSunnyState extends State<CustomNightSunny>
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        _buildElements(context, _fadeAnimation, _fadeController),
+        _buildElements(context, _fadeAnimation1, _fadeController),
         _buildBackgroundContent(context),
       ],
     );
@@ -69,29 +82,25 @@ class _CustomNightSunnyState extends State<CustomNightSunny>
   Widget _buildElements(BuildContext context, Animation<double> animation,
       AnimationController controller) {
     return Stack(children: [
-      _buildBlendContentItem(context, animation, controller),
-      _buildAnimationContentItem(context, animation, controller),
+      _buildBlendContent(context, animation),
+      _buildBackContent(context, animation),
     ]);
   }
 
-  Widget _buildBlendContentItem(BuildContext context,
-      Animation<double> animation, AnimationController controller) {
+  Widget _buildBlendContent(BuildContext context, Animation<double> animation) {
     return Positioned(
-        top: MediaQuery.of(context).size.width.toInt() * 0.225,
+        top: MediaQuery.of(context).size.width.toInt() * 0.3,
         right: MediaQuery.of(context).size.height * 0.225,
         width: MediaQuery.of(context).size.width * 0.45,
-        height: MediaQuery.of(context).size.height * 0.45,
-        child: CustomAnimationContent()
-            .nightSunnyBlendContent(animation, controller));
+        child: CustomAnimationContent().nightSunnyBlendBackContent(animation));
     ;
   }
 
-  Widget _buildAnimationContentItem(BuildContext context,
-      Animation<double> animation, AnimationController controller) {
+  Widget _buildBackContent(BuildContext context, Animation<double> animation) {
     return Positioned(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         child: CustomAnimationContent()
-            .nightSunnyAnimationContent(animation, controller));
+            .nightSunnyAnimationBackContent(_animations));
   }
 }

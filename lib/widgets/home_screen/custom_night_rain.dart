@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'custom_animation_content.dart';
+import 'custom_weather_animations.dart';
 import 'custom_background.dart';
 
 class CustomNightRain extends StatefulWidget {

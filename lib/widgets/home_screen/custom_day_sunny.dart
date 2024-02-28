@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import 'custom_animation_content.dart';
+import 'custom_weather_animations.dart';
 import 'custom_background.dart';
 
 class CustomDaySunny extends StatefulWidget {
@@ -24,7 +24,6 @@ class _CustomDaySunnyState extends State<CustomDaySunny>
   }
 
   void _initializeAnimation() {
-    // Initialize Rotate Controller & Animation
     _rotateController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 4000),

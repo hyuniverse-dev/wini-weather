@@ -5,10 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../services/image_painter_service.dart';
-import 'custom_images.dart';
+import 'custom_animation_effects.dart';
 
 class CustomAnimationContent {
-  // Day Sunny Content
   Widget daySunnyAnimationBackContent(Animation<double> animation) {
     return Stack(
       children: [
@@ -35,21 +34,21 @@ class CustomAnimationContent {
     );
   }
 
-  Widget nightSunnyAnimationContent(
-      Animation<double> animation, AnimationController controller) {
+  Widget nightSunnyAnimationBackContent(List<Animation<double>> animation) {
     return Stack(
       children: [
-        fadeAnimation('assets/images/elements/night_sunny2.png', animation,
-            controller, true),
-        fadeAnimation('assets/images/elements/night_sunny3.png', animation,
-            controller, false),
+        fadeInOutAnimation(
+            asset: 'assets/images/elements/night_sunny2.png',
+            animation: animation[0]),
+        fadeInOutAnimation(
+            asset: 'assets/images/elements/night_sunny3.png',
+            animation: animation[1]),
       ],
     );
   }
 
   // Night Sunny Content
-  Widget nightSunnyBlendContent(
-      Animation<double> animation, AnimationController controller) {
+  Widget nightSunnyBlendBackContent(Animation<double> animation) {
     return FutureBuilder<List<ui.Image>>(
       future: Future.wait([
         loadImage('assets/images/elements/night_sunny1.png'),

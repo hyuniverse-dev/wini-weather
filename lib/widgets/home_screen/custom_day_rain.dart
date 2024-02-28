@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'custom_animation_content.dart';
+import 'custom_weather_animations.dart';
 import 'custom_background.dart';
 
 class CustomDayRain extends StatefulWidget {
@@ -27,7 +27,7 @@ class _CustomDayRainState extends State<CustomDayRain>
   late Animation<double> _rainAnimation3;
   late Animation<double> _rainAnimation4;
 
-  late List<Animation<double>> _moveAnimations = [];
+  late List<Animation<double>> _animations = [];
 
   @override
   void initState() {
@@ -94,7 +94,7 @@ class _CustomDayRainState extends State<CustomDayRain>
           curve: Curves.easeOut),
     );
 
-    _moveAnimations.addAll([
+    _animations.addAll([
       _cloudAnimation1,
       _cloudAnimation2,
       _cloudAnimation3,
@@ -141,14 +141,14 @@ class _CustomDayRainState extends State<CustomDayRain>
   Widget _buildFrontElements(BuildContext context) {
     return Stack(children: [
       CustomAnimationContent()
-          .dayRainAnimationFrontContent(context, _moveAnimations),
+          .dayRainAnimationFrontContent(context, _animations),
     ]);
   }
 
   Widget _buildBackElements(BuildContext context) {
     return Stack(children: [
       CustomAnimationContent()
-          .dayRainAnimationBackContent(context, _moveAnimations)
+          .dayRainAnimationBackContent(context, _animations)
     ]);
   }
 }

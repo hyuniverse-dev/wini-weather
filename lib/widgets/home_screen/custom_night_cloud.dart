@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'custom_animation_content.dart';
+import 'custom_weather_animations.dart';
 import 'custom_background.dart';
 
 class CustomNightCloud extends StatefulWidget {
@@ -23,7 +23,7 @@ class _CustomNightCloudState extends State<CustomNightCloud>
   late Animation<double> _rightToLeftSlowAnimation;
   late Animation<double> _rightToLeftFastAnimation;
   late Animation<double> _leftToRightFastAnimation;
-  late List<Animation<double>> _moveAnimations = [];
+  late List<Animation<double>> _animations = [];
 
   @override
   void initState() {
@@ -64,7 +64,7 @@ class _CustomNightCloudState extends State<CustomNightCloud>
     _rightToLeftFastAnimation =
         Tween<double>(begin: 2, end: 0).animate(_rightToLeftFastController);
 
-    _moveAnimations.addAll([
+    _animations.addAll([
       _leftToRightSlowAnimation,
       _rightToLeftSlowAnimation,
       _rightToLeftFastAnimation,
@@ -108,14 +108,14 @@ class _CustomNightCloudState extends State<CustomNightCloud>
   Widget _buildFrontElements(BuildContext context) {
     return Stack(children: [
       CustomAnimationContent()
-          .nightCloudAnimationFrontContent(context, _moveAnimations),
+          .nightCloudAnimationFrontContent(context, _animations),
     ]);
   }
 
   Widget _buildBackElements(BuildContext context) {
     return Stack(children: [
       CustomAnimationContent()
-          .nightCloudAnimationBackContent(context, _moveAnimations),
+          .nightCloudAnimationBackContent(context, _animations),
     ]);
   }
 }

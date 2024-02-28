@@ -10,7 +10,7 @@ import 'package:morning_weather/widgets/home_screen/custom_day_thunder.dart';
 import 'package:morning_weather/widgets/home_screen/custom_night_drizzle.dart';
 import 'package:morning_weather/widgets/home_screen/custom_night_thunder.dart';
 import 'package:morning_weather/widgets/home_screen/custom_route.dart';
-import 'package:morning_weather/widgets/home_screen/custom_weather_screen.dart';
+import 'package:morning_weather/widgets/home_screen/custom_display_selector.dart';
 import 'package:provider/provider.dart';
 import 'package:realm/realm.dart' hide ConnectionState;
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
