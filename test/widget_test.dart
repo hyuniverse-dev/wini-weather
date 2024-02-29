@@ -8,7 +8,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:morning_weather/main.dart';
+import 'package:mncf_weather/main.dart';
 import 'package:realm/realm.dart';
 
 void main() {

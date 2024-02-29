@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 
-import 'package:morning_weather/models/location_response.dart';
+import 'package:mncf_weather/models/location_response.dart';
 
 class LocationFutureBuilder extends StatelessWidget {
   final Future<LocationResponse> locationData;

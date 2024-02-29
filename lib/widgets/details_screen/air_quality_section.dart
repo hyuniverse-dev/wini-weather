@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:frino_icons/frino_icons.dart';
-import 'package:morning_weather/models/forecast_weather_response.dart';
-import 'package:morning_weather/services/weather_forecast_api_service.dart';
-import 'package:morning_weather/utils/weather_utils.dart';
+import 'package:mncf_weather/models/forecast_weather_response.dart';
+import 'package:mncf_weather/services/weather_forecast_api_service.dart';
+import 'package:mncf_weather/utils/weather_utils.dart';
 
 import 'custom_airquality_item.dart';
 import 'custom_details_item.dart';

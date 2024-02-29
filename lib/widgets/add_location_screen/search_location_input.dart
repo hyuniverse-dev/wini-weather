@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:morning_weather/services/location_api_service.dart';
-import 'package:morning_weather/utils/location_utils.dart';
+import 'package:mncf_weather/services/location_api_service.dart';
+import 'package:mncf_weather/utils/location_utils.dart';
 import 'package:realm/realm.dart';
-import 'package:morning_weather/utils/dialogs_utils.dart' as dialogs;
+import 'package:mncf_weather/utils/dialogs_utils.dart' as dialogs;
 
 import '../../models/location.dart';
 

@@ -1,4 +1,4 @@
-import 'package:morning_weather/models/weather.dart';
+import 'package:mncf_weather/models/weather.dart';
 
 class ForecastWeatherResponse extends WeatherResponse {
   final Forecast forecast;

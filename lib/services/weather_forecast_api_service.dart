@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:http/http.dart' as http;
-import 'package:morning_weather/models/forecast_weather_response.dart';
+import 'package:mncf_weather/models/forecast_weather_response.dart';
 import 'dart:convert';
 
 Future<ForecastWeatherResponse> fetchForecastWeatherData(coordinate, day) async {

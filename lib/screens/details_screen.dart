@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:morning_weather/models/forecast_weather_response.dart';
-import 'package:morning_weather/services/weather_forecast_api_service.dart';
-import 'package:morning_weather/utils/common_utils.dart';
-import 'package:morning_weather/widgets/details_screen/air_quality_section.dart';
-import 'package:morning_weather/widgets/details_screen/details_section.dart';
-import 'package:morning_weather/widgets/details_screen/forecast_section.dart';
-import 'package:morning_weather/widgets/details_screen/today_section.dart';
+import 'package:mncf_weather/models/forecast_weather_response.dart';
+import 'package:mncf_weather/services/weather_forecast_api_service.dart';
+import 'package:mncf_weather/utils/common_utils.dart';
+import 'package:mncf_weather/widgets/details_screen/air_quality_section.dart';
+import 'package:mncf_weather/widgets/details_screen/details_section.dart';
+import 'package:mncf_weather/widgets/details_screen/forecast_section.dart';
+import 'package:mncf_weather/widgets/details_screen/today_section.dart';
 
 import '../utils/date_utils.dart';
 

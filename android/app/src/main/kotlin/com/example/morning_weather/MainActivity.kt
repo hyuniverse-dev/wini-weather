@@ -1,4 +1,4 @@
-package com.example.morning_weather
+package com.example.mncf_weather
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -6,14 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:morning_weather/models/location_model.dart';
-import 'package:morning_weather/models/settings.dart';
-import 'package:morning_weather/screens/home_screen_deprecated.dart';
-import 'package:morning_weather/screens/home_screen.dart';
-import 'package:morning_weather/screens/settings_screen.dart';
-import 'package:morning_weather/services/notification_service.dart';
-import 'package:morning_weather/services/shared_preferences_service.dart';
-import 'package:morning_weather/utils/location_permission_utils.dart';
+import 'package:mncf_weather/models/location_model.dart';
+import 'package:mncf_weather/models/settings.dart';
+import 'package:mncf_weather/screens/home_screen_deprecated.dart';
+import 'package:mncf_weather/screens/home_screen.dart';
+import 'package:mncf_weather/screens/settings_screen.dart';
+import 'package:mncf_weather/services/notification_service.dart';
+import 'package:mncf_weather/services/shared_preferences_service.dart';
+import 'package:mncf_weather/utils/location_permission_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:realm/realm.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -38,8 +38,8 @@ void main() async {
     ));
   } else {
     runApp(MyProviderApp(
-      latitude: 38.8950368,
-      longitude: -77.0365427,
+      latitude: 37.5666791,
+      longitude: 126.9782914,
     ));
   }
 }
@@ -226,7 +226,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "MORNING WEATHER",
+      title: "mncf WEATHER",
       theme: ThemeData(
         fontFamily: 'Gamja Flower',
       ),

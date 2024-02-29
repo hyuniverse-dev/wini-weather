@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:morning_weather/services/weather_forecast_api_service.dart';
-import 'package:morning_weather/widgets/details_screen/forecast_weather_builder.dart';
+import 'package:mncf_weather/services/weather_forecast_api_service.dart';
+import 'package:mncf_weather/widgets/details_screen/forecast_weather_builder.dart';
 
 import '../../models/forecast_weather_response.dart';
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:morning_weather/utils/weather_utils.dart';
-import 'package:morning_weather/widgets/home_screen/custom_display_selector.dart';
+import 'package:mncf_weather/utils/weather_utils.dart';
+import 'package:mncf_weather/widgets/home_screen/custom_display_selector.dart';
 
 import '../../models/forecast_weather_response.dart';
 import '../../utils/common_utils.dart';

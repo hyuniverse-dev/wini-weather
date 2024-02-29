@@ -1,4 +1,4 @@
-import 'package:morning_weather/models/location_response.dart';
+import 'package:mncf_weather/models/location_response.dart';
 
 Map<String, dynamic> extractLocationData(
     LocationResponse locationFuture) {

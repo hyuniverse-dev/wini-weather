@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:morning_weather/models/weather.dart' as current;
-import 'package:morning_weather/services/weather_current_api_service.dart';
-import 'package:morning_weather/widgets/add_location_screen/city_weather_tile.dart';
-import 'package:morning_weather/widgets/add_location_screen/search_location_input.dart';
+import 'package:mncf_weather/models/weather.dart' as current;
+import 'package:mncf_weather/services/weather_current_api_service.dart';
+import 'package:mncf_weather/widgets/add_location_screen/city_weather_tile.dart';
+import 'package:mncf_weather/widgets/add_location_screen/search_location_input.dart';
 import 'package:realm/realm.dart' hide ConnectionState;
 import '../models/location.dart';
 import '../services/location_data_service.dart';

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:morning_weather/models/forecast_weather_response.dart';
-import 'package:morning_weather/services/weather_forecast_api_service.dart';
-import 'package:morning_weather/services/location_api_service.dart';
-import 'package:morning_weather/widgets/home_screen/custom_route.dart';
+import 'package:mncf_weather/models/forecast_weather_response.dart';
+import 'package:mncf_weather/services/weather_forecast_api_service.dart';
+import 'package:mncf_weather/services/location_api_service.dart';
+import 'package:mncf_weather/widgets/home_screen/custom_route.dart';
 import 'package:realm/realm.dart' hide ConnectionState;
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 

@@ -9,17 +9,21 @@ class SettingsDataService {
   SettingsDataService(this.realm);
 
   Future<Settings?> fetchSettings() async {
-    return realm.all<Settings>().last ?? null;
+    var setting = realm.all<Settings>().lastOrNull;
+    if (setting == null) {
+      setting = await createDefaultSettings();
+    }
+    return setting;
   }
 
-  void createDefaultSettings() {
+  Future<Settings> createDefaultSettings() async {
     final uid = uuid_pkg.Uuid();
-    realm.write(() {
+    var defaultSettings = realm.write(() {
       realm.add(Settings(
         uid.v4(),
         true,
         true,
-        8,
+        10,
         00,
         true,
         true,
@@ -27,6 +31,7 @@ class SettingsDataService {
         true,
       ));
     });
+    return defaultSettings;
   }
 
   void updateSettings(

@@ -2,8 +2,8 @@ import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_background_service_ios/flutter_background_service_ios.dart';
-import 'package:morning_weather/services/settings_data_service.dart';
-import 'package:morning_weather/widgets/settings_screen/switch_tile.dart';
+import 'package:mncf_weather/services/settings_data_service.dart';
+import 'package:mncf_weather/widgets/settings_screen/switch_tile.dart';
 import 'package:realm/realm.dart';
 import 'package:uuid/uuid.dart' as uuid_pkg;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -28,19 +28,20 @@ class _SettingsScreenState extends State<SettingsScreen>
   var uid = uuid_pkg.Uuid();
   late Realm realm;
   late var settings;
-  late bool? isCelsius = false;
-  late bool? isNotificationOn = false;
-  late int? notificationHour = 00;
-  late int? notificationMinute = 00;
-  late bool? isTemperatureEnabled = false;
-  late bool? isFeelsLikeEnabled = false;
-  late bool? isSkyConditionEnabled = false;
-  late bool? isWindConditionEnabled = false;
-  late bool? isLocated = false;
+  late bool isCelsius = true;
+  late bool isNotificationOn = false;
+  late int notificationHour = 00;
+  late int notificationMinute = 00;
+  late bool isTemperatureEnabled = false;
+  late bool isFeelsLikeEnabled = false;
+  late bool isSkyConditionEnabled = false;
+  late bool isWindConditionEnabled = false;
+  late bool isLocated = false;
 
-  // late TimeOfDay? notificationTime =
-  //     TimeOfDay(hour: notificationHour, minute: notificationMinute);
-  late TimeOfDay? notificationTime;
+  late TimeOfDay? notificationTime =
+      TimeOfDay(hour: notificationHour, minute: notificationMinute);
+
+  // late TimeOfDay? notificationTime;
   late SettingsDataService settingsDataService;
   late NotificationService notificationService;
   final FlutterLocalNotificationsPlugin localNotificationsPlugin =
@@ -60,27 +61,34 @@ class _SettingsScreenState extends State<SettingsScreen>
     await notificationService.init();
     settingsDataService = SettingsDataService(realm);
     settings = await settingsDataService.fetchSettings();
-    if (settings != null) {
-      setState(() {
-        isLocated = located;
-        isCelsius = settings.isCelsius;
-        isNotificationOn = settings.isNotificationOn;
-        notificationHour = settings.notificationHour;
-        notificationMinute = settings.notificationMinute;
-        isTemperatureEnabled = settings.isTemperatureEnabled;
-        isFeelsLikeEnabled = settings.isFeelsLikeEnabled;
-        isSkyConditionEnabled = settings.isSkyConditionEnabled;
-        isWindConditionEnabled = settings.isWindConditionEnabled;
-        notificationTime =
-            TimeOfDay(hour: notificationHour!, minute: notificationMinute!);
-      });
-    } else {
-      SettingsDataService settingsDataService = SettingsDataService(realm);
-      settingsDataService.createDefaultSettings();
-      setState(() {
-        isLocated = located;
-      });
-    }
+    //
+    // if (settings == null) {
+    //   settings = await settingsDataService.createDefaultSettings();
+    //   // settings = await settingsDataService.fetchSettings();
+    // }
+
+    setState(() {
+      isLocated = located;
+      isCelsius = settings.isCelsius;
+      isNotificationOn = settings.isNotificationOn;
+      notificationHour = settings.notificationHour;
+      notificationMinute = settings.notificationMinute;
+      isTemperatureEnabled = settings.isTemperatureEnabled;
+      isFeelsLikeEnabled = settings.isFeelsLikeEnabled;
+      isSkyConditionEnabled = settings.isSkyConditionEnabled;
+      isWindConditionEnabled = settings.isWindConditionEnabled;
+      notificationTime =
+          TimeOfDay(hour: notificationHour!, minute: notificationMinute!);
+    });
+
+    // if (settings != null) {
+    // } else {
+    //   SettingsDataService settingsDataService = SettingsDataService(realm);
+    //   settingsDataService.createDefaultSettings();
+    //   setState(() {
+    //     isLocated = located;
+    //   });
+    // }
   }
 
   @override

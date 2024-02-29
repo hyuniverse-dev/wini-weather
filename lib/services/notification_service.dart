@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:morning_weather/models/settings.dart';
-import 'package:morning_weather/services/settings_data_service.dart';
+import 'package:mncf_weather/models/settings.dart';
+import 'package:mncf_weather/services/settings_data_service.dart';
 import 'package:realm/realm.dart';
 
 class NotificationService {

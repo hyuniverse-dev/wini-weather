@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:morning_weather/utils/common_utils.dart';
+import 'package:mncf_weather/utils/common_utils.dart';
 
 Widget CustomDetailsItem({
   required String asset,

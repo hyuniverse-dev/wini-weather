@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:morning_weather/models/details_data.dart';
-import 'package:morning_weather/models/forecast_weather_response.dart';
+import 'package:mncf_weather/models/details_data.dart';
+import 'package:mncf_weather/models/forecast_weather_response.dart';
 
 Image getAssetImage(String path, double width, double height) {
   return Image.asset(

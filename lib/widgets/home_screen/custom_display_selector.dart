@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
-import 'package:morning_weather/widgets/home_screen/custom_day_cloud.dart';
-import 'package:morning_weather/widgets/home_screen/custom_day_mist.dart';
-import 'package:morning_weather/widgets/home_screen/custom_day_sunny.dart';
-import 'package:morning_weather/widgets/home_screen/custom_night_cloud.dart';
-import 'package:morning_weather/widgets/home_screen/custom_night_mist.dart';
-import 'package:morning_weather/widgets/home_screen/custom_night_sunny.dart';
+import 'package:mncf_weather/widgets/home_screen/custom_day_cloud.dart';
+import 'package:mncf_weather/widgets/home_screen/custom_day_mist.dart';
+import 'package:mncf_weather/widgets/home_screen/custom_day_sunny.dart';
+import 'package:mncf_weather/widgets/home_screen/custom_night_cloud.dart';
+import 'package:mncf_weather/widgets/home_screen/custom_night_mist.dart';
+import 'package:mncf_weather/widgets/home_screen/custom_night_sunny.dart';
 
 import '../../models/forecast_weather_response.dart';
 import 'custom_day_drizzle.dart';

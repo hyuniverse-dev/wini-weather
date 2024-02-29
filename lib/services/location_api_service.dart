@@ -1,7 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'package:morning_weather/models/location_response.dart';
+import 'package:mncf_weather/models/location_response.dart';
 
 Future<LocationResponse> fetchLocationData(String searchKeyword) async {
   const int addressDetails = 1;

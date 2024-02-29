@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'package:morning_weather/models/weather.dart';
+import 'package:mncf_weather/models/weather.dart';
 
 Future<WeatherResponse> fetchWeatherData(location) async {
   const String apiUrl = 'https://api.weatherapi.com/v1/current.json';

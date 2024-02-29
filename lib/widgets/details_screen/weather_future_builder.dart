@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:morning_weather/models/weather.dart';
+import 'package:mncf_weather/models/weather.dart';
 import 'dart:convert';
 
 class WeatherFutureBuilder extends StatelessWidget {

@@ -1,4 +1,4 @@
-import 'package:morning_weather/models/weather.dart';
+import 'package:mncf_weather/models/weather.dart';
 import 'package:realm/realm.dart';
 
 part 'location.g.dart';
