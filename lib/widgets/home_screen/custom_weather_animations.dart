@@ -809,4 +809,97 @@ class CustomAnimationContent {
       ],
     );
   }
+
+  Widget dayBlizzardAnimationFrontContent(
+      BuildContext context, List<Animation<double>> animation) {
+    final height = (MediaQuery.of(context).size.height);
+    final width = MediaQuery.of(context).size.width;
+    final bottom = 100.0;
+    return Stack(
+      children: [
+        fadeInOutAnimation(
+            asset: 'assets/images/elements/blizzard1.png',
+            animation: animation[2],
+            width: width,
+            bottom: bottom),
+        fadeInOutAnimation(
+            asset: 'assets/images/elements/blizzard2.png',
+            animation: animation[3],
+            width: width,
+            bottom: bottom),
+        fadeInOutAnimation(
+            asset: 'assets/images/elements/blizzard1.png',
+            animation: animation[4],
+            width: width,
+            bottom: bottom),
+        movePartScreenAnimation(
+          asset: 'assets/images/elements/day_blizzard_cloud1.png',
+          animation: animation[0],
+          height: height * 0.35,
+          opacity: 1.0,
+        ),
+        movePartScreenAnimation(
+          asset: 'assets/images/elements/day_blizzard_cloud2.png',
+          animation: animation[1],
+          height: height * 0.35,
+          opacity: 1.0,
+        ),
+      ],
+    );
+  }
+
+  Widget dayBlizzardAnimationBackContent(
+      BuildContext context, List<Animation<double>> animation) {
+    final height = (MediaQuery.of(context).size.height);
+    return Stack(
+      children: [],
+    );
+  }
+
+  Widget nightBlizzardAnimationFrontContent(
+      BuildContext context, List<Animation<double>> animation) {
+    final height = (MediaQuery.of(context).size.height);
+    final width = MediaQuery.of(context).size.width;
+    final bottom = 100.0;
+    return Stack(
+      children: [
+        fadeInOutAnimation(
+            asset: 'assets/images/elements/blizzard1.png',
+            animation: animation[2],
+            width: width,
+            bottom: bottom),
+        fadeInOutAnimation(
+            asset: 'assets/images/elements/blizzard2.png',
+            animation: animation[3],
+            width: width,
+            bottom: bottom),
+        fadeInOutAnimation(
+            asset: 'assets/images/elements/blizzard1.png',
+            animation: animation[4],
+            width: width,
+            bottom: bottom),
+        movePartScreenAnimation(
+          asset: 'assets/images/elements/night_blizzard_cloud1.png',
+          animation: animation[0],
+          height: height * 0.35,
+          opacity: 1.0,
+        ),
+        movePartScreenAnimation(
+          asset: 'assets/images/elements/night_blizzard_cloud2.png',
+          animation: animation[1],
+          height: height * 0.35,
+          opacity: 1.0,
+        ),
+      ],
+    );
+  }
+
+  Widget nightBlizzardAnimationBackContent(
+      BuildContext context, List<Animation<double>> animation) {
+    final height = (MediaQuery.of(context).size.height);
+    return Stack(
+      children: [
+      ],
+    );
+  }
 }
