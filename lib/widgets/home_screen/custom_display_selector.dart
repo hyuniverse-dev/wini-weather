@@ -8,9 +8,11 @@ import 'package:mncf_weather/widgets/home_screen/custom_night_sunny.dart';
 
 import '../../models/forecast_weather_response.dart';
 import 'custom_day_drizzle.dart';
+import 'custom_day_heavyrain.dart';
 import 'custom_day_rain.dart';
 import 'custom_day_showers.dart';
 import 'custom_day_thunder.dart';
+import 'custom_night_heavyrain.dart';
 import 'custom_night_rain.dart';
 import 'custom_night_showers.dart';
 import 'custom_night_thunder.dart';
@@ -47,6 +49,8 @@ class CustomWeatherScreen {
     final customRainScreen = isDay == 1 ? CustomDayRain() : CustomNightRain();
     final customShowersScreen =
         isDay == 1 ? CustomDayShowers() : CustomNightShowers();
+    final customHeavyrainScreen =
+        isDay == 1 ? CustomDayHeavyrain() : CustomNightHeavyrain();
 
     // if (code case 1117) {
     // } else if (code case 1003 || 1006 || 1009) {
@@ -72,9 +76,11 @@ class CustomWeatherScreen {
     //   return customRainScreen;
     // } else if (code case 1063 || 1066 || 1069 || 1072 || 1249 || 1252) {
     //   return customShowersScreen;
+    // } else if (code case 1198 || 1201 || 1204 || 1207) {
+    //   return customHeavyrainScreen;
     // }
 
-    return customShowersScreen;
+    return customHeavyrainScreen;
 
     // TODO: Add more weather conditions
     // else if (code case 1237 || 1261 || 1264) {
@@ -135,8 +141,11 @@ class CustomWeatherScreen {
     //   return isDay == 1 ? Color(0xFFB9B1AF) : Color(0xFF343438);
     // } else if (code case 1063 || 1066 || 1069 || 1072 || 1249 || 1252) {
     //   return isDay == 1 ? Color(0xFFB9B1AF) : Color(0xFF343438);
+    // } else if (code case 1198 || 1201 || 1204 || 1207) {
+    //   isDay == 1 ? Color(0xFFB9B1AF) : Color(0xFF2D2C34);
     // }
-    return isDay == 1 ? Color(0xFFB9B1AF) : Color(0xFF343438);
+
+    return isDay == 1 ? Color(0xFFB9B1AF) : Color(0xFF2D2C34);
 
     // TODO: Add more weather conditions
     // if (code case 1237 || 1261 || 1264) {
@@ -195,7 +204,10 @@ class CustomWeatherScreen {
     //   return isDay == 1 ? Color(0xFF57585E) : Color(0xFF57585E);
     // } else if (code case 1063 || 1066 || 1069 || 1072 || 1249 || 1252) {
     //   return isDay == 1 ? Color(0xFF57585E) : Color(0xFF57585E);
+    // } else if (code case 1198 || 1201 || 1204 || 1207) {
+    //   return isDay == 1 ? Color(0xFF57585E) : Color(0xFF57585E);
     // }
+
     return isDay == 1 ? Color(0xFF57585E) : Color(0xFF57585E);
 
     // TODO: Add more weather conditions
