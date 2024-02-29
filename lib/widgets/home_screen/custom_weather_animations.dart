@@ -805,8 +805,131 @@ class CustomAnimationContent {
       BuildContext context, List<Animation<double>> animation) {
     final height = (MediaQuery.of(context).size.height);
     return Stack(
+      children: [],
+    );
+  }
+
+  Widget daySnowAnimationFrontContent(
+      BuildContext context, List<Animation<double>> animation) {
+    final height = (MediaQuery.of(context).size.height);
+    final width = MediaQuery.of(context).size.width;
+    final bottom = 80.0;
+    return Stack(
       children: [
+        fadeInOutAnimation(
+            asset: 'assets/images/elements/snow1.png',
+            animation: animation[4],
+            width: width,
+            bottom: bottom),
+        fadeInOutAnimation(
+            asset: 'assets/images/elements/snow2.png',
+            animation: animation[5],
+            width: width,
+            bottom: bottom),
+        fadeInOutAnimation(
+            asset: 'assets/images/elements/snow1.png',
+            animation: animation[6],
+            width: width,
+            bottom: bottom),
+        movePartScreenAnimation(
+          asset: 'assets/images/elements/day_snow_cloud1.png',
+          animation: animation[0],
+          // height: height * 0.5,
+          width: width,
+          opacity: 1.0,
+        ),
+        movePartScreenAnimation(
+          asset: 'assets/images/elements/day_snow_cloud2.png',
+          animation: animation[1],
+          // height: height * 0.5,
+          width: width,
+          opacity: 1.0,
+        ),
+        movePartScreenAnimation(
+          asset: 'assets/images/elements/day_snow_cloud3.png',
+          animation: animation[2],
+          // height: height * 0.5,
+          width: width,
+          opacity: 1.0,
+        ),
+        movePartScreenAnimation(
+          asset: 'assets/images/elements/day_snow_cloud4.png',
+          animation: animation[3],
+          // height: height * 0.5,
+          width: width,
+          opacity: 1.0,
+        ),
       ],
+    );
+  }
+
+  Widget daySnowAnimationBackContent(
+      BuildContext context, List<Animation<double>> animation) {
+    final height = (MediaQuery.of(context).size.height);
+    return Stack(
+      children: [],
+    );
+  }
+
+  Widget nightSnowAnimationFrontContent(
+      BuildContext context, List<Animation<double>> animation) {
+    final height = (MediaQuery.of(context).size.height);
+    final width = MediaQuery.of(context).size.width;
+    final bottom = 80.0;
+    return Stack(
+      children: [
+        fadeInOutAnimation(
+            asset: 'assets/images/elements/snow1.png',
+            animation: animation[4],
+            width: width,
+            bottom: bottom),
+        fadeInOutAnimation(
+            asset: 'assets/images/elements/snow2.png',
+            animation: animation[5],
+            width: width,
+            bottom: bottom),
+        fadeInOutAnimation(
+            asset: 'assets/images/elements/snow1.png',
+            animation: animation[6],
+            width: width,
+            bottom: bottom),
+        movePartScreenAnimation(
+          asset: 'assets/images/elements/night_snow_cloud1.png',
+          animation: animation[0],
+          // height: height * 0.5,
+          width: width,
+          opacity: 1.0,
+        ),
+        movePartScreenAnimation(
+          asset: 'assets/images/elements/night_snow_cloud2.png',
+          animation: animation[1],
+          // height: height * 0.5,
+          width: width,
+          opacity: 1.0,
+        ),
+        movePartScreenAnimation(
+          asset: 'assets/images/elements/night_snow_cloud3.png',
+          animation: animation[2],
+          // height: height * 0.5,
+          width: width,
+          opacity: 1.0,
+        ),
+        movePartScreenAnimation(
+          asset: 'assets/images/elements/night_snow_cloud4.png',
+          animation: animation[3],
+          // height: height * 0.5,
+          width: width,
+          opacity: 1.0,
+        ),
+      ],
+    );
+  }
+
+  Widget nightSnowAnimationBackContent(
+      BuildContext context, List<Animation<double>> animation) {
+    final height = (MediaQuery.of(context).size.height);
+    return Stack(
+      children: [],
     );
   }
 
@@ -898,8 +1021,7 @@ class CustomAnimationContent {
       BuildContext context, List<Animation<double>> animation) {
     final height = (MediaQuery.of(context).size.height);
     return Stack(
-      children: [
-      ],
+      children: [],
     );
   }
 }
