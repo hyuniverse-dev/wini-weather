@@ -9,8 +9,10 @@ import 'package:mncf_weather/widgets/home_screen/custom_night_sunny.dart';
 import '../../models/forecast_weather_response.dart';
 import 'custom_day_drizzle.dart';
 import 'custom_day_rain.dart';
+import 'custom_day_showers.dart';
 import 'custom_day_thunder.dart';
 import 'custom_night_rain.dart';
+import 'custom_night_showers.dart';
 import 'custom_night_thunder.dart';
 
 Widget buildBackgroundContent({
@@ -43,6 +45,8 @@ class CustomWeatherScreen {
     final customThunderScreen =
         isDay == 1 ? CustomDayThunder() : CustomNightThunder();
     final customRainScreen = isDay == 1 ? CustomDayRain() : CustomNightRain();
+    final customShowersScreen =
+        isDay == 1 ? CustomDayShowers() : CustomNightShowers();
 
     // if (code case 1117) {
     // } else if (code case 1003 || 1006 || 1009) {
@@ -66,9 +70,11 @@ class CustomWeatherScreen {
     //         1243 ||
     //         1246) {
     //   return customRainScreen;
+    // } else if (code case 1063 || 1066 || 1069 || 1072 || 1249 || 1252) {
+    //   return customShowersScreen;
     // }
 
-    return customSunnyScreen;
+    return customShowersScreen;
 
     // TODO: Add more weather conditions
     // else if (code case 1237 || 1261 || 1264) {
@@ -127,9 +133,10 @@ class CustomWeatherScreen {
     //         1243 ||
     //         1246) {
     //   return isDay == 1 ? Color(0xFFB9B1AF) : Color(0xFF343438);
+    // } else if (code case 1063 || 1066 || 1069 || 1072 || 1249 || 1252) {
+    //   return isDay == 1 ? Color(0xFFB9B1AF) : Color(0xFF343438);
     // }
-
-    return isDay == 1 ? Color(0xFFFFF9F6) : Color(0xFF1D1F21);
+    return isDay == 1 ? Color(0xFFB9B1AF) : Color(0xFF343438);
 
     // TODO: Add more weather conditions
     // if (code case 1237 || 1261 || 1264) {
@@ -186,9 +193,10 @@ class CustomWeatherScreen {
     //         1243 ||
     //         1246) {
     //   return isDay == 1 ? Color(0xFF57585E) : Color(0xFF57585E);
+    // } else if (code case 1063 || 1066 || 1069 || 1072 || 1249 || 1252) {
+    //   return isDay == 1 ? Color(0xFF57585E) : Color(0xFF57585E);
     // }
-
-    return isDay == 1 ? Color(0xFFF5EBE8) : Color(0xFF343438);
+    return isDay == 1 ? Color(0xFF57585E) : Color(0xFF57585E);
 
     // TODO: Add more weather conditions
     // if (code case 1237 || 1261 || 1264) {

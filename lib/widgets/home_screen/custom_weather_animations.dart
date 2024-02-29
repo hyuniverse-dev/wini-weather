@@ -435,24 +435,6 @@ class CustomAnimationContent {
     final width = MediaQuery.of(context).size.width;
     return Stack(
       children: [
-        moveWithOpacityPartAnimation(
-          asset: 'assets/images/elements/day_rain_cloud1.png',
-          animation: animation[0],
-          height: height * 0.3,
-          isFullOpacity: false,
-        ),
-        moveWithOpacityPartAnimation(
-          asset: 'assets/images/elements/day_rain_cloud1.png',
-          animation: animation[1],
-          height: height * 0.4,
-          isFullOpacity: true,
-        ),
-        movePartScreenAnimation(
-            asset: 'assets/images/elements/day_rain_cloud3.png',
-            animation: animation[3],
-            opacity: 1.0,
-            height: height * 0.35,
-            width: width),
         fadeInOutAnimation(
             asset: 'assets/images/elements/day_rain1.png',
             animation: animation[4],
@@ -472,7 +454,25 @@ class CustomAnimationContent {
             asset: 'assets/images/elements/day_rain4.png',
             animation: animation[7],
             width: width,
-            bottom: 10)
+            bottom: 10),
+        movePartScreenAnimation(
+          asset: 'assets/images/elements/day_rain_cloud1.png',
+          animation: animation[0],
+          height: height * 0.3,
+          opacity: 1.0,
+        ),
+        movePartScreenAnimation(
+          asset: 'assets/images/elements/day_rain_cloud1.png',
+          animation: animation[1],
+          height: height * 0.4,
+          opacity: 1.0,
+        ),
+        movePartScreenAnimation(
+            asset: 'assets/images/elements/day_rain_cloud2.png',
+            animation: animation[3],
+            height: height * 0.55,
+            width: width,
+            opacity: 1.0),
       ],
     );
   }
@@ -547,6 +547,134 @@ class CustomAnimationContent {
             width: width),
         movePartScreenAnimation(
           asset: 'assets/images/elements/night_rain_cloud4.png',
+          animation: animation[2],
+          opacity: 0.7,
+          height: height * 0.35,
+        ),
+      ],
+    );
+  }
+
+  Widget dayShowersAnimationFrontContent(
+      BuildContext context, List<Animation<double>> animation) {
+    final height = (MediaQuery.of(context).size.height);
+    final width = MediaQuery.of(context).size.width;
+    final bottom = 50.0;
+    return Stack(
+      children: [
+        fadeInOutAnimation(
+            asset: 'assets/images/elements/showers1.png',
+            animation: animation[4],
+            width: width,
+            bottom: bottom),
+        fadeInOutAnimation(
+            asset: 'assets/images/elements/showers2.png',
+            animation: animation[5],
+            width: width,
+            bottom: bottom),
+        fadeInOutAnimation(
+            asset: 'assets/images/elements/showers3.png',
+            animation: animation[6],
+            width: width,
+            bottom: bottom),
+        fadeInOutAnimation(
+            asset: 'assets/images/elements/showers4.png',
+            animation: animation[7],
+            width: width,
+            bottom: bottom),
+        movePartScreenAnimation(
+          asset: 'assets/images/elements/day_rain_cloud1.png',
+          animation: animation[0],
+          height: height * 0.3,
+          opacity: 1.0,
+        ),
+        movePartScreenAnimation(
+          asset: 'assets/images/elements/day_rain_cloud1.png',
+          animation: animation[1],
+          height: height * 0.4,
+          opacity: 1.0,
+        ),
+        movePartScreenAnimation(
+            asset: 'assets/images/elements/day_rain_cloud2.png',
+            animation: animation[3],
+            height: height * 0.55,
+            width: width,
+            opacity: 1.0),
+      ],
+    );
+  }
+
+  Widget dayShowersAnimationBackContent(
+      BuildContext context, List<Animation<double>> animation) {
+    final height = (MediaQuery.of(context).size.height);
+    return Stack(
+      children: [
+        movePartScreenAnimation(
+          asset: 'assets/images/elements/day_rain_cloud2.png',
+          animation: animation[2],
+          opacity: 0.7,
+          height: height * 0.35,
+        ),
+      ],
+    );
+  }
+
+  Widget nightShowersAnimationFrontContent(
+      BuildContext context, List<Animation<double>> animation) {
+    final height = (MediaQuery.of(context).size.height);
+    final width = MediaQuery.of(context).size.width;
+    final bottom = 50.0;
+    return Stack(
+      children: [
+        fadeInOutAnimation(
+            asset: 'assets/images/elements/showers1.png',
+            animation: animation[4],
+            width: width,
+            bottom: bottom),
+        fadeInOutAnimation(
+            asset: 'assets/images/elements/showers2.png',
+            animation: animation[5],
+            width: width,
+            bottom: bottom),
+        fadeInOutAnimation(
+            asset: 'assets/images/elements/showers3.png',
+            animation: animation[6],
+            width: width,
+            bottom: bottom),
+        fadeInOutAnimation(
+            asset: 'assets/images/elements/showers4.png',
+            animation: animation[7],
+            width: width,
+            bottom: bottom),
+        movePartScreenAnimation(
+          asset: 'assets/images/elements/day_rain_cloud1.png',
+          animation: animation[0],
+          height: height * 0.3,
+          opacity: 1.0,
+        ),
+        movePartScreenAnimation(
+          asset: 'assets/images/elements/day_rain_cloud1.png',
+          animation: animation[1],
+          height: height * 0.4,
+          opacity: 1.0,
+        ),
+        movePartScreenAnimation(
+            asset: 'assets/images/elements/day_rain_cloud2.png',
+            animation: animation[3],
+            height: height * 0.55,
+            width: width,
+            opacity: 1.0),
+      ],
+    );
+  }
+
+  Widget nightShowersAnimationBackContent(
+      BuildContext context, List<Animation<double>> animation) {
+    final height = (MediaQuery.of(context).size.height);
+    return Stack(
+      children: [
+        movePartScreenAnimation(
+          asset: 'assets/images/elements/day_rain_cloud2.png',
           animation: animation[2],
           opacity: 0.7,
           height: height * 0.35,
