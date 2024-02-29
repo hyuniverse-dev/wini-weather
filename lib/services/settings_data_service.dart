@@ -13,6 +13,7 @@ class SettingsDataService {
     if (setting == null) {
       setting = await createDefaultSettings();
     }
+
     return setting;
   }
 
