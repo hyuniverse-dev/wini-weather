@@ -67,12 +67,14 @@ class _CustomDaySunnyState extends State<CustomDaySunny>
 
   Widget _buildBackElements(BuildContext context, Animation<double> animation,
       AnimationController controller) {
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
     return Stack(children: [
       Positioned(
-          top: MediaQuery.of(context).size.width.toInt() * 0.325,
-          right: MediaQuery.of(context).size.height * 0.225,
-          width: MediaQuery.of(context).size.width * 0.45,
-          height: MediaQuery.of(context).size.height * 0.45,
+          top: width.toInt() * 0.325,
+          right: height * 0.225,
+          width: width * 0.45,
+          height: height * 0.45,
           child:
               CustomAnimationContent().daySunnyAnimationBackContent(animation)),
     ]);

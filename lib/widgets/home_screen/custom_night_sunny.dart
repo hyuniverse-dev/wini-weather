@@ -60,7 +60,7 @@ class _CustomNightSunnyState extends State<CustomNightSunny>
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        _buildElements(context, _fadeAnimation1, _fadeController),
+        _buildElements(context, _animations),
         _buildBackgroundContent(context),
       ],
     );
@@ -79,19 +79,18 @@ class _CustomNightSunnyState extends State<CustomNightSunny>
     );
   }
 
-  Widget _buildElements(BuildContext context, Animation<double> animation,
-      AnimationController controller) {
+  Widget _buildElements(BuildContext context, List<Animation<double>> animations) {
     return Stack(children: [
-      _buildBlendContent(context, animation),
-      _buildBackContent(context, animation),
+      _buildBackContent(context, animations[0]),
+      _buildBlendContent(context, animations[1]),
     ]);
   }
 
   Widget _buildBlendContent(BuildContext context, Animation<double> animation) {
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
     return Positioned(
-        top: MediaQuery.of(context).size.width.toInt() * 0.3,
-        right: MediaQuery.of(context).size.height * 0.225,
-        width: MediaQuery.of(context).size.width * 0.45,
+        width: width * 0.45,
         child: CustomAnimationContent().nightSunnyBlendBackContent(animation));
     ;
   }

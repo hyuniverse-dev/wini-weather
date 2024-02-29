@@ -59,6 +59,7 @@ class CustomAnimationContent {
         final height = MediaQuery.of(context).size.height;
         if (snapshot.connectionState == ConnectionState.done &&
             snapshot.hasData) {
+          print('snapshot.connectionState == ConnectionState.done [실행]');
           return Stack(
             children: [
               CustomPaint(
