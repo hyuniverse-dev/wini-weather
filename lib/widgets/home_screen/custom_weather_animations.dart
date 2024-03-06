@@ -1024,4 +1024,100 @@ class CustomAnimationContent {
       children: [],
     );
   }
+
+  Widget dayHeavySnowAnimationFrontContent(
+      BuildContext context, List<Animation<double>> animation) {
+    final height = (MediaQuery.of(context).size.height);
+    final width = MediaQuery.of(context).size.width;
+    final bottom = 80.0;
+    return Stack(
+      children: [
+        fadeInOutAnimation(
+            asset: 'assets/images/elements/day_heavysnow1.png',
+            animation: animation[4],
+            width: width,
+            bottom: bottom),
+        fadeInOutAnimation(
+            asset: 'assets/images/elements/day_heavysnow2.png',
+            animation: animation[5],
+            width: width,
+            bottom: bottom),
+        fadeInOutAnimation(
+            asset: 'assets/images/elements/day_heavysnow3.png',
+            animation: animation[6],
+            width: width,
+            bottom: bottom),
+        movePartScreenAnimation(
+          asset: 'assets/images/elements/day_heavysnow_cloud1.png',
+          animation: animation[0],
+          height: height * 0.4,
+          width: width,
+          opacity: 1.0,
+        ),
+        movePartScreenAnimation(
+          asset: 'assets/images/elements/day_heavysnow_cloud2.png',
+          animation: animation[1],
+          height: height * 0.425,
+          width: width,
+          opacity: 1.0,
+        ),
+      ],
+    );
+  }
+
+  Widget dayHeavySnowAnimationBackContent(
+      BuildContext context, List<Animation<double>> animation) {
+    final height = (MediaQuery.of(context).size.height);
+    return Stack(
+      children: [],
+    );
+  }
+
+  Widget nightHeavySnowAnimationFrontContent(
+      BuildContext context, List<Animation<double>> animation) {
+    final height = (MediaQuery.of(context).size.height);
+    final width = MediaQuery.of(context).size.width;
+    final bottom = 80.0;
+    return Stack(
+      children: [
+        fadeInOutAnimation(
+            asset: 'assets/images/elements/night_heavysnow1.png',
+            animation: animation[4],
+            width: width,
+            bottom: bottom),
+        fadeInOutAnimation(
+            asset: 'assets/images/elements/night_heavysnow2.png',
+            animation: animation[5],
+            width: width,
+            bottom: bottom),
+        fadeInOutAnimation(
+            asset: 'assets/images/elements/night_heavysnow3.png',
+            animation: animation[6],
+            width: width,
+            bottom: bottom),
+        movePartScreenAnimation(
+          asset: 'assets/images/elements/night_heavysnow_cloud1.png',
+          animation: animation[0],
+          height: height * 0.4,
+          width: width,
+          opacity: 1.0,
+        ),
+        movePartScreenAnimation(
+          asset: 'assets/images/elements/night_heavysnow_cloud2.png',
+          animation: animation[1],
+          height: height * 0.425,
+          width: width,
+          opacity: 1.0,
+        ),
+      ],
+    );
+  }
+
+  Widget nightHeavySnowAnimationBackContent(
+      BuildContext context, List<Animation<double>> animation) {
+    final height = (MediaQuery.of(context).size.height);
+    return Stack(
+      children: [],
+    );
+  }
 }

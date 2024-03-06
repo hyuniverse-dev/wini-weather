@@ -10,12 +10,14 @@ import '../../models/forecast_weather_response.dart';
 import 'custom_day_blizzard.dart';
 import 'custom_day_drizzle.dart';
 import 'custom_day_heavyrain.dart';
+import 'custom_day_heavysnow.dart';
 import 'custom_day_rain.dart';
 import 'custom_day_showers.dart';
 import 'custom_day_snow.dart';
 import 'custom_day_thunder.dart';
 import 'custom_night_blizzard.dart';
 import 'custom_night_heavyrain.dart';
+import 'custom_night_heavysnow.dart';
 import 'custom_night_rain.dart';
 import 'custom_night_showers.dart';
 import 'custom_night_snow.dart';
@@ -58,6 +60,8 @@ class CustomWeatherScreen {
     final customSnowScreen = isDay == 1 ? CustomDaySnow() : CustomNightSnow();
     final customBlizzardScreen =
         isDay == 1 ? CustomDayBlizzard() : CustomNightBlizzard();
+    final customHeavysnowScreen =
+        isDay == 1 ? CustomDayHeavysnow() : CustomNightHeavysnow();
 
     // if (code case 1117) {
     // } else if (code case 1003 || 1006 || 1009) {
@@ -87,11 +91,13 @@ class CustomWeatherScreen {
     //   return customHeavyrainScreen;
     // } else if (code case 1210 || 1213 || 1255) {
     //   return customBlizzardScreen;
-    // }else if (code case 1216 || 1219 || 1222 || 1225 || 1258) {
+    // } else if (code case 1216 || 1219 || 1222 || 1225 || 1258) {
     //   return customSnowScreen;
+    // } else if (code case 1237 || 1261 || 1264) {
+    //   return customHeavysnowScreen;
     // }
 
-    return customHeavyrainScreen;
+    return customHeavysnowScreen;
 
     // TODO: Add more weather conditions
     // else if (code case 1237 || 1261 || 1264) {
@@ -158,40 +164,11 @@ class CustomWeatherScreen {
     //   return isDay == 1 ? Color(0xFFBDC1C3) : Color(0xFF2D2C34);
     // } else if (code case 1216 || 1219 || 1222 || 1225 || 1258) {
     //   return isDay == 1 ? Color(0xBDC1C3) : Color(0xFF2D2C34);
+    // } else if (code case 1237 || 1261 || 1264) {
+    //   isDay == 1 ? Color(0xFFBDC1C3) : Color(0xFF2D2C34);
     // }
-    return isDay == 1 ? Color(0xFFB9B1AF) : Color(0xFF2D2C34);
 
-    // TODO: Add more weather conditions
-    // if (code case 1237 || 1261 || 1264) {
-    //   // conditions.add("hail_with_snow");
-    // } else if (code case 1282) {
-    //   // conditions.add("heavy_snowfall_with_thunder");
-    // } else if (code case 1210 || 1213 || 1255) {
-    //   // conditions.add("light_snow");
-    // } else if (code case 1087 || 1273 || 1279) {
-    //   // conditions.add("lightning");
-    // } else if (code
-    //     case 1180 ||
-    //         1183 ||
-    //         1186 ||
-    //         1189 ||
-    //         1192 ||
-    //         1195 ||
-    //         1240 ||
-    //         1243 ||
-    //         1246) {
-    //   // conditions.add("moderate_rain");
-    // } else if (code case 1216 || 1219 || 1222 || 1225 || 1258) {
-    //   // conditions.add("moderate_snow");
-    // } else if (code case 1063 || 1066 || 1069 || 1072 || 1249 || 1252) {
-    //   // conditions.add("shower");
-    // } else if (code case 1114) {
-    //   // conditions.add("strong_wind");
-    // } else if (code case 1276) {
-    //   // conditions.add("torrential_rain_with_thunder");
-    // } else if (code case 1198 || 1201 || 1204 || 1207) {
-    //   // conditions.add("torrential_rain");
-    // }
+    return isDay == 1 ? Color(0xFFBDC1C3) : Color(0xFF2D2C34);
   }
 
   Color getCustomSubContentColor({
@@ -224,40 +201,10 @@ class CustomWeatherScreen {
     //   return isDay == 1 ? Color(0xFFFFF9F6) : Color(0xFF57585E);
     // } else if (code case 1216 || 1219 || 1222 || 1225 || 1258) {
     //   return isDay == 1 ? Color(0xFFFFF9F6) : Color(0xFF57585E);
+    // } else if (code case 1237 || 1261 || 1264) {
+    //   isDay == 1 ? Color(0xFFFFF9F6) : Color(0xFF57585E);
     // }
 
-    return isDay == 1 ? Color(0xFF57585E) : Color(0xFF57585E);
-
-    // TODO: Add more weather conditions
-    // if (code case 1237 || 1261 || 1264) {
-    //   // conditions.add("hail_with_snow");
-    // } else if (code case 1282) {
-    //   // conditions.add("heavy_snowfall_with_thunder");
-    // } else if (code case 1210 || 1213 || 1255) {
-    //   // conditions.add("light_snow");
-    // } else if (code case 1087 || 1273 || 1279) {
-    //   // conditions.add("lightning");
-    // } else if (code
-    //     case 1180 ||
-    //         1183 ||
-    //         1186 ||
-    //         1189 ||
-    //         1192 ||
-    //         1195 ||
-    //         1240 ||
-    //         1243 ||
-    //         1246) {
-    //   // conditions.add("moderate_rain");
-    // } else if (code case 1216 || 1219 || 1222 || 1225 || 1258) {
-    //   // conditions.add("moderate_snow");
-    // } else if (code case 1063 || 1066 || 1069 || 1072 || 1249 || 1252) {
-    //   // conditions.add("shower");
-    // } else if (code case 1114) {
-    //   // conditions.add("strong_wind");
-    // } else if (code case 1276) {
-    //   // conditions.add("torrential_rain_with_thunder");
-    // } else if (code case 1198 || 1201 || 1204 || 1207) {
-    //   // conditions.add("torrential_rain");
-    // }
+    return isDay == 1 ? Color(0xFFFFF9F6) : Color(0xFF57585E);
   }
 }
