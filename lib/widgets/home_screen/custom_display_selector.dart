@@ -91,7 +91,7 @@ class CustomWeatherScreen {
     //   return customSnowScreen;
     // }
 
-    return customSnowScreen;
+    return customHeavyrainScreen;
 
     // TODO: Add more weather conditions
     // else if (code case 1237 || 1261 || 1264) {
@@ -159,7 +159,7 @@ class CustomWeatherScreen {
     // } else if (code case 1216 || 1219 || 1222 || 1225 || 1258) {
     //   return isDay == 1 ? Color(0xBDC1C3) : Color(0xFF2D2C34);
     // }
-    return isDay == 1 ? Color(0xFFBDC1C3) : Color(0xFF2D2C34);
+    return isDay == 1 ? Color(0xFFB9B1AF) : Color(0xFF2D2C34);
 
     // TODO: Add more weather conditions
     // if (code case 1237 || 1261 || 1264) {
@@ -226,7 +226,7 @@ class CustomWeatherScreen {
     //   return isDay == 1 ? Color(0xFFFFF9F6) : Color(0xFF57585E);
     // }
 
-    return isDay == 1 ? Color(0xFFFFF9F6) : Color(0xFF57585E);
+    return isDay == 1 ? Color(0xFF57585E) : Color(0xFF57585E);
 
     // TODO: Add more weather conditions
     // if (code case 1237 || 1261 || 1264) {
