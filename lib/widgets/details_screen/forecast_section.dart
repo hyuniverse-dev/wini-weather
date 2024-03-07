@@ -161,7 +161,7 @@ class ForecastSectionItem extends StatelessWidget {
                 ),
               ),
               columnSpace(1.0),
-              Image.asset('assets/images/weather/$asset.png',
+              Image.asset('assets/images/wini/$asset.png',
               width: 36.0,
               height: 36.0,),
               Spacer(),

@@ -108,7 +108,6 @@ class DetailsScreenContent extends StatelessWidget {
             ),
             columnSpace(3.0),
             ForecastSection(
-              // Todo : 저장한 지역의 날짜를 기준으로 날씨 출력하도록 변경 필요
               days: getWeekdays(DateTime.now()),
               date: getWeekdates(DateTime.now()),
               location: location,
