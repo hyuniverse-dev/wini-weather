@@ -4,7 +4,9 @@ import 'package:mncf_weather/services/weather_forecast_api_service.dart';
 import 'package:mncf_weather/utils/common_utils.dart';
 import 'package:mncf_weather/utils/weather_utils.dart';
 import 'package:mncf_weather/widgets/details_screen/custom_bar_graph_builder.dart';
+import 'package:provider/provider.dart';
 
+import '../../screens/settings_screen.dart';
 import '../../utils/math_utils.dart';
 
 class ForecastSection extends StatefulWidget {
@@ -71,20 +73,21 @@ class _ForecastSectionState extends State<ForecastSection> {
                   ForecastWeatherResponse weatherData = snapshot.data!;
 
                   var weather = WeatherUtils(weatherData: weatherData);
+                  final settingsProvider = Provider.of<SettingsProvider>(context);
+                  final isCelsius = settingsProvider.isCelsius;
                   List<String> skyConditions = weather.getWeeklySkyCondition();
                   List<double> hTemps = [];
                   List<double> lTemps = [];
                   List<double> tempsDiffer = [];
 
                   for (var forecastDays in weatherData.forecast.forecastDay) {
-                    double maxTemp = forecastDays.day.maxTempC;
-                    double minTemp = forecastDays.day.minTempC;
+                    var day = forecastDays.day;
+                    double maxTemp = isCelsius ? day.maxTempC : day.maxTempF;
+                    double minTemp = isCelsius ? day.minTempC : day.minTempF;
                     hTemps.add(maxTemp);
                     lTemps.add(minTemp);
                     tempsDiffer.add((maxTemp - minTemp).abs());
                   }
-                  print('>>> skyConditions.length [${skyConditions.length}]');
-                  print('>>> skyConditions [${skyConditions[2]}]');
                   final List<double> tempsDifferRatios =
                       calculateRatios(tempsDiffer, widget.base);
                   return SingleChildScrollView(
@@ -170,9 +173,7 @@ class ForecastSectionItem extends StatelessWidget {
               BarGraphBuilder(values: graphValues),
               columnSpace(1.0),
               Text(lowTemp.toStringAsFixed(0)),
-              SizedBox(
-                height: 20,
-              ),
+              Spacer()
             ],
           ),
         ),

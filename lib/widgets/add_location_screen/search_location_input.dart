@@ -23,11 +23,11 @@ class SearchLocationInput extends StatelessWidget {
     return TextField(
       controller: textController,
       decoration: InputDecoration(
-          labelText: 'Search the weather by area',
           labelStyle: TextStyle(
             color: Colors.black,
             fontSize: 12,
           ),
+          hintText: 'Region and city names',
           suffixIcon: IconButton(
             icon: Icon(Icons.keyboard_return_rounded),
             onPressed: () => _handleSearch(context),

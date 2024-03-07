@@ -24,3 +24,23 @@ Widget columnSpace(double interval) {
     height: 10 * interval,
   );
 }
+
+Widget columnSpaceWithDivider(double interval, Color color) {
+  return Column(
+    children: [
+      SizedBox(
+        height: 10 * (interval * 0.5),
+      ),
+      Divider(
+        color: color,
+        thickness: 1,
+        // indent: 20,
+        // endIndent: 20,
+      ),
+      SizedBox(
+        height: 10 * (interval * 0.5),
+      ),
+    ],
+  );
+}
+

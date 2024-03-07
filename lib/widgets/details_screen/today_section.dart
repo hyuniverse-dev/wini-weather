@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:mncf_weather/models/forecast_weather_response.dart';
 import 'package:mncf_weather/services/weather_forecast_api_service.dart';
 import 'package:mncf_weather/utils/weather_utils.dart';
+import 'package:provider/provider.dart';
 
+import '../../screens/settings_screen.dart';
 import '../../utils/common_utils.dart';
 import '../../utils/math_utils.dart';
 import 'custom_bar_graph_builder.dart';
@@ -68,7 +70,7 @@ class _TodaySectionState extends State<TodaySection> {
                   ForecastWeatherResponse weatherData = snapshot.data!;
                   final forecast = weatherData.forecast.forecastDay;
                   var weather = WeatherUtils(weatherData: weatherData);
-                  List<String> skyConditions = weather.getDailySkyCondition();
+                  List<String> skyConditions = weather.getThreeHourlySkyCondition();
                   List<double> tempsC = [];
                   List<double> tempsF = [];
                   print('>>>>> skyConditions.length [${skyConditions.length}]');
@@ -80,9 +82,11 @@ class _TodaySectionState extends State<TodaySection> {
                       tempsF.add(hour.tempF);
                     }
                   }
-
+                  final settingsProvider =
+                  Provider.of<SettingsProvider>(context);
+                  final isCelsius = settingsProvider.isCelsius;
                   final List<double> tempsRatios =
-                      calculateRatios(tempsC, widget.base);
+                      calculateRatios(isCelsius ? tempsC : tempsF, widget.base);
 
                   return SingleChildScrollView(
                     controller: _scrollController,
@@ -93,7 +97,7 @@ class _TodaySectionState extends State<TodaySection> {
                         (i) {
                           int time = (startHour + i * interval) % 24;
                           return TodaySectionItem(
-                            temp: tempsC[i],
+                            temp: isCelsius ? tempsC[i] : tempsF[i],
                             graphValues: tempsRatios[i],
                             asset: skyConditions[i],
                             time: time,

@@ -333,7 +333,6 @@ class _HomeScreenV2State extends State<HomeScreenV2>
           }
         });
       } else if (currentIndex == 0 && isSwipeRight) {
-        // Todo Navigate To IntroduceScreen
         print('IntroduceScreen');
         navigateToNewScreen(context, false, (value) => () {});
       } else {

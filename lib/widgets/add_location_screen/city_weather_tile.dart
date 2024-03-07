@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:mncf_weather/utils/common_utils.dart';
 
 class CityWeatherTile extends StatelessWidget {
   final int index;
   final String city;
-  final IconData weatherIcon;
+  final String skyCondition;
   final String summary;
+  final String temperature;
   final VoidCallback onRemovePressed;
 
   const CityWeatherTile({
     super.key,
     required this.index,
     required this.city,
-    required this.weatherIcon,
+    required this.skyCondition,
     required this.summary,
+    required this.temperature,
     required this.onRemovePressed,
   });
 
@@ -22,56 +25,68 @@ class CityWeatherTile extends StatelessWidget {
       padding: const EdgeInsets.symmetric(
         vertical: 5.0,
       ),
-      child: Container(
-        decoration: BoxDecoration(
+      child: Stack(clipBehavior: Clip.none, children: [
+        Container(
+          decoration: BoxDecoration(
             border: Border.all(
               color: Colors.black12,
               width: 1.0,
             ),
-            borderRadius: BorderRadius.circular(10.0)),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [
-              Icon(
-                weatherIcon,
-                size: 46,
-                color: Colors.black45,
-              ),
-              SizedBox(
-                width: 10.0,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    city.length > 10 ? '${city.substring(0, 10)}...' : city,
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(summary),
-                ],
-              ),
-              Spacer(),
-              index == 0
-                  ? Icon(
-                      Icons.block,
-                      color: Colors.white.withOpacity(1.0),
-                    )
-                  : IconButton(
-                      icon: Icon(
-                        Icons.remove_circle_outline,
-                        size: 26.0,
-                        color: Colors.black45,
+            borderRadius: BorderRadius.circular(10.0),
+            color: Color(0xFFFFFFFF),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                rowSpace(1.0),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      city.length > 10 ? '${city.substring(0, 11)}...' : city,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
                       ),
-                      onPressed: onRemovePressed,
                     ),
-            ],
+                    Text(summary),
+                  ],
+                ),
+                Spacer(),
+                Text(
+                  temperature,
+                  style: TextStyle(
+                    fontSize: 36,
+                  ),
+                ),
+                Image.asset(
+                  'assets/images/wini/$skyCondition.png',
+                  width: 38.0,
+                ),
+                rowSpace(0.5)
+              ],
+            ),
           ),
         ),
-      ),
+        Positioned(
+          top: 10,
+          right: -23,
+          child: index == 0
+              ? Icon(
+                  Icons.block,
+                  color: Colors.white.withOpacity(1.0),
+                )
+              : IconButton(
+                  icon: Icon(
+                    Icons.remove_circle,
+                    size: 26.0,
+                    color: Color(0xFFEF3B08),
+                  ),
+                  onPressed: onRemovePressed,
+                ),
+        )
+      ]),
     );
   }
 }

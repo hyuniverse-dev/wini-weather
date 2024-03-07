@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:mncf_weather/models/forecast_weather_response.dart';
 import 'package:mncf_weather/models/weather.dart' as current;
+import 'package:mncf_weather/screens/settings_screen.dart';
 import 'package:mncf_weather/services/weather_current_api_service.dart';
+import 'package:mncf_weather/utils/common_utils.dart';
+import 'package:mncf_weather/utils/weather_utils.dart';
 import 'package:mncf_weather/widgets/add_location_screen/city_weather_tile.dart';
 import 'package:mncf_weather/widgets/add_location_screen/search_location_input.dart';
+import 'package:provider/provider.dart';
 import 'package:realm/realm.dart' hide ConnectionState;
 import '../models/location.dart';
 import '../services/location_data_service.dart';
@@ -41,6 +46,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFFFF9F6),
       body: GestureDetector(
         onHorizontalDragUpdate: (DragUpdateDetails details) {
           dragDistance += details.delta.dx;
@@ -57,41 +63,33 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(25.0),
                 child: Column(
-                  children: [
+                  children: <Widget>[
                     Text(
-                      'Search\nLocation',
+                      'Regional settings',
                       style: TextStyle(
-                          fontSize: 70,
+                          fontSize: 32,
                           fontWeight: FontWeight.bold,
                           height: 0.9),
                       textAlign: TextAlign.center,
                     ),
-                    Image.asset(
-                      'assets/images/search_location.png',
-                      height: MediaQuery.of(context).size.height * 0.3,
-                      width: MediaQuery.of(context).size.width * 0.9,
+                    columnSpace(1.0),
+                    Column(
+                      children: [
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Image.asset(
+                            'assets/images/backgrounds/add_location_background2.png',
+                            width: 52.0,
+                            height: 55.0,
+                          ),
+                        ),
+                        Image.asset(
+                          'assets/images/backgrounds/add_location_background1.png',
+                        ),
+                      ],
                     ),
                     SizedBox(
                       height: 20,
-                    ),
-                    Container(
-                      alignment: Alignment.centerRight,
-                      child: RichText(
-                        textAlign: TextAlign.right,
-                        text: TextSpan(
-                          style:
-                              TextStyle(fontSize: 14.0, color: Colors.black45),
-                          children: [
-                            TextSpan(text: 'Current Location : '),
-                            TextSpan(
-                              text: '${currentLocation}',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black),
-                            )
-                          ],
-                        ),
-                      ),
                     ),
                     SearchLocationInput(
                       textController: textController,
@@ -99,14 +97,6 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                     ),
                     SizedBox(
                       height: 40,
-                    ),
-                    Container(
-                      alignment: Alignment.bottomLeft,
-                      child: Text(
-                        'How\'s the weather in this place?',
-                        style: TextStyle(
-                            color: Colors.black45, fontWeight: FontWeight.bold),
-                      ),
                     ),
                     locations.isNotEmpty
                         ? ListView.builder(
@@ -127,22 +117,34 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                                   } else if (snapshot.hasError) {
                                     return Text('Error : ${snapshot.error}');
                                   } else {
-                                    var tempC = snapshot.data!.current.tempC;
-                                    var windKph = snapshot.data!.current.windKph
+                                    final settingsProvider =
+                                        Provider.of<SettingsProvider>(context);
+                                    final current = snapshot.data!.current;
+                                    var temperature = settingsProvider.isCelsius
+                                        ? current.tempC.round()
+                                        : current.tempF.round();
+                                    var windKph = current.windKph
                                         .toString();
+                                    List<String> conditions = [];
+                                    divisionWeatherCodeToText(current.condition.code, conditions);
                                     var date =
                                         DateTime.fromMillisecondsSinceEpoch(
-                                            snapshot.data!.location
-                                                    .localtimeEpoch *
-                                                1000,
-                                            isUtc: true);
-                                    var weekday = getWeekdays(date);
+                                                snapshot.data!.location
+                                                        .localtimeEpoch *
+                                                    1000,
+                                                isUtc: true)
+                                            .toLocal();
+                                    var monthAndDay = getWeekdates(date).first;
+                                    var weekday =
+                                        getWeekdays(date, false).first;
+                                    var minSeconds = getMinSeconds(date).first;
                                     return CityWeatherTile(
                                       index: index,
                                       city: location.name,
-                                      weatherIcon: Icons.sunny,
+                                      skyCondition: conditions.first,
                                       summary:
-                                          '${weekday[0]}, ${tempC}°C, ${windKph}kph',
+                                          '$monthAndDay($weekday) $minSeconds',
+                                      temperature: '$temperature°',
                                       onRemovePressed: () {
                                         setState(() {
                                           final locationDataService =

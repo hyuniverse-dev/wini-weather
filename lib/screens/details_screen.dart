@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+// import 'package:flutter/rendering.dart';
 import 'package:mncf_weather/models/forecast_weather_response.dart';
+import 'package:mncf_weather/screens/settings_screen.dart';
 import 'package:mncf_weather/services/weather_forecast_api_service.dart';
 import 'package:mncf_weather/utils/common_utils.dart';
 import 'package:mncf_weather/widgets/details_screen/air_quality_section.dart';
 import 'package:mncf_weather/widgets/details_screen/details_section.dart';
 import 'package:mncf_weather/widgets/details_screen/forecast_section.dart';
 import 'package:mncf_weather/widgets/details_screen/today_section.dart';
+import 'package:provider/provider.dart';
 
 import '../utils/date_utils.dart';
 
@@ -22,7 +24,8 @@ class DetailsScreen extends StatefulWidget {
 class _DetailsScreenState extends State<DetailsScreen> {
   final int sensitivity = 30;
   final int day = 1;
-  final double base = 30.0;
+  final double tTempBase = 35.0;
+  final double fTempBase = 100.0;
 
   late ForecastWeatherResponse hourlyWeatherData;
 
@@ -42,6 +45,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final settingsProvider = Provider.of<SettingsProvider>(context);
+    final isCelsius = settingsProvider.isCelsius;
     return Scaffold(
       backgroundColor: Color(0xFFFFF9F6),
       body: SafeArea(
@@ -57,7 +62,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
               } else if (snapshot.hasData) {
                 return DetailsScreenContent(
                   location: widget.coordinate,
-                  base: base,
+                  base: isCelsius ? tTempBase : fTempBase,
                 );
               } else {
                 return Text('No Data');
@@ -106,20 +111,21 @@ class DetailsScreenContent extends StatelessWidget {
               dayCount: 1,
               base: base,
             ),
-            columnSpace(3.0),
+            // columnSpace(3.0),
+            columnSpaceWithDivider(3.0, Color(0xFFE9DEDA)),
             ForecastSection(
-              days: getWeekdays(DateTime.now()),
+              days: getWeekdays(DateTime.now(), true),
               date: getWeekdates(DateTime.now()),
               location: location,
               base: (base - 10.0),
               dayCount: 7,
             ),
-            columnSpace(3.0),
+            columnSpaceWithDivider(3.0, Color(0xFFE9DEDA)),
             DetailsSection(
               location: location,
               dayCount: 1,
             ),
-            columnSpace(3.0),
+            columnSpaceWithDivider(3.0, Color(0xFFE9DEDA)),
             AirQualitySection(
               location: location,
               dayCount: 1,
