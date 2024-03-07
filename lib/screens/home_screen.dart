@@ -110,8 +110,8 @@ class _HomeScreenV2State extends State<HomeScreenV2>
           return Text('>>> locationSnapshot Error: ${locationSnapshot.error}');
         }
         print('>>>>> isDay in builder [$isDay]');
-        Color backgroundColor =
-            CustomWeatherScreen(isDay).getCustomWeatherBackgroundColor(code: code);
+        Color backgroundColor = CustomWeatherScreen(isDay)
+            .getCustomWeatherBackgroundColor(code: code);
         return Scaffold(
           appBar: _buildAppBar(context),
           backgroundColor: backgroundColor,
@@ -196,8 +196,8 @@ class _HomeScreenV2State extends State<HomeScreenV2>
             } else if (snapshot.hasData) {
               ForecastWeatherResponse forecastWeather = snapshot.data!;
               // _refreshIsDay(forecastWeather);
-                isDay = forecastWeather.current.isDay;
-                code = forecastWeather.current.condition.code;
+              isDay = forecastWeather.current.isDay;
+              code = forecastWeather.current.condition.code;
               return _buildContent(context, forecastWeather, location!);
             } else {
               return SizedBox.shrink();
@@ -353,7 +353,13 @@ class _HomeScreenV2State extends State<HomeScreenV2>
               controller: pageController,
               count: pageLength,
               effect: JumpingDotEffect(
-                  dotHeight: 6, dotWidth: 6, verticalOffset: 10, jumpScale: 3),
+                dotHeight: 6,
+                dotWidth: 6,
+                verticalOffset: 10,
+                jumpScale: 3,
+                dotColor: isDay == 1 ? Color(0xFFE9DEDA) : Color(0xFF57585E),
+                activeDotColor: Color(0xFFEF3B08),
+              ),
             ),
           )
         : SizedBox.shrink();
