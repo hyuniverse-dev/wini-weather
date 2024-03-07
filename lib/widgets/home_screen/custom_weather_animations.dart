@@ -358,59 +358,59 @@ class CustomAnimationContent {
     return Stack(
       children: [
         movePartScreenAnimation(
-            asset: 'assets/images/elements/day_thunder1.png',
+            asset: 'assets/images/elements/thunder1.png',
             animation: animation[0],
             opacity: 1.0,
             height: height * 0.39,
             width: width),
         movePartScreenAnimation(
-            asset: 'assets/images/elements/day_thunder2.png',
+            asset: 'assets/images/elements/thunder2.png',
             animation: animation[3],
             opacity: 1.0,
             height: height * 0.35,
             width: width),
         fadeInOutAnimation(
-          asset: 'assets/images/elements/day_thunder7.png',
+          asset: 'assets/images/elements/thunder7.png',
           animation: animation[5],
           top: height * 0.25,
           left: width * 0.5,
           width: width * 0.2,
         ),
         fadeInOutAnimation(
-          asset: 'assets/images/elements/day_thunder7.png',
+          asset: 'assets/images/elements/thunder7.png',
           animation: animation[6],
           top: height * 0.2,
           left: width * 0.6,
           width: width * 0.2,
         ),
         fadeInOutAnimation(
-          asset: 'assets/images/elements/day_thunder6.png',
+          asset: 'assets/images/elements/thunder6.png',
           animation: animation[4],
           top: height * 0.2,
           left: width * 0.25,
           width: width * 0.2,
         ),
         fadeInOutAnimation(
-          asset: 'assets/images/elements/day_thunder6.png',
+          asset: 'assets/images/elements/thunder6.png',
           animation: animation[5],
           top: height * 0.3,
           left: width * 0.3,
           width: width * 0.2,
         ),
         movePartScreenAnimation(
-            asset: 'assets/images/elements/day_thunder3.png',
+            asset: 'assets/images/elements/thunder3.png',
             animation: animation[2],
             opacity: 1.0,
             height: height * 0.35,
             width: width),
         movePartScreenAnimation(
-            asset: 'assets/images/elements/day_thunder3.png',
+            asset: 'assets/images/elements/thunder3.png',
             animation: animation[1],
             opacity: 1.0,
             height: height * 0.4,
             width: width),
         movePartScreenAnimation(
-            asset: 'assets/images/elements/day_thunder1.png',
+            asset: 'assets/images/elements/thunder1.png',
             animation: animation[0],
             opacity: 1.0,
             height: height * 0.5,
@@ -497,7 +497,14 @@ class CustomAnimationContent {
     final height = (MediaQuery.of(context).size.height);
     final width = MediaQuery.of(context).size.width;
     return Stack(
-      children: [],
+      children: [
+        movePartScreenAnimation(
+            asset: 'assets/images/elements/night_rain_cloud3.png',
+            animation: animation[3],
+            opacity: 1.0,
+            height: height * 0.35,
+            width: width),
+      ],
     );
   }
 
@@ -527,6 +534,12 @@ class CustomAnimationContent {
             animation: animation[7],
             width: width,
             bottom: 10),
+        movePartScreenAnimation(
+          asset: 'assets/images/elements/night_rain_cloud4.png',
+          animation: animation[2],
+          opacity: 0.7,
+          height: height * 0.35,
+        ),
         moveWithOpacityPartAnimation(
           asset: 'assets/images/elements/night_rain_cloud1.png',
           animation: animation[0],
@@ -538,18 +551,6 @@ class CustomAnimationContent {
           animation: animation[1],
           height: height * 0.4,
           isFullOpacity: true,
-        ),
-        movePartScreenAnimation(
-            asset: 'assets/images/elements/night_rain_cloud3.png',
-            animation: animation[3],
-            opacity: 1.0,
-            height: height * 0.35,
-            width: width),
-        movePartScreenAnimation(
-          asset: 'assets/images/elements/night_rain_cloud4.png',
-          animation: animation[2],
-          opacity: 0.7,
-          height: height * 0.35,
         ),
       ],
     );

@@ -38,7 +38,7 @@ class _CustomNightRainState extends State<CustomNightRain>
   void _initializeAnimation() {
     // Move left to right slow
     _cloudController =
-    AnimationController(vsync: this, duration: Duration(minutes: 2))
+    AnimationController(vsync: this, duration: Duration(minutes: 3))
       ..repeat();
 
     _cloudAnimation1 =

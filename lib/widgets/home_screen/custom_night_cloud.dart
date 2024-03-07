@@ -34,7 +34,7 @@ class _CustomNightCloudState extends State<CustomNightCloud>
   void _initializeAnimation() {
     // Move left to right slow
     _leftToRightSlowController =
-        AnimationController(vsync: this, duration: Duration(minutes: 2))
+        AnimationController(vsync: this, duration: Duration(minutes: 20))
           ..repeat();
 
     _leftToRightSlowAnimation =
@@ -42,7 +42,7 @@ class _CustomNightCloudState extends State<CustomNightCloud>
 
     // Move right to left slow
     _rightToLeftSlowController =
-        AnimationController(vsync: this, duration: Duration(minutes: 2))
+        AnimationController(vsync: this, duration: Duration(minutes: 20))
           ..repeat();
 
     _rightToLeftSlowAnimation =
