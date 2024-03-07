@@ -15,6 +15,7 @@ import 'custom_day_rain.dart';
 import 'custom_day_showers.dart';
 import 'custom_day_snow.dart';
 import 'custom_day_thunder.dart';
+import 'custom_day_thundersnow.dart';
 import 'custom_night_blizzard.dart';
 import 'custom_night_heavyrain.dart';
 import 'custom_night_heavysnow.dart';
@@ -22,6 +23,7 @@ import 'custom_night_rain.dart';
 import 'custom_night_showers.dart';
 import 'custom_night_snow.dart';
 import 'custom_night_thunder.dart';
+import 'custom_night_thunder_snow.dart';
 
 Widget buildBackgroundContent({
   required int isDay,
@@ -62,6 +64,8 @@ class CustomWeatherScreen {
         isDay == 1 ? CustomDayBlizzard() : CustomNightBlizzard();
     final customHeavysnowScreen =
         isDay == 1 ? CustomDayHeavysnow() : CustomNightHeavysnow();
+    final customThundersnowScreen =
+        isDay == 1 ? CustomDayThundersnow() : CustomNightThundersnow();
 
     // if (code case 1117) {
     // } else if (code case 1003 || 1006 || 1009) {
@@ -95,9 +99,10 @@ class CustomWeatherScreen {
     //   return customSnowScreen;
     // } else if (code case 1237 || 1261 || 1264) {
     //   return customHeavysnowScreen;
+    // } else if (code case 1282) {
+    //   return customThundersnowScreen;
     // }
-
-    return customHeavysnowScreen;
+    return customThundersnowScreen;
 
     // TODO: Add more weather conditions
     // else if (code case 1237 || 1261 || 1264) {
@@ -166,6 +171,8 @@ class CustomWeatherScreen {
     //   return isDay == 1 ? Color(0xBDC1C3) : Color(0xFF2D2C34);
     // } else if (code case 1237 || 1261 || 1264) {
     //   isDay == 1 ? Color(0xFFBDC1C3) : Color(0xFF2D2C34);
+    // } else if (code case 1282) {
+    //   return isDay == 1 ? Color(0xFFBDC1C3) : Color(0xFF2D2C34);
     // }
 
     return isDay == 1 ? Color(0xFFBDC1C3) : Color(0xFF2D2C34);
@@ -202,9 +209,10 @@ class CustomWeatherScreen {
     // } else if (code case 1216 || 1219 || 1222 || 1225 || 1258) {
     //   return isDay == 1 ? Color(0xFFFFF9F6) : Color(0xFF57585E);
     // } else if (code case 1237 || 1261 || 1264) {
-    //   isDay == 1 ? Color(0xFFFFF9F6) : Color(0xFF57585E);
+    //   return isDay == 1 ? Color(0xFFFFF9F6) : Color(0xFF57585E);
+    // } else if (code case 1282) {
+    //   return isDay == 1 ? Color(0xFFFFF9F6) : Color(0xFF57585E);
     // }
-
     return isDay == 1 ? Color(0xFFFFF9F6) : Color(0xFF57585E);
   }
 }

@@ -1120,4 +1120,77 @@ class CustomAnimationContent {
       children: [],
     );
   }
+
+  Widget dayAndNightThundersnowAnimationFrontContent(
+      {required BuildContext context,
+      required List<Animation<double>> animation,
+      required bool isDay}) {
+    final height = (MediaQuery.of(context).size.height);
+    final width = MediaQuery.of(context).size.width;
+    final lowHeight = (MediaQuery.of(context).size.height) * 0.425;
+    final highHeight = (MediaQuery.of(context).size.height) * 0.35;
+    final bottom = 80.0;
+    return Stack(
+      children: [
+        fadeInOutAnimation(
+            asset: 'assets/images/elements/snow_thunder1.png',
+            animation: animation[4],
+            width: width,
+            bottom: bottom),
+        fadeInOutAnimation(
+            asset: 'assets/images/elements/snow_thunder2.png',
+            animation: animation[5],
+            width: width,
+            bottom: bottom),
+        fadeInOutAnimation(
+            asset: 'assets/images/elements/snow_thunder3.png',
+            animation: animation[6],
+            width: width,
+            bottom: bottom),
+        fadeInOutAnimation(
+          asset: 'assets/images/elements/snow_thunder4.png',
+          animation: animation[7],
+          top: height * 0.27,
+          left: width * 0.5,
+          width: width * 0.2,
+        ),
+        fadeInOutAnimation(
+          asset: 'assets/images/elements/snow_thunder5.png',
+          animation: animation[8],
+          top: height * 0.27,
+          left: width * 0.2,
+          width: width * 0.2,
+        ),
+        movePartScreenAnimation(
+            asset: isDay
+                ? 'assets/images/elements/day_snow_thunder_cloud1.png'
+                : 'assets/images/elements/night_snow_thunder_cloud1.png',
+            animation: animation[0],
+            opacity: 1.0,
+            height: lowHeight),
+        movePartScreenAnimation(
+            asset: isDay
+                ? 'assets/images/elements/day_snow_thunder_cloud2.png'
+                : 'assets/images/elements/night_snow_thunder_cloud2.png',
+            animation: animation[1],
+            opacity: 1.0,
+        height: lowHeight),
+        movePartScreenAnimation(
+            asset: isDay
+                ? 'assets/images/elements/day_snow_thunder_cloud3.png'
+                : 'assets/images/elements/night_snow_thunder_cloud3.png',
+            animation: animation[2],
+            opacity: 1.0,),
+        movePartScreenAnimation(
+          asset: isDay
+              ? 'assets/images/elements/day_snow_thunder_cloud4.png'
+              : 'assets/images/elements/night_snow_thunder_cloud4.png',
+          animation: animation[3],
+          opacity: 1.0,
+          height: lowHeight,
+          width: width * 0.9
+        ),
+      ],
+    );
+  }
 }
