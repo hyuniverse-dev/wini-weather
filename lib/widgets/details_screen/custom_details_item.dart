@@ -5,13 +5,16 @@ Widget CustomDetailsItem({
   required String asset,
   required String title,
   required String value,
+  required Color backgroundColor,
+  required Color textfieldColor,
+  required Color textColor,
 }) {
   return Container(
     padding: EdgeInsets.all(18.0),
     margin: EdgeInsets.all(8.0),
     alignment: Alignment.center,
     decoration: BoxDecoration(
-        color: Color(0xFFF7EEEC), borderRadius: BorderRadius.circular(8.0)),
+        color: backgroundColor, borderRadius: BorderRadius.circular(8.0)),
     child: Row(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -24,7 +27,7 @@ Widget CustomDetailsItem({
         Spacer(),
         Container(
           decoration: BoxDecoration(
-              color: Color(0xFFF7EEEC),
+              color: Colors.transparent,
               borderRadius: BorderRadius.circular(8.0)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -33,14 +36,15 @@ Widget CustomDetailsItem({
               Text(
                 title,
                 style: TextStyle(
-                  fontSize: 10,
+                  fontSize: 15,
                   fontWeight: FontWeight.bold,
+                  color: textfieldColor,
                 ),
               ),
               SizedBox(height: 2),
               Text(
                 value,
-                style: TextStyle(fontSize: 20),
+                style: TextStyle(fontSize: 20, color: textColor),
               ),
             ],
           ),

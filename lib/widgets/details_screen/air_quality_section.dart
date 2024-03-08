@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:frino_icons/frino_icons.dart';
 import 'package:mncf_weather/models/forecast_weather_response.dart';
 import 'package:mncf_weather/services/weather_forecast_api_service.dart';
 import 'package:mncf_weather/utils/weather_utils.dart';
@@ -13,11 +12,12 @@ class DetailItem {
   final String title;
   final String value;
 
-  const DetailItem(
-      {required this.icon,
-      required this.color,
-      required this.title,
-      required this.value});
+  const DetailItem({
+    required this.icon,
+    required this.color,
+    required this.title,
+    required this.value,
+  });
 }
 
 class AirQualitySectionItem extends StatelessWidget {
@@ -62,12 +62,16 @@ class AirQualitySectionItem extends StatelessWidget {
 class AirQualitySection extends StatefulWidget {
   final String location;
   final int dayCount;
+  final Color textfieldColor;
+  final Color textColor;
   static const double columnSpacing = 10.0;
 
   const AirQualitySection({
     super.key,
     required this.location,
     required this.dayCount,
+    required this.textfieldColor,
+    required this.textColor,
   });
 
   @override
@@ -97,7 +101,11 @@ class _AirQualitySectionState extends State<AirQualitySection> {
           alignment: Alignment.bottomLeft,
           child: Text(
             'Air Quality',
-            style: Theme.of(context).textTheme.headlineSmall,
+            style: TextStyle(
+              color: widget.textColor,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
         SizedBox(height: AirQualitySection.columnSpacing),
@@ -134,9 +142,16 @@ class _AirQualitySectionState extends State<AirQualitySection> {
                             asset: '$finedustAsset',
                             title: 'Fine dust',
                             value: '$finedustValue',
+                            textfieldColor: widget.textfieldColor,
+                            textColor: widget.textColor,
                           ),
                           CustomAirQualityItem(
-                              asset: '$coAsset', title: 'CO', value: '$coValue')
+                            asset: '$coAsset',
+                            title: 'CO',
+                            value: '$coValue',
+                            textfieldColor: widget.textfieldColor,
+                            textColor: widget.textColor,
+                          )
                         ]),
                   ),
                   Expanded(
@@ -144,13 +159,19 @@ class _AirQualitySectionState extends State<AirQualitySection> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           CustomAirQualityItem(
-                              asset: '$ultrafineDustAsset',
-                              title: '     Ultra Dust',
-                              value: '$ultrafineDustValue'),
+                            asset: '$ultrafineDustAsset',
+                            title: '     Ultra Dust',
+                            value: '$ultrafineDustValue',
+                            textfieldColor: widget.textfieldColor,
+                            textColor: widget.textColor,
+                          ),
                           CustomAirQualityItem(
-                              asset: '$oThreeAsset',
-                              title: 'OZone',
-                              value: '$oThreeValue')
+                            asset: '$oThreeAsset',
+                            title: 'OZone',
+                            value: '$oThreeValue',
+                            textfieldColor: widget.textfieldColor,
+                            textColor: widget.textColor,
+                          )
                         ]),
                   ),
                 ],

@@ -13,12 +13,16 @@ class TodaySection extends StatefulWidget {
   final double base;
   final String location;
   final int dayCount;
+  final Color textColor;
+  final Color textfieldColor;
 
   const TodaySection({
     super.key,
     required this.base,
     required this.location,
     required this.dayCount,
+    required this.textColor,
+    required this.textfieldColor,
   });
 
   @override
@@ -55,7 +59,12 @@ class _TodaySectionState extends State<TodaySection> {
         children: [
           Text(
             'Today',
-            style: Theme.of(context).textTheme.headlineSmall,
+            // style: Theme.of(context).textTheme.headlineSmall,
+            style: TextStyle(
+              color: widget.textColor,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           Center(
             child: FutureBuilder<ForecastWeatherResponse>(
@@ -70,7 +79,8 @@ class _TodaySectionState extends State<TodaySection> {
                   ForecastWeatherResponse weatherData = snapshot.data!;
                   final forecast = weatherData.forecast.forecastDay;
                   var weather = WeatherUtils(weatherData: weatherData);
-                  List<String> skyConditions = weather.getThreeHourlySkyCondition();
+                  List<String> skyConditions =
+                      weather.getThreeHourlySkyCondition();
                   List<double> tempsC = [];
                   List<double> tempsF = [];
                   print('>>>>> skyConditions.length [${skyConditions.length}]');
@@ -83,7 +93,7 @@ class _TodaySectionState extends State<TodaySection> {
                     }
                   }
                   final settingsProvider =
-                  Provider.of<SettingsProvider>(context);
+                      Provider.of<SettingsProvider>(context);
                   final isCelsius = settingsProvider.isCelsius;
                   final List<double> tempsRatios =
                       calculateRatios(isCelsius ? tempsC : tempsF, widget.base);
@@ -101,6 +111,8 @@ class _TodaySectionState extends State<TodaySection> {
                             graphValues: tempsRatios[i],
                             asset: skyConditions[i],
                             time: time,
+                            textfieldColor: widget.textfieldColor,
+                            textColor: widget.textColor,
                           );
                         },
                       ),
@@ -123,6 +135,8 @@ class TodaySectionItem extends StatelessWidget {
   final double graphValues;
   final String asset;
   final int time;
+  final Color textColor;
+  final Color textfieldColor;
 
   const TodaySectionItem({
     super.key,
@@ -130,6 +144,8 @@ class TodaySectionItem extends StatelessWidget {
     required this.graphValues,
     required this.asset,
     required this.time,
+    required this.textColor,
+    required this.textfieldColor,
   });
 
   @override
@@ -145,7 +161,7 @@ class TodaySectionItem extends StatelessWidget {
               Text(
                 temp.toStringAsFixed(1),
                 style: TextStyle(
-                  color: Color(0xFF6D6D6D),
+                  color: textfieldColor,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -154,7 +170,7 @@ class TodaySectionItem extends StatelessWidget {
                 values: graphValues,
               ),
               columnSpace(2.0),
-              getAssetImage('images/weather/$asset.png', 36, 36),
+              getAssetImage('images/weather/$asset.png', 36, 36, textColor),
               columnSpace(2.0),
               _formatTime(time),
             ],

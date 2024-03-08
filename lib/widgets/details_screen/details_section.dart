@@ -11,12 +11,16 @@ import 'custom_details_item.dart';
 class DetailsSection extends StatefulWidget {
   final String location;
   final int dayCount;
+  final Color textColor;
+  final Color textfieldColor;
   static const double columnSpacing = 10.0;
 
   const DetailsSection({
     super.key,
     required this.location,
     required this.dayCount,
+    required this.textColor,
+    required this.textfieldColor,
   });
 
   @override
@@ -48,7 +52,11 @@ class _DetailsSectionState extends State<DetailsSection> {
           alignment: Alignment.bottomLeft,
           child: Text(
             'Details',
-            style: Theme.of(context).textTheme.headlineSmall,
+            style: TextStyle(
+              color: widget.textColor,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
         SizedBox(height: DetailsSection.columnSpacing),
@@ -81,21 +89,47 @@ class _DetailsSectionState extends State<DetailsSection> {
                 children: [
                   Expanded(
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CustomDetailsItem(asset: '$feelsLikeAsset', title: 'Feels Like', value: '$feelsLikeValue',),
-                        CustomDetailsItem(asset: '$humidityAsset', title: 'Humidity', value: '$humidityValue'),
-                      ]
-                    ),
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomDetailsItem(
+                            asset: '$feelsLikeAsset',
+                            title: 'Feels Like',
+                            value: '$feelsLikeValue',
+                            backgroundColor: widget.textfieldColor,
+                            textColor: widget.textColor,
+                            textfieldColor: widget.textColor,
+                          ),
+                          CustomDetailsItem(
+                            asset: '$humidityAsset',
+                            title: 'Humidity',
+                            value: '$humidityValue',
+                            backgroundColor: widget.textfieldColor,
+                            textColor: widget.textColor,
+                            textfieldColor: widget.textColor,
+                          ),
+                        ]),
                   ),
                   Expanded(
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CustomDetailsItem(asset: '$rainSnowChanceAsset', title: '$rainSnowChanceTitle', value: '$rainSnowChanceValue',),
-                        CustomDetailsItem(asset: '$windSpeedAsset', title: 'Wind \"$windDirectionValue\"', value: '$windSpeedValue',),
-                      ]
-                    ),
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomDetailsItem(
+                            asset: '$rainSnowChanceAsset',
+                            title: '$rainSnowChanceTitle',
+                            value: '$rainSnowChanceValue',
+                            backgroundColor: widget.textfieldColor,
+                            textColor: widget.textColor,
+                            textfieldColor: widget.textColor,
+                          ),
+                          CustomDetailsItem(
+                            asset: '$windSpeedAsset',
+                            title: 'Wind \"$windDirectionValue\"',
+                            value: '$windSpeedValue',
+                            backgroundColor: widget.textfieldColor,
+                            textColor: widget.textColor,
+                            textfieldColor: widget.textColor,
+                          ),
+                        ]),
                   ),
                 ],
               );

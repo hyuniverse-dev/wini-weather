@@ -4,17 +4,18 @@ Widget CustomAirQualityItem({
   required String asset,
   required String title,
   required String value,
+  required Color textfieldColor,
+  required Color textColor,
 }) {
   Color color = Colors.blueGrey;
-
   return Container(
     padding: EdgeInsets.all(18.0),
     margin: EdgeInsets.all(8.0),
     alignment: Alignment.center,
     decoration: BoxDecoration(
-      color: Color(0xFFFFF9F6),
+      color: Colors.transparent,
       border: Border.all(
-        color: Color(0xFFF7EEEC),
+        color: textfieldColor,
         width: 1.0,
         style: BorderStyle.solid,
       ),
@@ -56,12 +57,16 @@ Widget CustomAirQualityItem({
                 style: TextStyle(
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
+                  color: textfieldColor,
                 ),
               ),
               SizedBox(height: 2),
               Text(
                 value,
-                style: TextStyle(fontSize: 20),
+                style: TextStyle(
+                  fontSize: 20,
+                  color: textColor,
+                ),
               ),
             ],
           ),

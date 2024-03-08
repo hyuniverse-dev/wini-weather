@@ -300,8 +300,8 @@ class _HomeScreenV2State extends State<HomeScreenV2>
         createSwipeRoute(
             DetailsScreen(
               coordinate: coordinate,
-              isLightMode: isDayAtCurrentLocation,
-              // isLightMode: false,
+              // isLightMode: isDayAtCurrentLocation, // DetailsScreen light mode
+              isLightMode: false,
             ),
             'up'),
       );
@@ -325,7 +325,7 @@ class _HomeScreenV2State extends State<HomeScreenV2>
       if (currentIndex == pageLength - 1 && isSwipeLeft) {
         navigateToNewScreen(
             context: context,
-            // isLightMode: isDayAtCurrentLocation,
+            // isLightMode: isDayAtCurrentLocation, // AddLocationScreen light mode
             isLightMode: false,
             isNext: true,
             postNavigation: (value) {

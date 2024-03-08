@@ -30,7 +30,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
   final double fTempBase = 100.0;
 
   late ForecastWeatherResponse hourlyWeatherData;
-  late Color themeMode = Color(0xFFFFF9F6);
+  late Color backgroundColor = Color(0xFFFFF9F6);
+  late Color textColor = Color(0xFF1D1F21);
+  late Color textFieldColor = Color(0xFF1D1F21);
 
   int topReachCount = 0;
   bool isLoading = true;
@@ -42,7 +44,11 @@ class _DetailsScreenState extends State<DetailsScreen> {
       setState(() {
         hourlyWeatherData = data;
         isLoading = false;
-        themeMode = widget.isLightMode ? Color(0xFFFFF9F6) : Color(0xFF1D1F21);
+        backgroundColor =
+            widget.isLightMode ? Color(0xFFFFF9F6) : Color(0xFF1D1F21);
+        textColor = widget.isLightMode ? Color(0xFF57585E) : Color(0xFFE9DEDA);
+        textFieldColor =
+            widget.isLightMode ? Color(0xFFFFFFFF) : Color(0xFF343438);
       });
     });
   }
@@ -52,7 +58,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
     final settingsProvider = Provider.of<SettingsProvider>(context);
     final isCelsius = settingsProvider.isCelsius;
     return Scaffold(
-      backgroundColor: themeMode,
+      backgroundColor: backgroundColor,
       body: SafeArea(
         child: NotificationListener(
           onNotification: _handleScrollNotification,
@@ -67,6 +73,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 return DetailsScreenContent(
                   location: widget.coordinate,
                   base: isCelsius ? tTempBase : fTempBase,
+                  textColor: textColor,
+                  textFieldColor: textFieldColor,
                 );
               } else {
                 return Text('No Data');
@@ -95,11 +103,15 @@ class _DetailsScreenState extends State<DetailsScreen> {
 class DetailsScreenContent extends StatelessWidget {
   final String location;
   final double base;
+  final Color textColor;
+  final Color textFieldColor;
 
   const DetailsScreenContent({
     super.key,
     required this.location,
     required this.base,
+    required this.textColor,
+    required this.textFieldColor,
   });
 
   @override
@@ -116,6 +128,8 @@ class DetailsScreenContent extends StatelessWidget {
                 location: location,
                 dayCount: 1,
                 base: base,
+                textColor: textColor,
+                textfieldColor: textFieldColor,
               ),
             ),
             // columnSpace(3.0),
@@ -126,16 +140,22 @@ class DetailsScreenContent extends StatelessWidget {
               location: location,
               base: (base - 10.0),
               dayCount: 7,
+              textColor: textColor,
+              textfieldColor: textFieldColor,
             ),
             columnSpaceWithDivider(3.0, Color(0xFFE9DEDA)),
             DetailsSection(
               location: location,
               dayCount: 1,
+              textColor: textColor,
+              textfieldColor: textFieldColor,
             ),
             columnSpaceWithDivider(3.0, Color(0xFFE9DEDA)),
             AirQualitySection(
               location: location,
               dayCount: 1,
+              textColor: textColor,
+              textfieldColor: textFieldColor,
             ),
           ],
         ),

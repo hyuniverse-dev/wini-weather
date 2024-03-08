@@ -16,6 +16,8 @@ class ForecastSection extends StatefulWidget {
   final String location;
   final double base;
   final int dayCount;
+  final Color textColor;
+  final Color textfieldColor;
 
   const ForecastSection({
     super.key,
@@ -25,6 +27,8 @@ class ForecastSection extends StatefulWidget {
     required this.location,
     required this.base,
     required this.dayCount,
+    required this.textColor,
+    required this.textfieldColor,
   });
 
   @override
@@ -55,7 +59,11 @@ class _ForecastSectionState extends State<ForecastSection> {
         children: [
           Text(
             'Weekly',
-            style: Theme.of(context).textTheme.headlineSmall,
+            style: TextStyle(
+              color: widget.textColor,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           SizedBox(
             height: 10.0,
@@ -73,7 +81,8 @@ class _ForecastSectionState extends State<ForecastSection> {
                   ForecastWeatherResponse weatherData = snapshot.data!;
 
                   var weather = WeatherUtils(weatherData: weatherData);
-                  final settingsProvider = Provider.of<SettingsProvider>(context);
+                  final settingsProvider =
+                      Provider.of<SettingsProvider>(context);
                   final isCelsius = settingsProvider.isCelsius;
                   List<String> skyConditions = weather.getWeeklySkyCondition();
                   List<double> hTemps = [];
@@ -102,6 +111,8 @@ class _ForecastSectionState extends State<ForecastSection> {
                             graphValues: tempsDifferRatios[i],
                             day: widget.days[i],
                             date: widget.date[i],
+                            textColor: widget.textColor,
+                            textfieldColor: widget.textfieldColor,
                           ),
                           SizedBox(
                             width: 25,
@@ -129,6 +140,8 @@ class ForecastSectionItem extends StatelessWidget {
   final double graphValues;
   final String day;
   final String date;
+  final Color textColor;
+  final Color textfieldColor;
 
   const ForecastSectionItem({
     super.key,
@@ -138,6 +151,8 @@ class ForecastSectionItem extends StatelessWidget {
     required this.graphValues,
     required this.day,
     required this.date,
+    required this.textColor,
+    required this.textfieldColor,
   });
 
   @override
@@ -150,29 +165,41 @@ class ForecastSectionItem extends StatelessWidget {
             children: [
               Text(
                 day,
-                style: const TextStyle(
-                  color: Color(0xFF6D6D6D),
+                style: TextStyle(
+                  color: textfieldColor,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               rowSpace(1.0),
               Text(
                 date,
-                style: const TextStyle(
-                  color: Color(0xFF6D6D6D),
+                style: TextStyle(
+                  color: textfieldColor,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               columnSpace(1.0),
-              Image.asset('assets/images/wini/$asset.png',
-              width: 36.0,
-              height: 36.0,),
+              Image.asset(
+                'assets/images/wini/$asset.png',
+                width: 36.0,
+                height: 36.0,
+              ),
               Spacer(),
-              Text(highTemp.toStringAsFixed(0)),
+              Text(
+                highTemp.toStringAsFixed(0),
+                style: TextStyle(
+                  color: textfieldColor,
+                ),
+              ),
               columnSpace(1.0),
               BarGraphBuilder(values: graphValues),
               columnSpace(1.0),
-              Text(lowTemp.toStringAsFixed(0)),
+              Text(
+                lowTemp.toStringAsFixed(0),
+                style: TextStyle(
+                  color: textfieldColor,
+                ),
+              ),
               Spacer()
             ],
           ),
