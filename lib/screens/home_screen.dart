@@ -61,6 +61,7 @@ class _HomeScreenV2State extends State<HomeScreenV2>
   late String coordinate = '';
   late bool isCelsius = true;
   late int isDay = 1;
+  late bool isCurrentLocationDay = true;
   late int code = 113;
   late ForecastWeatherResponse? forecastWeatherData;
   late Future<ForecastWeatherResponse>? _forecastFuture;

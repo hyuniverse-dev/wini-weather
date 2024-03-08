@@ -107,6 +107,7 @@ class _SettingsScreenState extends State<SettingsScreen>
       backgroundColor: Color(0xFFFFF9F6),
       appBar: AppBar(
         backgroundColor: Color(0xFFFFF9F6),
+        scrolledUnderElevation: 0,
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
