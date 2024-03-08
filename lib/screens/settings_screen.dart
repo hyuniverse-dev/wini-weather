@@ -1,8 +1,10 @@
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_background_service_ios/flutter_background_service_ios.dart';
 import 'package:mncf_weather/services/settings_data_service.dart';
+import 'package:mncf_weather/utils/common_utils.dart';
 import 'package:mncf_weather/widgets/settings_screen/switch_tile.dart';
 import 'package:realm/realm.dart';
 import 'package:uuid/uuid.dart' as uuid_pkg;
@@ -61,11 +63,6 @@ class _SettingsScreenState extends State<SettingsScreen>
     await notificationService.init();
     settingsDataService = SettingsDataService(realm);
     settings = await settingsDataService.fetchSettings();
-    //
-    // if (settings == null) {
-    //   settings = await settingsDataService.createDefaultSettings();
-    //   // settings = await settingsDataService.fetchSettings();
-    // }
 
     setState(() {
       isLocated = located;
@@ -80,15 +77,6 @@ class _SettingsScreenState extends State<SettingsScreen>
       notificationTime =
           TimeOfDay(hour: notificationHour!, minute: notificationMinute!);
     });
-
-    // if (settings != null) {
-    // } else {
-    //   SettingsDataService settingsDataService = SettingsDataService(realm);
-    //   settingsDataService.createDefaultSettings();
-    //   setState(() {
-    //     isLocated = located;
-    //   });
-    // }
   }
 
   @override
@@ -116,23 +104,22 @@ class _SettingsScreenState extends State<SettingsScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFFFF9F6),
       appBar: AppBar(
-        title: const Text('Settings'),
+        backgroundColor: Color(0xFFFFF9F6),
       ),
-      // body: settings == null
-      //     ? CircularProgressIndicator()
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: ListView(
           children: [
             const ListTile(
               title: Text(
-                'Temperature Display',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                'Temperature settings',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
             ),
             CustomSwitchTile(
-              title: '°C',
+              title: '°C(Celsius)',
               value: isCelsius!,
               onChanged: (value) => setState(
                 () {
@@ -144,7 +131,7 @@ class _SettingsScreenState extends State<SettingsScreen>
               ),
             ),
             CustomSwitchTile(
-              title: '°F',
+              title: '°F(Fahrenheit)',
               value: !isCelsius!,
               onChanged: (value) => setState(
                 () {
@@ -153,16 +140,13 @@ class _SettingsScreenState extends State<SettingsScreen>
                 },
               ),
             ),
-            ListTile(
-              title: const Text(
-                'Notification',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              trailing: Switch(
+            columnSpaceWithDivider(3.0, Color(0xFFE9DEDA)),
+            Column(children: [
+              CustomSwitchTile(
+                title: 'Notification',
                 value: isNotificationOn!,
+                fontSize: 24.0,
+                isBold: true,
                 onChanged: (value) async {
                   setState(() {
                     isNotificationOn = value;
@@ -183,120 +167,92 @@ class _SettingsScreenState extends State<SettingsScreen>
                   }
                 },
               ),
-              subtitle: InkWell(
-                onTap: () async {
-                  TimeOfDay? picked = await showTimePicker(
-                      context: context, initialTime: notificationTime!);
-                  if (picked != null && picked != notificationTime) {
-                    setState(() {
-                      notificationTime = picked;
-                      settingsDataService.updateSettings(
-                          notificationHour: notificationTime!.hour,
-                          notificationMinute: notificationTime!.minute);
-                    });
-                  }
-                },
-                child: Text(
-                  '${notificationTime!.format(context)}',
-                  style: const TextStyle(
-                    fontSize: 50,
-                  ),
-                ),
-              ),
-            ),
-            const ListTile(
-              title: Text(
-                'Message Elements',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            CustomSwitchTile(
-              title: 'Temperature',
-              value: isTemperatureEnabled!,
-              onChanged: (value) => setState(
-                () {
-                  isTemperatureEnabled = value;
-                  settingsDataService.updateSettings(
-                      isTemperatureEnabled: value);
-                },
-              ),
-            ),
-            CustomSwitchTile(
-              title: 'Feels Like',
-              value: isFeelsLikeEnabled!,
-              onChanged: (value) => setState(
-                () {
-                  isFeelsLikeEnabled = value;
-                  settingsDataService.updateSettings(isFeelsLikeEnabled: value);
-                },
-              ),
-            ),
-            CustomSwitchTile(
-              title: 'Sky Condition',
-              value: isSkyConditionEnabled!,
-              onChanged: (value) => setState(
-                () {
-                  isSkyConditionEnabled = value;
-                  settingsDataService.updateSettings(
-                      isSkyConditionEnabled: value);
-                },
-              ),
-            ),
-            CustomSwitchTile(
-              title: 'Wind Condition',
-              value: isWindConditionEnabled!,
-              onChanged: (value) => setState(
-                () {
-                  isWindConditionEnabled = value;
-                  settingsDataService.updateSettings(
-                      isWindConditionEnabled: value);
-                },
-              ),
-            ),
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: Align(
-                alignment: Alignment.bottomRight,
-                child: ElevatedButton(
-                    style: ButtonStyle(
-                      minimumSize: MaterialStateProperty.all(Size(60, 30)),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                child: Row(
+                  children: [
+                    InkWell(
+                      // splashColor: Color(0xFFEB6440),
+                      onTap: () async {
+                        TimeOfDay? picked = await showTimePicker(
+                            context: context, initialTime: notificationTime!);
+                        if (picked != null && picked != notificationTime) {
+                          setState(() {
+                            notificationTime = picked;
+                            settingsDataService.updateSettings(
+                                notificationHour: notificationTime!.hour,
+                                notificationMinute: notificationTime!.minute);
+                          });
+                        }
+                      },
+                      child: Text(
+                        '${notificationTime!.format(context)}',
+                        style: const TextStyle(
+                          fontSize: 18,
+                        ),
+                      ),
                     ),
-                    onPressed: () async {
-                      print('Preview Button Clicked!');
-                      await notificationService.showNotification();
-                    },
-                    child: const Text('Preview')),
-              ),
-            ),
+                    Spacer(),
+                    ElevatedButton(
+                      child: const Text(
+                        'Change',
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                          color: Color(
+                            0xFFEB6440,
+                          ),
+                        ),
+                      ),
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all(Color(0xFFFFE9DD)),
+                        minimumSize:
+                            MaterialStateProperty.all(const Size(56, 28)),
+                        padding: MaterialStateProperty.all(
+                            const EdgeInsets.symmetric(horizontal: 0.0)),
+                      ),
+                      onPressed: () async {
+                        TimeOfDay? picked = await showTimePicker(
+                            context: context, initialTime: notificationTime!);
+                        if (picked != null && picked != notificationTime) {
+                          setState(() {
+                            notificationTime = picked;
+                            settingsDataService.updateSettings(
+                                notificationHour: notificationTime!.hour,
+                                notificationMinute: notificationTime!.minute);
+                          });
+                        }
+                      },
+                    ),
+                    rowSpace(1.0)
+                  ],
+                ),
+              )
+            ]),
+            columnSpaceWithDivider(3.0, Color(0xFFE9DEDA)),
             SizedBox(
               height: 14.0,
             ),
-            ListTile(
-              title: Text(
-                'Location Services',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              trailing: Switch(
-                value: isLocated!,
-                onChanged: (value) async {
-                  await AppSettings.openAppSettings();
-                  bool permissionStatus = await checkLocationPermissionStatus();
-                  print(permissionStatus);
-                },
-              ),
+            CustomSwitchTile(
+              title: 'Current location',
+              fontSize: 24.0,
+              isBold: true,
+              value: isLocated,
+              onChanged: (value) async {
+                await AppSettings.openAppSettings();
+                bool permissionStatus = await checkLocationPermissionStatus();
+                print('>>> Permission Status: $permissionStatus'); // debug
+              },
             ),
+            columnSpace(3.0),
             Transform.translate(
               offset: const Offset(0.0, -10.0),
               child: Container(
                 alignment: Alignment.bottomCenter,
-                width: MediaQuery.of(context).size.width * 1.5,
-                height: MediaQuery.of(context).size.height * 0.2,
                 padding: const EdgeInsets.all(16.0),
-                child: Image.asset('assets/images/mncfs.png'),
+                child: Image.asset(
+                    'assets/images/advertisement/settings_screen_advertisement.png'),
               ),
             )
           ],

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mncf_weather/models/forecast_weather_response.dart';
 import 'package:mncf_weather/models/weather.dart' as current;
 import 'package:mncf_weather/screens/settings_screen.dart';
 import 'package:mncf_weather/services/weather_current_api_service.dart';
@@ -12,6 +11,7 @@ import 'package:realm/realm.dart' hide ConnectionState;
 import '../models/location.dart';
 import '../services/location_data_service.dart';
 import '../utils/date_utils.dart';
+import 'package:mncf_weather/utils/dialogs_utils.dart' as dialogs;
 
 class AddLocationScreen extends StatefulWidget {
   const AddLocationScreen({super.key});
@@ -27,6 +27,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
   final TextEditingController textController = TextEditingController();
   final double minDragDistance = 0;
   final double minVelocity = 0;
+  late int locationCount;
   late String currentLocation;
   late String? city;
   late Realm realm;
@@ -40,6 +41,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
       final locationDataService = LocationDataService(realm);
       locations = locationDataService.fetchLocations();
       currentLocation = locations[0].city;
+      locationCount = locations.length;
     });
   }
 
@@ -94,6 +96,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                     SearchLocationInput(
                       textController: textController,
                       config: config,
+                      locationCount: locationCount,
                     ),
                     SizedBox(
                       height: 40,
@@ -123,10 +126,10 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                                     var temperature = settingsProvider.isCelsius
                                         ? current.tempC.round()
                                         : current.tempF.round();
-                                    var windKph = current.windKph
-                                        .toString();
+                                    var windKph = current.windKph.toString();
                                     List<String> conditions = [];
-                                    divisionWeatherCodeToText(current.condition.code, conditions);
+                                    divisionWeatherCodeToText(
+                                        current.condition.code, conditions);
                                     var date =
                                         DateTime.fromMillisecondsSinceEpoch(
                                                 snapshot.data!.location
@@ -151,6 +154,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                                               LocationDataService(realm);
                                           locationDataService
                                               .removeLocationById(location.id);
+                                          locationCount--;
                                         });
                                         locations.removeAt(index);
                                       },

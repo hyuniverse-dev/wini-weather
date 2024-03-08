@@ -9,12 +9,15 @@ import '../../models/location.dart';
 class SearchLocationInput extends StatelessWidget {
   final TextEditingController textController;
   final Configuration config;
+  final int locationCount;
+
   // final Function onLocationAdded;
 
   const SearchLocationInput({
     super.key,
     required this.textController,
     required this.config,
+    required this.locationCount,
     // required this.onLocationAdded,
   });
 
@@ -41,10 +44,10 @@ class SearchLocationInput extends StatelessWidget {
   Future<void> _handleSearch(BuildContext context) async {
     final inputValue = textController.text;
     Realm realm;
-
     if (inputValue.isEmpty) {
-      // showValidateDialog(context, inputValue);
-      dialogs.Dialog.showValidateDialog(context);
+      dialogs.Dialog.showImputMissingValidateDialog(context);
+    } else if (locationCount > 2) {
+      dialogs.Dialog.showLocationLimitDialog(context);
     } else {
       final locationData = await fetchLocationData(inputValue);
       if (locationData != null) {
