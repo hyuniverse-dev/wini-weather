@@ -5,6 +5,7 @@ import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_background_service_ios/flutter_background_service_ios.dart';
 import 'package:mncf_weather/services/settings_data_service.dart';
 import 'package:mncf_weather/utils/common_utils.dart';
+import 'package:mncf_weather/utils/time_picker_utils.dart';
 import 'package:mncf_weather/widgets/settings_screen/switch_tile.dart';
 import 'package:realm/realm.dart';
 import 'package:uuid/uuid.dart' as uuid_pkg;
@@ -215,7 +216,14 @@ class _SettingsScreenState extends State<SettingsScreen>
                       ),
                       onPressed: () async {
                         TimeOfDay? picked = await showTimePicker(
-                            context: context, initialTime: notificationTime!);
+                            context: context,
+                            initialTime: notificationTime!,
+                            builder: (context, child) {
+                              return Theme(
+                                child: child!,
+                                data: CustomTimePickerTheme.theme,
+                              );
+                            });
                         if (picked != null && picked != notificationTime) {
                           setState(() {
                             notificationTime = picked;
