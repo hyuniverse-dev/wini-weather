@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter/rendering.dart';
+
 import 'package:mncf_weather/models/forecast_weather_response.dart';
 import 'package:mncf_weather/screens/settings_screen.dart';
 import 'package:mncf_weather/services/weather_forecast_api_service.dart';
@@ -14,8 +14,10 @@ import '../utils/date_utils.dart';
 
 class DetailsScreen extends StatefulWidget {
   final String coordinate;
+  final bool isLightMode;
 
-  const DetailsScreen({super.key, required this.coordinate});
+  const DetailsScreen(
+      {super.key, required this.coordinate, required this.isLightMode});
 
   @override
   State<DetailsScreen> createState() => _DetailsScreenState();
@@ -28,6 +30,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
   final double fTempBase = 100.0;
 
   late ForecastWeatherResponse hourlyWeatherData;
+  late Color themeMode = Color(0xFFFFF9F6);
 
   int topReachCount = 0;
   bool isLoading = true;
@@ -39,6 +42,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
       setState(() {
         hourlyWeatherData = data;
         isLoading = false;
+        themeMode = widget.isLightMode ? Color(0xFFFFF9F6) : Color(0xFF1D1F21);
       });
     });
   }
@@ -48,7 +52,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
     final settingsProvider = Provider.of<SettingsProvider>(context);
     final isCelsius = settingsProvider.isCelsius;
     return Scaffold(
-      backgroundColor: Color(0xFFFFF9F6),
+      backgroundColor: themeMode,
       body: SafeArea(
         child: NotificationListener(
           onNotification: _handleScrollNotification,
@@ -106,10 +110,13 @@ class DetailsScreenContent extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            TodaySection(
-              location: location,
-              dayCount: 1,
-              base: base,
+            Container(
+              color: Colors.transparent,
+              child: TodaySection(
+                location: location,
+                dayCount: 1,
+                base: base,
+              ),
             ),
             // columnSpace(3.0),
             columnSpaceWithDivider(3.0, Color(0xFFE9DEDA)),

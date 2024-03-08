@@ -8,7 +8,6 @@ import 'package:flutter_background_service_android/flutter_background_service_an
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:mncf_weather/models/location_model.dart';
 import 'package:mncf_weather/models/settings.dart';
-import 'package:mncf_weather/screens/home_screen_deprecated.dart';
 import 'package:mncf_weather/screens/home_screen.dart';
 import 'package:mncf_weather/screens/settings_screen.dart';
 import 'package:mncf_weather/services/notification_service.dart';

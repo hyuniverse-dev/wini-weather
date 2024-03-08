@@ -11,10 +11,11 @@ import 'package:realm/realm.dart' hide ConnectionState;
 import '../models/location.dart';
 import '../services/location_data_service.dart';
 import '../utils/date_utils.dart';
-import 'package:mncf_weather/utils/dialogs_utils.dart' as dialogs;
 
 class AddLocationScreen extends StatefulWidget {
-  const AddLocationScreen({super.key});
+  final bool isLightMode;
+
+  const AddLocationScreen({super.key, required this.isLightMode});
 
   @override
   State<AddLocationScreen> createState() => _AddLocationScreenState();
@@ -32,6 +33,9 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
   late String? city;
   late Realm realm;
   late var locations;
+  late Color backgroundColor = Color(0xFFFFF9F6);
+  late Color textColor = Color(0xFF1D1F21);
+  late Color textFieldColor = Color(0xFF1D1F21);
 
   @override
   void initState() {
@@ -42,13 +46,16 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
       locations = locationDataService.fetchLocations();
       currentLocation = locations[0].city;
       locationCount = locations.length;
+      backgroundColor = widget.isLightMode ? Color(0xFFFFF9F6) : Color(0xFF1D1F21);
+      textColor = widget.isLightMode ? Color(0xFF1D1F21) : Color(0xFFFFF9F6);
+      textFieldColor = widget.isLightMode ? Colors.transparent : Color(0xFF343438);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFFFF9F6),
+      backgroundColor: backgroundColor,
       body: GestureDetector(
         onHorizontalDragUpdate: (DragUpdateDetails details) {
           dragDistance += details.delta.dx;
@@ -71,6 +78,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                       style: TextStyle(
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
+                          color: textColor,
                           height: 0.9),
                       textAlign: TextAlign.center,
                     ),
@@ -94,76 +102,81 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                       height: 20,
                     ),
                     SearchLocationInput(
-                      textController: textController,
-                      config: config,
-                      locationCount: locationCount,
-                    ),
+                        textController: textController,
+                        config: config,
+                        locationCount: locationCount,
+                        backgroundColor: textFieldColor,
+                        textColor: textColor,
+                        textFieldColor: textFieldColor),
                     SizedBox(
                       height: 40,
                     ),
                     locations.isNotEmpty
                         ? ListView.builder(
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
-                            itemCount: locations.length,
-                            itemBuilder: (context, index) {
-                              var location = locations[index];
-                              return FutureBuilder<current.WeatherResponse>(
-                                future: fetchWeatherData(
-                                    '${location.latitude},${location.longitude}'),
-                                builder: (BuildContext context,
-                                    AsyncSnapshot<current.WeatherResponse>
-                                        snapshot) {
-                                  if (snapshot.connectionState ==
-                                      ConnectionState.waiting) {
-                                    return SizedBox();
-                                  } else if (snapshot.hasError) {
-                                    return Text('Error : ${snapshot.error}');
-                                  } else {
-                                    final settingsProvider =
-                                        Provider.of<SettingsProvider>(context);
-                                    final current = snapshot.data!.current;
-                                    var temperature = settingsProvider.isCelsius
-                                        ? current.tempC.round()
-                                        : current.tempF.round();
-                                    var windKph = current.windKph.toString();
-                                    List<String> conditions = [];
-                                    divisionWeatherCodeToText(
-                                        current.condition.code, conditions);
-                                    var date =
-                                        DateTime.fromMillisecondsSinceEpoch(
-                                                snapshot.data!.location
-                                                        .localtimeEpoch *
-                                                    1000,
-                                                isUtc: true)
-                                            .toLocal();
-                                    var monthAndDay = getWeekdates(date).first;
-                                    var weekday =
-                                        getWeekdays(date, false).first;
-                                    var minSeconds = getMinSeconds(date).first;
-                                    return CityWeatherTile(
-                                      index: index,
-                                      city: location.name,
-                                      skyCondition: conditions.first,
-                                      summary:
-                                          '$monthAndDay($weekday) $minSeconds',
-                                      temperature: '$temperature°',
-                                      onRemovePressed: () {
-                                        setState(() {
-                                          final locationDataService =
-                                              LocationDataService(realm);
-                                          locationDataService
-                                              .removeLocationById(location.id);
-                                          locationCount--;
-                                        });
-                                        locations.removeAt(index);
-                                      },
-                                    );
-                                  }
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: locations.length,
+                      itemBuilder: (context, index) {
+                        var location = locations[index];
+                        return FutureBuilder<current.WeatherResponse>(
+                          future: fetchWeatherData(
+                              '${location.latitude},${location.longitude}'),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<current.WeatherResponse>
+                              snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return SizedBox();
+                            } else if (snapshot.hasError) {
+                              return Text('Error : ${snapshot.error}');
+                            } else {
+                              final settingsProvider =
+                              Provider.of<SettingsProvider>(context);
+                              final current = snapshot.data!.current;
+                              var temperature = settingsProvider.isCelsius
+                                  ? current.tempC.round()
+                                  : current.tempF.round();
+                              var windKph = current.windKph.toString();
+                              List<String> conditions = [];
+                              divisionWeatherCodeToText(
+                                  current.condition.code, conditions);
+                              var date =
+                              DateTime.fromMillisecondsSinceEpoch(
+                                  snapshot.data!.location
+                                      .localtimeEpoch *
+                                      1000,
+                                  isUtc: true)
+                                  .toLocal();
+                              var monthAndDay = getWeekdates(date).first;
+                              var weekday =
+                                  getWeekdays(date, false).first;
+                              var minSeconds = getMinSeconds(date).first;
+                              return CityWeatherTile(
+                                index: index,
+                                backgroundColor: backgroundColor,
+                                textColor: textColor,
+                                textFieldColor: textFieldColor,
+                                city: location.name,
+                                skyCondition: conditions.first,
+                                summary:
+                                '$monthAndDay($weekday) $minSeconds',
+                                temperature: '$temperature°',
+                                onRemovePressed: () {
+                                  setState(() {
+                                    final locationDataService =
+                                    LocationDataService(realm);
+                                    locationDataService
+                                        .removeLocationById(location.id);
+                                    locationCount--;
+                                  });
+                                  locations.removeAt(index);
                                 },
                               );
-                            },
-                          )
+                            }
+                          },
+                        );
+                      },
+                    )
                         : RefreshProgressIndicator()
                   ],
                 ),

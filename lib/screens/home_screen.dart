@@ -6,9 +6,6 @@ import 'package:mncf_weather/screens/settings_screen.dart';
 import 'package:mncf_weather/services/settings_data_service.dart';
 import 'package:mncf_weather/services/weather_forecast_api_service.dart';
 import 'package:mncf_weather/services/location_api_service.dart';
-import 'package:mncf_weather/widgets/home_screen/custom_day_thunder.dart';
-import 'package:mncf_weather/widgets/home_screen/custom_night_drizzle.dart';
-import 'package:mncf_weather/widgets/home_screen/custom_night_thunder.dart';
 import 'package:mncf_weather/widgets/home_screen/custom_route.dart';
 import 'package:mncf_weather/widgets/home_screen/custom_display_selector.dart';
 import 'package:provider/provider.dart';
@@ -61,7 +58,7 @@ class _HomeScreenV2State extends State<HomeScreenV2>
   late String coordinate = '';
   late bool isCelsius = true;
   late int isDay = 1;
-  late bool isCurrentLocationDay = true;
+  late bool isDayAtCurrentLocation = true;
   late int code = 113;
   late ForecastWeatherResponse? forecastWeatherData;
   late Future<ForecastWeatherResponse>? _forecastFuture;
@@ -134,7 +131,6 @@ class _HomeScreenV2State extends State<HomeScreenV2>
 
   void _onPageChanged(int index) {
     setState(() {
-      print('>>>> _onPageChanged [실행]');
       currentIndex = index;
     });
 
@@ -160,7 +156,11 @@ class _HomeScreenV2State extends State<HomeScreenV2>
             setState(() {
               hasSettingsInit = false;
             });
-            navigateToSettingsScreen(context);
+            navigateToSettingsScreen(
+              context: context,
+              // isLightMode: false,
+              isLightMode: isDayAtCurrentLocation,
+            );
           },
           icon: Icon(
             Icons.settings_outlined,
@@ -196,7 +196,6 @@ class _HomeScreenV2State extends State<HomeScreenV2>
               return Text('Error: ${snapshot.error}');
             } else if (snapshot.hasData) {
               ForecastWeatherResponse forecastWeather = snapshot.data!;
-              // _refreshIsDay(forecastWeather);
               isDay = forecastWeather.current.isDay;
               code = forecastWeather.current.condition.code;
               return _buildContent(context, forecastWeather, location!);
@@ -220,7 +219,6 @@ class _HomeScreenV2State extends State<HomeScreenV2>
             weatherData: weatherData,
           ),
           buildBackgroundContent(isDay: isDay, weatherData: weatherData),
-          // isDay == 1 ? CustomDayThunder() : CustomNightThunder(),
           buildSubWeatherContent(
             context: context,
             weatherData: weatherData,
@@ -246,7 +244,7 @@ class _HomeScreenV2State extends State<HomeScreenV2>
     locationRealm = Realm(locationConfig);
     locationStream = locationRealm.all<Location>().changes;
     locationDataService = LocationDataService(locationRealm);
-    final firstLocation = locationRealm.all<Location>().firstOrNull;
+    var firstLocation = locationRealm.all<Location>().firstOrNull;
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       coordinate =
@@ -269,10 +267,14 @@ class _HomeScreenV2State extends State<HomeScreenV2>
       } else {
         locationDataService.updateLocation(currentLocation);
       }
+      var dayAtCurrentLocation = await fetchForecastWeatherData(
+          '${currentLocation.latitude},${currentLocation.longitude}', 1);
       setState(() {
         final locations = locationRealm.all<Location>().toList();
         pageLength = locations.length;
         location = currentLocation;
+        isDayAtCurrentLocation =
+            dayAtCurrentLocation.current.isDay == 1 ? true : false;
         _forecastFuture = fetchForecastWeatherData(coordinate, 1);
       });
     });
@@ -295,7 +297,13 @@ class _HomeScreenV2State extends State<HomeScreenV2>
   void _handleVerticalSwipe(DragUpdateDetails details, BuildContext context) {
     if (details.delta.dy < -sensitivity) {
       Navigator.of(context).push(
-        createSwipeRoute(DetailsScreen(coordinate: coordinate), 'up'),
+        createSwipeRoute(
+            DetailsScreen(
+              coordinate: coordinate,
+              isLightMode: isDayAtCurrentLocation,
+              // isLightMode: false,
+            ),
+            'up'),
       );
     }
   }
@@ -315,27 +323,38 @@ class _HomeScreenV2State extends State<HomeScreenV2>
     final bool isSwipeLeft = details.delta.dx < -sensitivity;
     if ((isSwipeRight || isSwipeLeft) && !isDragging && !isLoading) {
       if (currentIndex == pageLength - 1 && isSwipeLeft) {
-        navigateToNewScreen(context, true, (value) {
-          if (value) {
-            final newConfig = Configuration.local([Location.schema]);
-            final newRealm = Realm(newConfig);
-            final newLocationData = LocationDataService(newRealm);
-            final newLocations = newLocationData.fetchLocations();
-            setState(() {
-              _updateLocationAndWeatherData(newLocations.last);
-              pageLength = newLocations.length;
-              currentIndex = pageLength - 1;
-              pageController.animateToPage(
-                currentIndex,
-                duration: Duration(milliseconds: 500),
-                curve: Curves.easeInOut,
-              );
+        navigateToNewScreen(
+            context: context,
+            // isLightMode: isDayAtCurrentLocation,
+            isLightMode: false,
+            isNext: true,
+            postNavigation: (value) {
+              if (value) {
+                final newConfig = Configuration.local([Location.schema]);
+                final newRealm = Realm(newConfig);
+                final newLocationData = LocationDataService(newRealm);
+                final newLocations = newLocationData.fetchLocations();
+                setState(() {
+                  _updateLocationAndWeatherData(newLocations.last);
+                  pageLength = newLocations.length;
+                  currentIndex = pageLength - 1;
+                  pageController.animateToPage(
+                    currentIndex,
+                    duration: Duration(milliseconds: 500),
+                    curve: Curves.easeInOut,
+                  );
+                });
+              }
             });
-          }
-        });
       } else if (currentIndex == 0 && isSwipeRight) {
         print('IntroduceScreen');
-        navigateToNewScreen(context, false, (value) => () {});
+        navigateToNewScreen(
+          context: context,
+          // isLightMode: isDayAtCurrentLocation,
+          isLightMode: false,
+          isNext: false,
+          postNavigation: (value) => () {},
+        );
       } else {
         navigateToPage(pageController, pageLength, isSwipeLeft);
       }

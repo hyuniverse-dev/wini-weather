@@ -8,6 +8,9 @@ class CityWeatherTile extends StatelessWidget {
   final String summary;
   final String temperature;
   final VoidCallback onRemovePressed;
+  final Color backgroundColor;
+  final Color textColor;
+  final Color textFieldColor;
 
   const CityWeatherTile({
     super.key,
@@ -17,6 +20,9 @@ class CityWeatherTile extends StatelessWidget {
     required this.summary,
     required this.temperature,
     required this.onRemovePressed,
+    required this.backgroundColor,
+    required this.textColor,
+    required this.textFieldColor,
   });
 
   @override
@@ -27,13 +33,14 @@ class CityWeatherTile extends StatelessWidget {
       ),
       child: Stack(clipBehavior: Clip.none, children: [
         Container(
+          // color: backgroundColor,
           decoration: BoxDecoration(
             border: Border.all(
-              color: Colors.black12,
+              color: textColor,
               width: 1.0,
             ),
             borderRadius: BorderRadius.circular(10.0),
-            color: Color(0xFFFFFFFF),
+            color: textFieldColor,
           ),
           child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -48,15 +55,22 @@ class CityWeatherTile extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
+                        color: textColor,
                       ),
                     ),
-                    Text(summary),
+                    Text(
+                      summary,
+                      style: TextStyle(
+                        color: textColor,
+                      ),
+                    ),
                   ],
                 ),
                 Spacer(),
                 Text(
                   temperature,
                   style: TextStyle(
+                    color: textColor,
                     fontSize: 36,
                   ),
                 ),
@@ -75,7 +89,7 @@ class CityWeatherTile extends StatelessWidget {
           child: index == 0
               ? Icon(
                   Icons.block,
-                  color: Colors.white.withOpacity(1.0),
+                  color: Colors.transparent,
                 )
               : IconButton(
                   icon: Icon(

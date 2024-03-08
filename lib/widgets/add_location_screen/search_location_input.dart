@@ -10,6 +10,9 @@ class SearchLocationInput extends StatelessWidget {
   final TextEditingController textController;
   final Configuration config;
   final int locationCount;
+  final Color backgroundColor;
+  final Color textFieldColor;
+  final Color textColor;
 
   // final Function onLocationAdded;
 
@@ -18,20 +21,41 @@ class SearchLocationInput extends StatelessWidget {
     required this.textController,
     required this.config,
     required this.locationCount,
-    // required this.onLocationAdded,
+    required this.backgroundColor,
+    required this.textColor,
+    required this.textFieldColor,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextField(
+      cursorColor: textColor,
+      style: TextStyle(
+        color: textColor,
+        fontSize: 16,
+      ),
       controller: textController,
       decoration: InputDecoration(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(
+              color: textColor,
+              width: 2.0,
+            ),
+          ),
+          filled: true,
+          fillColor: textFieldColor,
           labelStyle: TextStyle(
-            color: Colors.black,
+            color: textColor,
             fontSize: 12,
           ),
           hintText: 'Region and city names',
+          hintStyle: TextStyle(
+            color: textColor,
+            fontSize: 16,
+          ),
           suffixIcon: IconButton(
+            color: textColor,
             icon: Icon(Icons.keyboard_return_rounded),
             onPressed: () => _handleSearch(context),
           )),
