@@ -6,8 +6,8 @@ import 'package:mncf_weather/services/weather_forecast_api_service.dart';
 import 'package:mncf_weather/utils/common_utils.dart';
 import 'package:mncf_weather/widgets/details_screen/air_quality_section.dart';
 import 'package:mncf_weather/widgets/details_screen/details_section.dart';
-import 'package:mncf_weather/widgets/details_screen/forecast_section.dart';
-import 'package:mncf_weather/widgets/details_screen/today_section.dart';
+import 'package:mncf_weather/widgets/details_screen/weekly_forecast_section.dart';
+import 'package:mncf_weather/widgets/details_screen/hourly_forecast_section.dart';
 import 'package:provider/provider.dart';
 
 import '../utils/date_utils.dart';
@@ -31,8 +31,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
 
   late ForecastWeatherResponse hourlyWeatherData;
   late Color backgroundColor = Color(0xFFFFF9F6);
-  late Color textColor = Color(0xFF1D1F21);
-  late Color textFieldColor = Color(0xFF1D1F21);
 
   int topReachCount = 0;
   bool isLoading = true;
@@ -46,9 +44,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
         isLoading = false;
         backgroundColor =
             widget.isLightMode ? Color(0xFFFFF9F6) : Color(0xFF1D1F21);
-        textColor = widget.isLightMode ? Color(0xFF57585E) : Color(0xFFE9DEDA);
-        textFieldColor =
-            widget.isLightMode ? Color(0xFFFFFFFF) : Color(0xFF343438);
       });
     });
   }
@@ -73,8 +68,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 return DetailsScreenContent(
                   location: widget.coordinate,
                   base: isCelsius ? tTempBase : fTempBase,
-                  textColor: textColor,
-                  textFieldColor: textFieldColor,
+                  isLightMode: widget.isLightMode,
                 );
               } else {
                 return Text('No Data');
@@ -103,15 +97,13 @@ class _DetailsScreenState extends State<DetailsScreen> {
 class DetailsScreenContent extends StatelessWidget {
   final String location;
   final double base;
-  final Color textColor;
-  final Color textFieldColor;
+  final bool isLightMode;
 
   const DetailsScreenContent({
     super.key,
     required this.location,
     required this.base,
-    required this.textColor,
-    required this.textFieldColor,
+    required this.isLightMode,
   });
 
   @override
@@ -124,38 +116,33 @@ class DetailsScreenContent extends StatelessWidget {
           children: [
             Container(
               color: Colors.transparent,
-              child: TodaySection(
+              child: HourlyForecastSection(
                 location: location,
                 dayCount: 1,
                 base: base,
-                textColor: textColor,
-                textfieldColor: textFieldColor,
+                isLightMode: isLightMode,
               ),
             ),
-            // columnSpace(3.0),
             columnSpaceWithDivider(3.0, Color(0xFFE9DEDA)),
-            ForecastSection(
+            WeeklyForecastSection(
               days: getWeekdays(DateTime.now(), true),
               date: getWeekdates(DateTime.now()),
               location: location,
               base: (base - 10.0),
               dayCount: 7,
-              textColor: textColor,
-              textfieldColor: textFieldColor,
+              isLightMode: isLightMode,
             ),
             columnSpaceWithDivider(3.0, Color(0xFFE9DEDA)),
             DetailsSection(
               location: location,
               dayCount: 1,
-              textColor: textColor,
-              textfieldColor: textFieldColor,
+              isLightMode: isLightMode,
             ),
             columnSpaceWithDivider(3.0, Color(0xFFE9DEDA)),
             AirQualitySection(
               location: location,
               dayCount: 1,
-              textColor: textColor,
-              textfieldColor: textFieldColor,
+              isLightMode: isLightMode,
             ),
           ],
         ),

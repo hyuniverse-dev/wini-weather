@@ -9,33 +9,29 @@ import 'package:provider/provider.dart';
 import '../../screens/settings_screen.dart';
 import '../../utils/math_utils.dart';
 
-class ForecastSection extends StatefulWidget {
-  // final List<IconData> weatherIcons;
+class WeeklyForecastSection extends StatefulWidget {
   final List<String> days;
   final List<String> date;
   final String location;
   final double base;
   final int dayCount;
-  final Color textColor;
-  final Color textfieldColor;
+  final bool isLightMode;
 
-  const ForecastSection({
+  const WeeklyForecastSection({
     super.key,
-    // required this.weatherIcons,
     required this.days,
     required this.date,
     required this.location,
     required this.base,
     required this.dayCount,
-    required this.textColor,
-    required this.textfieldColor,
+    required this.isLightMode,
   });
 
   @override
-  State<ForecastSection> createState() => _ForecastSectionState();
+  State<WeeklyForecastSection> createState() => _WeeklyForecastSectionState();
 }
 
-class _ForecastSectionState extends State<ForecastSection> {
+class _WeeklyForecastSectionState extends State<WeeklyForecastSection> {
   late ForecastWeatherResponse weeklyWeatherData;
   bool isLoading = true;
 
@@ -52,15 +48,16 @@ class _ForecastSectionState extends State<ForecastSection> {
 
   @override
   Widget build(BuildContext context) {
+    var textColor = widget.isLightMode ? Color(0xFF000000) : Color(0xFFFFFFFF);
     return Padding(
       padding: const EdgeInsets.all(10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Weekly',
+            'Weekly Forecast',
             style: TextStyle(
-              color: widget.textColor,
+              color: textColor,
               fontSize: 24,
               fontWeight: FontWeight.bold,
             ),
@@ -111,8 +108,7 @@ class _ForecastSectionState extends State<ForecastSection> {
                             graphValues: tempsDifferRatios[i],
                             day: widget.days[i],
                             date: widget.date[i],
-                            textColor: widget.textColor,
-                            textfieldColor: widget.textfieldColor,
+                            isLightMode: widget.isLightMode,
                           ),
                           SizedBox(
                             width: 25,
@@ -140,8 +136,7 @@ class ForecastSectionItem extends StatelessWidget {
   final double graphValues;
   final String day;
   final String date;
-  final Color textColor;
-  final Color textfieldColor;
+  final bool isLightMode;
 
   const ForecastSectionItem({
     super.key,
@@ -151,12 +146,14 @@ class ForecastSectionItem extends StatelessWidget {
     required this.graphValues,
     required this.day,
     required this.date,
-    required this.textColor,
-    required this.textfieldColor,
+    required this.isLightMode,
   });
 
   @override
   Widget build(BuildContext context) {
+    var tempColor = isLightMode ? Color(0xFF919191) : Color(0xFF919191);
+    var dayColor = isLightMode ? Color(0xFF919191) : Color(0xFF919191);
+    var dateColor = isLightMode ? Color(0xFF919191) : Color(0xFF919191);
     return Row(
       children: [
         Container(
@@ -166,7 +163,7 @@ class ForecastSectionItem extends StatelessWidget {
               Text(
                 day,
                 style: TextStyle(
-                  color: textfieldColor,
+                  color: dayColor,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -174,7 +171,7 @@ class ForecastSectionItem extends StatelessWidget {
               Text(
                 date,
                 style: TextStyle(
-                  color: textfieldColor,
+                  color: dateColor,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -188,7 +185,7 @@ class ForecastSectionItem extends StatelessWidget {
               Text(
                 highTemp.toStringAsFixed(0),
                 style: TextStyle(
-                  color: textfieldColor,
+                  color: tempColor,
                 ),
               ),
               columnSpace(1.0),
@@ -197,7 +194,7 @@ class ForecastSectionItem extends StatelessWidget {
               Text(
                 lowTemp.toStringAsFixed(0),
                 style: TextStyle(
-                  color: textfieldColor,
+                  color: tempColor,
                 ),
               ),
               Spacer()

@@ -43,12 +43,12 @@ class _SettingsScreenState extends State<SettingsScreen>
   late bool isWindConditionEnabled = false;
   late bool isLocated = false;
   late TimeOfDay? notificationTime =
-  TimeOfDay(hour: notificationHour, minute: notificationMinute);
+      TimeOfDay(hour: notificationHour, minute: notificationMinute);
   late SettingsDataService settingsDataService;
   late NotificationService notificationService;
   late Color themeMode = Color(0xFFFFF9F6);
   final FlutterLocalNotificationsPlugin localNotificationsPlugin =
-  FlutterLocalNotificationsPlugin();
+      FlutterLocalNotificationsPlugin();
 
   @override
   void initState() {
@@ -108,6 +108,8 @@ class _SettingsScreenState extends State<SettingsScreen>
     return Scaffold(
       backgroundColor: themeMode,
       appBar: AppBar(
+        foregroundColor:
+            widget.isLightMode ? Color(0xFF000000) : Color(0xFFE9DEDA),
         backgroundColor: themeMode,
         scrolledUnderElevation: 0,
       ),
@@ -115,42 +117,47 @@ class _SettingsScreenState extends State<SettingsScreen>
         padding: const EdgeInsets.all(20.0),
         child: ListView(
           children: [
-            const ListTile(
+            ListTile(
               title: Text(
                 'Temperature settings',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: widget.isLightMode
+                        ? Color(0xFF000000)
+                        : Color(0xFFFFFFFF)),
               ),
             ),
             CustomSwitchTile(
               title: '°C(Celsius)',
+              isLightMode: widget.isLightMode,
               value: isCelsius!,
-              onChanged: (value) =>
-                  setState(
-                        () {
-                      isCelsius = value;
-                      settingsDataService.updateSettings(isCelsius: value);
-                      Provider
-                          .of<SettingsProvider>(context, listen: false)
-                          .isCelsius = value;
-                    },
-                  ),
+              onChanged: (value) => setState(
+                () {
+                  isCelsius = value;
+                  settingsDataService.updateSettings(isCelsius: value);
+                  Provider.of<SettingsProvider>(context, listen: false)
+                      .isCelsius = value;
+                },
+              ),
             ),
             CustomSwitchTile(
               title: '°F(Fahrenheit)',
+              isLightMode: widget.isLightMode,
               value: !isCelsius!,
-              onChanged: (value) =>
-                  setState(
-                        () {
-                      isCelsius = !value;
-                      settingsDataService.updateSettings(isCelsius: !value);
-                    },
-                  ),
+              onChanged: (value) => setState(
+                () {
+                  isCelsius = !value;
+                  settingsDataService.updateSettings(isCelsius: !value);
+                },
+              ),
             ),
             columnSpaceWithDivider(3.0, Color(0xFFE9DEDA)),
             Column(children: [
               CustomSwitchTile(
                 title: 'Notification',
                 value: isNotificationOn!,
+                isLightMode: widget.isLightMode,
                 fontSize: 24.0,
                 isBold: true,
                 onChanged: (value) async {
@@ -164,14 +171,12 @@ class _SettingsScreenState extends State<SettingsScreen>
                     print('Notification On----------');
                     FlutterBackgroundServiceIOS().start();
                     print(
-                        'Notification On----------> ${await FlutterBackgroundService()
-                            .isRunning()}');
+                        'Notification On----------> ${await FlutterBackgroundService().isRunning()}');
                   } else {
                     print('Notification Off----------');
                     FlutterBackgroundService().invoke("stopService");
                     print(
-                        'Notification Off----------> ${await FlutterBackgroundService()
-                            .isRunning()}');
+                        'Notification Off----------> ${await FlutterBackgroundService().isRunning()}');
                   }
                 },
               ),
@@ -195,28 +200,31 @@ class _SettingsScreenState extends State<SettingsScreen>
                       },
                       child: Text(
                         '${notificationTime!.format(context)}',
-                        style: const TextStyle(
+                        style: TextStyle(
+                          color: widget.isLightMode
+                              ? Color(0xFF000000)
+                              : Color(0xFFFFFFFF),
                           fontSize: 18,
                         ),
                       ),
                     ),
                     Spacer(),
                     ElevatedButton(
-                      child: const Text(
+                      child: Text(
                         'Change',
                         style: TextStyle(
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.bold,
-                          color: Color(
-                            0xFFEB6440,
-                          ),
-                        ),
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                            color: widget.isLightMode
+                                ? Color(0xFFEB6440)
+                                : Color(0xFFFFFFFF)),
                       ),
                       style: ButtonStyle(
-                        backgroundColor:
-                        MaterialStateProperty.all(Color(0xFFFFE9DD)),
+                        backgroundColor: widget.isLightMode
+                            ? MaterialStateProperty.all(Color(0xFFFFE9DD))
+                            : MaterialStateProperty.all(Color(0xFF57585E)),
                         minimumSize:
-                        MaterialStateProperty.all(const Size(56, 28)),
+                            MaterialStateProperty.all(const Size(56, 28)),
                         padding: MaterialStateProperty.all(
                             const EdgeInsets.symmetric(horizontal: 0.0)),
                       ),
@@ -253,6 +261,7 @@ class _SettingsScreenState extends State<SettingsScreen>
               title: 'Current location',
               fontSize: 24.0,
               isBold: true,
+              isLightMode: widget.isLightMode,
               value: isLocated,
               onChanged: (value) async {
                 await AppSettings.openAppSettings();
@@ -287,9 +296,7 @@ class SettingsProvider with ChangeNotifier {
   void _loadInitialSettings() async {
     var config = Configuration.local([Settings.schema]);
     var realm = Realm(config);
-    var settings = realm
-        .all<Settings>()
-        .lastOrNull;
+    var settings = realm.all<Settings>().lastOrNull;
     if (settings != null) {
       _isCelsius = settings.isCelsius;
     } else {

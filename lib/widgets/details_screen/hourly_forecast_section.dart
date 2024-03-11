@@ -9,27 +9,25 @@ import '../../utils/common_utils.dart';
 import '../../utils/math_utils.dart';
 import 'custom_bar_graph_builder.dart';
 
-class TodaySection extends StatefulWidget {
+class HourlyForecastSection extends StatefulWidget {
   final double base;
   final String location;
   final int dayCount;
-  final Color textColor;
-  final Color textfieldColor;
+  final bool isLightMode;
 
-  const TodaySection({
+  const HourlyForecastSection({
     super.key,
     required this.base,
     required this.location,
     required this.dayCount,
-    required this.textColor,
-    required this.textfieldColor,
+    required this.isLightMode,
   });
 
   @override
-  State<TodaySection> createState() => _TodaySectionState();
+  State<HourlyForecastSection> createState() => _HourlyForecastSectionState();
 }
 
-class _TodaySectionState extends State<TodaySection> {
+class _HourlyForecastSectionState extends State<HourlyForecastSection> {
   final startHour = 0;
   final interval = 3;
 
@@ -52,16 +50,16 @@ class _TodaySectionState extends State<TodaySection> {
 
   @override
   Widget build(BuildContext context) {
+    var textColor = widget.isLightMode ? Color(0xFF000000) : Color(0xFFFFFFFF);
     return Padding(
       padding: const EdgeInsets.all(10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Today',
-            // style: Theme.of(context).textTheme.headlineSmall,
+            'Hourly Forecast',
             style: TextStyle(
-              color: widget.textColor,
+              color: textColor,
               fontSize: 24,
               fontWeight: FontWeight.bold,
             ),
@@ -106,13 +104,12 @@ class _TodaySectionState extends State<TodaySection> {
                         tempsRatios.length,
                         (i) {
                           int time = (startHour + i * interval) % 24;
-                          return TodaySectionItem(
+                          return HourlyForecastSectionItem(
                             temp: isCelsius ? tempsC[i] : tempsF[i],
                             graphValues: tempsRatios[i],
                             asset: skyConditions[i],
                             time: time,
-                            textfieldColor: widget.textfieldColor,
-                            textColor: widget.textColor,
+                            isLightMode: widget.isLightMode,
                           );
                         },
                       ),
@@ -130,26 +127,26 @@ class _TodaySectionState extends State<TodaySection> {
   }
 }
 
-class TodaySectionItem extends StatelessWidget {
+class HourlyForecastSectionItem extends StatelessWidget {
   final double temp;
   final double graphValues;
   final String asset;
   final int time;
-  final Color textColor;
-  final Color textfieldColor;
+  final bool isLightMode;
 
-  const TodaySectionItem({
+  const HourlyForecastSectionItem({
     super.key,
     required this.temp,
     required this.graphValues,
     required this.asset,
     required this.time,
-    required this.textColor,
-    required this.textfieldColor,
+    required this.isLightMode,
   });
 
   @override
   Widget build(BuildContext context) {
+    var iconColor = isLightMode ? Color(0xFF919191) : Color(0xFF919191);
+    var tempColor = isLightMode ? Color(0xFF919191) : Color(0xFF919191);
     return Row(
       children: [
         Container(
@@ -161,7 +158,7 @@ class TodaySectionItem extends StatelessWidget {
               Text(
                 temp.toStringAsFixed(1),
                 style: TextStyle(
-                  color: textfieldColor,
+                  color: tempColor,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -170,7 +167,7 @@ class TodaySectionItem extends StatelessWidget {
                 values: graphValues,
               ),
               columnSpace(2.0),
-              getAssetImage('images/weather/$asset.png', 36, 36, textColor),
+              getAssetImage('images/weather/$asset.png', 36, 36, iconColor),
               columnSpace(2.0),
               _formatTime(time),
             ],

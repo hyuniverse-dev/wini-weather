@@ -17,6 +17,7 @@ import 'custom_day_snow.dart';
 import 'custom_day_thunder.dart';
 import 'custom_day_thundersnow.dart';
 import 'custom_night_blizzard.dart';
+import 'custom_night_drizzle.dart';
 import 'custom_night_heavyrain.dart';
 import 'custom_night_heavysnow.dart';
 import 'custom_night_rain.dart';
@@ -51,7 +52,7 @@ class CustomWeatherScreen {
         isDay == 1 ? CustomDayCloud() : CustomNightCloud();
     final customMistScreen = isDay == 1 ? CustomDayMist() : CustomNightMist();
     final customDrizzleScreen =
-        isDay == 1 ? CustomDayDrizzle() : CustomDayDrizzle();
+        isDay == 1 ? CustomDayDrizzle() : CustomNightDrizzle();
     final customThunderScreen =
         isDay == 1 ? CustomDayThunder() : CustomNightThunder();
     final customRainScreen = isDay == 1 ? CustomDayRain() : CustomNightRain();

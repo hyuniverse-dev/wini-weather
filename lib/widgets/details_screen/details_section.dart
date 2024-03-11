@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mncf_weather/models/details_data.dart';
 import 'package:mncf_weather/models/forecast_weather_response.dart';
 import 'package:mncf_weather/screens/settings_screen.dart';
 import 'package:mncf_weather/services/weather_forecast_api_service.dart';
@@ -11,16 +10,14 @@ import 'custom_details_item.dart';
 class DetailsSection extends StatefulWidget {
   final String location;
   final int dayCount;
-  final Color textColor;
-  final Color textfieldColor;
+  final bool isLightMode;
   static const double columnSpacing = 10.0;
 
   const DetailsSection({
     super.key,
     required this.location,
     required this.dayCount,
-    required this.textColor,
-    required this.textfieldColor,
+    required this.isLightMode,
   });
 
   @override
@@ -46,6 +43,7 @@ class _DetailsSectionState extends State<DetailsSection> {
   Widget build(BuildContext context) {
     final settingsProvider = Provider.of<SettingsProvider>(context);
     final isCelsius = settingsProvider.isCelsius;
+    var textColor = widget.isLightMode ? Color(0xFF000000) : Color(0xFFFFFFFF);
     return Column(
       children: [
         Container(
@@ -53,7 +51,7 @@ class _DetailsSectionState extends State<DetailsSection> {
           child: Text(
             'Details',
             style: TextStyle(
-              color: widget.textColor,
+              color: textColor,
               fontSize: 24,
               fontWeight: FontWeight.bold,
             ),
@@ -95,17 +93,13 @@ class _DetailsSectionState extends State<DetailsSection> {
                             asset: '$feelsLikeAsset',
                             title: 'Feels Like',
                             value: '$feelsLikeValue',
-                            backgroundColor: widget.textfieldColor,
-                            textColor: widget.textColor,
-                            textfieldColor: widget.textColor,
+                            isLightMode: widget.isLightMode,
                           ),
                           CustomDetailsItem(
                             asset: '$humidityAsset',
                             title: 'Humidity',
                             value: '$humidityValue',
-                            backgroundColor: widget.textfieldColor,
-                            textColor: widget.textColor,
-                            textfieldColor: widget.textColor,
+                            isLightMode: widget.isLightMode,
                           ),
                         ]),
                   ),
@@ -117,17 +111,13 @@ class _DetailsSectionState extends State<DetailsSection> {
                             asset: '$rainSnowChanceAsset',
                             title: '$rainSnowChanceTitle',
                             value: '$rainSnowChanceValue',
-                            backgroundColor: widget.textfieldColor,
-                            textColor: widget.textColor,
-                            textfieldColor: widget.textColor,
+                            isLightMode: widget.isLightMode,
                           ),
                           CustomDetailsItem(
                             asset: '$windSpeedAsset',
                             title: 'Wind \"$windDirectionValue\"',
                             value: '$windSpeedValue',
-                            backgroundColor: widget.textfieldColor,
-                            textColor: widget.textColor,
-                            textfieldColor: widget.textColor,
+                            isLightMode: widget.isLightMode,
                           ),
                         ]),
                   ),

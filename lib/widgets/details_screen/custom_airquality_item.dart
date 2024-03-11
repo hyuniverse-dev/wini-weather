@@ -4,18 +4,21 @@ Widget CustomAirQualityItem({
   required String asset,
   required String title,
   required String value,
-  required Color textfieldColor,
-  required Color textColor,
+  required bool isLightMode,
 }) {
-  Color color = Colors.blueGrey;
+  var titleColor = isLightMode ? Color(0xFF57585E) : Color(0xFFE9DEDA);
+  var valueColor = isLightMode ? Color(0xFF000000) : Color(0xFFFFFFFF);
+  var boxDecorationColor = Colors.transparent;
+  var borderColor = isLightMode ? Color(0xFF57585E) : Color(0xFF343438);
+
   return Container(
     padding: EdgeInsets.all(18.0),
     margin: EdgeInsets.all(8.0),
     alignment: Alignment.center,
     decoration: BoxDecoration(
-      color: Colors.transparent,
+      color: boxDecorationColor,
       border: Border.all(
-        color: textfieldColor,
+        color: borderColor,
         width: 1.0,
         style: BorderStyle.solid,
       ),
@@ -32,7 +35,6 @@ Widget CustomAirQualityItem({
               width: 36,
               height: 36,
               decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
                 shape: BoxShape.circle,
               ),
             ),
@@ -55,9 +57,9 @@ Widget CustomAirQualityItem({
               Text(
                 title,
                 style: TextStyle(
-                  fontSize: 10,
+                  fontSize: 15,
                   fontWeight: FontWeight.bold,
-                  color: textfieldColor,
+                  color: titleColor,
                 ),
               ),
               SizedBox(height: 2),
@@ -65,7 +67,7 @@ Widget CustomAirQualityItem({
                 value,
                 style: TextStyle(
                   fontSize: 20,
-                  color: textColor,
+                  color: valueColor,
                 ),
               ),
             ],

@@ -19,21 +19,21 @@ import '../utils/screen_navigation_utils.dart';
 import '../widgets/home_screen/custom_weather_content.dart';
 import 'details_screen.dart';
 
-class HomeScreenV2 extends StatefulWidget {
+class HomeScreen extends StatefulWidget {
   final double initialLatitude;
   final double initialLongitude;
 
-  const HomeScreenV2({
+  const HomeScreen({
     super.key,
     required this.initialLatitude,
     required this.initialLongitude,
   });
 
   @override
-  State<HomeScreenV2> createState() => _HomeScreenV2State();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenV2State extends State<HomeScreenV2>
+class _HomeScreenState extends State<HomeScreen>
     with WidgetsBindingObserver, TickerProviderStateMixin {
   Location? location;
   var isLoading = false;
@@ -158,8 +158,7 @@ class _HomeScreenV2State extends State<HomeScreenV2>
             });
             navigateToSettingsScreen(
               context: context,
-              // isLightMode: false,
-              isLightMode: isDayAtCurrentLocation,
+              isLightMode: isDay == 1 ? true : false,
             );
           },
           icon: Icon(
@@ -300,8 +299,9 @@ class _HomeScreenV2State extends State<HomeScreenV2>
         createSwipeRoute(
             DetailsScreen(
               coordinate: coordinate,
-              // isLightMode: isDayAtCurrentLocation, // DetailsScreen light mode
-              isLightMode: false,
+              isLightMode:
+                  isDay == 1 ? true : false, // DetailsScreen light mode
+              // isLightMode: false,
             ),
             'up'),
       );
@@ -325,8 +325,8 @@ class _HomeScreenV2State extends State<HomeScreenV2>
       if (currentIndex == pageLength - 1 && isSwipeLeft) {
         navigateToNewScreen(
             context: context,
-            // isLightMode: isDayAtCurrentLocation, // AddLocationScreen light mode
-            isLightMode: false,
+            isLightMode: isDayAtCurrentLocation, // AddLocationScreen light mode
+            // isLightMode: false,
             isNext: true,
             postNavigation: (value) {
               if (value) {
@@ -350,8 +350,8 @@ class _HomeScreenV2State extends State<HomeScreenV2>
         print('IntroduceScreen');
         navigateToNewScreen(
           context: context,
-          // isLightMode: isDayAtCurrentLocation,
-          isLightMode: false,
+          isLightMode: isDay == 1 ? true : false,
+          // isLightMode: false,
           isNext: false,
           postNavigation: (value) => () {},
         );

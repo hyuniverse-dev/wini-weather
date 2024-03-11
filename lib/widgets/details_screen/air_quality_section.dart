@@ -4,7 +4,6 @@ import 'package:mncf_weather/services/weather_forecast_api_service.dart';
 import 'package:mncf_weather/utils/weather_utils.dart';
 
 import 'custom_airquality_item.dart';
-import 'custom_details_item.dart';
 
 class DetailItem {
   final IconData icon;
@@ -62,16 +61,14 @@ class AirQualitySectionItem extends StatelessWidget {
 class AirQualitySection extends StatefulWidget {
   final String location;
   final int dayCount;
-  final Color textfieldColor;
-  final Color textColor;
+  final bool isLightMode;
   static const double columnSpacing = 10.0;
 
   const AirQualitySection({
     super.key,
     required this.location,
     required this.dayCount,
-    required this.textfieldColor,
-    required this.textColor,
+    required this.isLightMode,
   });
 
   @override
@@ -95,6 +92,8 @@ class _AirQualitySectionState extends State<AirQualitySection> {
 
   @override
   Widget build(BuildContext context) {
+    var textColor = widget.isLightMode ? Color(0xFF000000) : Color(0xFFFFFFFF);
+
     return Column(
       children: [
         Container(
@@ -102,7 +101,7 @@ class _AirQualitySectionState extends State<AirQualitySection> {
           child: Text(
             'Air Quality',
             style: TextStyle(
-              color: widget.textColor,
+              color: textColor,
               fontSize: 24,
               fontWeight: FontWeight.bold,
             ),
@@ -142,15 +141,13 @@ class _AirQualitySectionState extends State<AirQualitySection> {
                             asset: '$finedustAsset',
                             title: 'Fine dust',
                             value: '$finedustValue',
-                            textfieldColor: widget.textfieldColor,
-                            textColor: widget.textColor,
+                            isLightMode: widget.isLightMode,
                           ),
                           CustomAirQualityItem(
                             asset: '$coAsset',
                             title: 'CO',
                             value: '$coValue',
-                            textfieldColor: widget.textfieldColor,
-                            textColor: widget.textColor,
+                            isLightMode: widget.isLightMode,
                           )
                         ]),
                   ),
@@ -162,15 +159,13 @@ class _AirQualitySectionState extends State<AirQualitySection> {
                             asset: '$ultrafineDustAsset',
                             title: '     Ultra Dust',
                             value: '$ultrafineDustValue',
-                            textfieldColor: widget.textfieldColor,
-                            textColor: widget.textColor,
+                            isLightMode: widget.isLightMode,
                           ),
                           CustomAirQualityItem(
                             asset: '$oThreeAsset',
                             title: 'OZone',
                             value: '$oThreeValue',
-                            textfieldColor: widget.textfieldColor,
-                            textColor: widget.textColor,
+                            isLightMode: widget.isLightMode,
                           )
                         ]),
                   ),

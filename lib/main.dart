@@ -225,7 +225,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "mncf WEATHER",
+      title: "MNCF WEATHER",
       theme: ThemeData(
         fontFamily: 'Gamja Flower',
       ),
@@ -249,7 +249,7 @@ class MyPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return HomeScreenV2(
+    return HomeScreen(
       initialLatitude: latitude,
       initialLongitude: longitude,
     );
