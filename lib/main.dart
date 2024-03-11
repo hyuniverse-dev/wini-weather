@@ -8,11 +8,10 @@ import 'package:flutter_background_service_android/flutter_background_service_an
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:mncf_weather/models/location_model.dart';
 import 'package:mncf_weather/models/settings.dart';
-import 'package:mncf_weather/screens/home_screen.dart';
 import 'package:mncf_weather/screens/settings_screen.dart';
 import 'package:mncf_weather/services/notification_service.dart';
 import 'package:mncf_weather/services/shared_preferences_service.dart';
-import 'package:mncf_weather/utils/location_permission_utils.dart';
+import 'package:mncf_weather/widgets/landing_screen/custom_landing_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:realm/realm.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,21 +25,22 @@ final SharedPreferencesService sharedPreferencesService =
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initService();
-  bool hasPermission = await requestLocationPermission();
-  if (hasPermission) {
-    var position = await determinePosition();
-    final double latitude = position.latitude;
-    final double longitude = position.longitude;
-    runApp(MyProviderApp(
-      latitude: latitude,
-      longitude: longitude,
-    ));
-  } else {
-    runApp(MyProviderApp(
-      latitude: 37.5666791,
-      longitude: 126.9782914,
-    ));
-  }
+  runApp(MyProviderApp(latitude: 37.5666791, longitude: 126.9782914));
+  // bool hasPermission = await requestLocationPermission();
+  // if (hasPermission) {
+  //   var position = await determinePosition();
+  //   final double latitude = position.latitude;
+  //   final double longitude = position.longitude;
+  //   runApp(MyProviderApp(
+  //     latitude: latitude,
+  //     longitude: longitude,
+  //   ));
+  // } else {
+  //   runApp(MyProviderApp(
+  //     latitude: 37.5666791,
+  //     longitude: 126.9782914,
+  //   ));
+  // }
 }
 
 Future<void> initService() async {
@@ -195,10 +195,11 @@ class MyProviderApp extends StatelessWidget {
           create: (context) => SettingsProvider(),
         ),
       ],
-      child: MyApp(
-        latitude: latitude,
-        longitude: longitude,
-      ),
+      // child: MyApp(
+      //   latitude: latitude,
+      //   longitude: longitude,
+      // ),
+      child: MyApp(),
     );
   }
 }
@@ -217,10 +218,14 @@ class PermissionDeniedApp extends StatelessWidget {
 }
 
 class MyApp extends StatelessWidget {
-  final double latitude;
-  final double longitude;
+  // final double latitude;
+  // final double longitude;
 
-  const MyApp({super.key, required this.latitude, required this.longitude});
+  const MyApp({
+    super.key,
+    // required this.latitude,
+    // required this.longitude,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -229,10 +234,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: 'Gamja Flower',
       ),
-      home: MyPage(
-        latitude: latitude,
-        longitude: longitude,
-      ),
+      home: CustomLandingScreen(),
+      // home: MyPage(
+      //   latitude: latitude,
+      //   longitude: longitude,
+      // ),
     );
   }
 }
@@ -249,9 +255,9 @@ class MyPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return HomeScreen(
-      initialLatitude: latitude,
-      initialLongitude: longitude,
-    );
+    return CustomLandingScreen(
+        // initialLatitude: latitude,
+        // initialLongitude: longitude,
+        );
   }
 }
