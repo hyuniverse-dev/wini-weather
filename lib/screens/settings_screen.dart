@@ -235,7 +235,9 @@ class _SettingsScreenState extends State<SettingsScreen>
                             builder: (context, child) {
                               return Theme(
                                 child: child!,
-                                data: CustomTimePickerTheme.theme,
+                                data: CustomTimePickerTheme(
+                                        isDay: widget.isLightMode)
+                                    .theme,
                               );
                             });
                         if (picked != null && picked != notificationTime) {
