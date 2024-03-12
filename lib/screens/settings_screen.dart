@@ -1,8 +1,9 @@
+import 'dart:io' as io;
+
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
-import 'package:flutter_background_service_ios/flutter_background_service_ios.dart';
 import 'package:mncf_weather/services/settings_data_service.dart';
 import 'package:mncf_weather/utils/common_utils.dart';
 import 'package:mncf_weather/utils/time_picker_utils.dart';
@@ -169,14 +170,16 @@ class _SettingsScreenState extends State<SettingsScreen>
                       .setNotificationStatus(isNotificationOn!);
                   if (isNotificationOn!) {
                     print('Notification On----------');
-                    FlutterBackgroundServiceIOS().start();
-                    print(
-                        'Notification On----------> ${await FlutterBackgroundService().isRunning()}');
+                    if (io.Platform.isIOS) {
+                      print('iOS Notification On----------'); // debug
+                      // FlutterBackgroundServiceIOS().start();
+                      FlutterBackgroundService().invoke("startService");
+                    } else if (io.Platform.isAndroid) {
+                      FlutterBackgroundService().startService();
+                    }
                   } else {
                     print('Notification Off----------');
                     FlutterBackgroundService().invoke("stopService");
-                    print(
-                        'Notification Off----------> ${await FlutterBackgroundService().isRunning()}');
                   }
                 },
               ),

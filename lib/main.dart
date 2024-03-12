@@ -26,21 +26,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initService();
   runApp(MyProviderApp(latitude: 37.5666791, longitude: 126.9782914));
-  // bool hasPermission = await requestLocationPermission();
-  // if (hasPermission) {
-  //   var position = await determinePosition();
-  //   final double latitude = position.latitude;
-  //   final double longitude = position.longitude;
-  //   runApp(MyProviderApp(
-  //     latitude: latitude,
-  //     longitude: longitude,
-  //   ));
-  // } else {
-  //   runApp(MyProviderApp(
-  //     latitude: 37.5666791,
-  //     longitude: 126.9782914,
-  //   ));
-  // }
 }
 
 Future<void> initService() async {
@@ -106,7 +91,9 @@ void onStart(ServiceInstance service) async {
       service.stopSelf();
     });
   }
-  Timer.periodic(Duration(seconds: 5), (timer) async {
+
+  // setupPeriodicTask(service);
+  Timer.periodic(Duration(minutes: 1), (timer) async {
     if (service is AndroidServiceInstance) {
       var now = DateTime.now().toLocal();
       var currentTime = TimeOfDay(hour: now.hour, minute: now.minute);
@@ -125,22 +112,24 @@ void onStart(ServiceInstance service) async {
   var prefs = await sharedPreferencesService.getNotificationStatus();
   Timer? periodicTimer;
 
-  service.on("startService").listen((event) async {
+  service.on("start").listen((event) async {
+    print('startService >>> [실행됨]]'); // debug
     await FlutterBackgroundService().startService();
     await sharedPreferencesService.setNotificationStatus(true);
     service.invoke('update');
     prefs = true;
+    setupPeriodicTask(service);
     print("startService >>> ${await FlutterBackgroundService().isRunning()}");
   });
 
-  service.on("stopService").listen((event) async {
+  service.on("stop").listen((event) async {
+    print('stopService >>> [실행됨]]'); // debug
     periodicTimer?.cancel();
     await service.stopSelf();
     await sharedPreferencesService.setNotificationStatus(false);
     service.invoke('update');
     prefs = false;
     var isRunning = await FlutterBackgroundService().isRunning();
-    print('stopService >>> $isRunning');
   });
 
   print('MainScreen prefs >>> $prefs');
@@ -158,6 +147,24 @@ void onStart(ServiceInstance service) async {
       print("background service >> ${currentTime}");
     });
   }
+}
+
+void setupPeriodicTask(ServiceInstance service) {
+  Timer.periodic(Duration(minutes: 1), (timer) async {
+    if (service is AndroidServiceInstance) {
+      var now = DateTime.now().toLocal();
+      var currentTime = TimeOfDay(hour: now.hour, minute: now.minute);
+      var config = Configuration.local([Settings.schema]);
+      var realm = Realm(config);
+      await NotificationService(realm).scheduleNotification(
+        id: 90,
+        title: "Schedule Notification",
+        currentTime: currentTime,
+      );
+      print("background service >> ${currentTime}");
+    }
+    service.invoke('update');
+  });
 }
 
 // iOSBackground
