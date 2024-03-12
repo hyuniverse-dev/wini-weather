@@ -241,6 +241,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: 'Gamja Flower',
       ),
+      debugShowCheckedModeBanner: false,
       home: CustomLandingScreen(),
       // home: MyPage(
       //   latitude: latitude,

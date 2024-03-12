@@ -7,6 +7,7 @@ import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:mncf_weather/services/settings_data_service.dart';
 import 'package:mncf_weather/utils/common_utils.dart';
 import 'package:mncf_weather/utils/time_picker_utils.dart';
+import 'package:mncf_weather/widgets/advertisement/custom_google_banner.dart';
 import 'package:mncf_weather/widgets/settings_screen/switch_tile.dart';
 import 'package:realm/realm.dart';
 import 'package:uuid/uuid.dart' as uuid_pkg;
@@ -106,6 +107,9 @@ class _SettingsScreenState extends State<SettingsScreen>
 
   @override
   Widget build(BuildContext context) {
+    String adUnit = io.Platform.isAndroid
+        ? 'ca-app-pub-6607864297606809/5621273945'
+        : 'ca-app-pub-6607864297606809/7487576309';
     return Scaffold(
       backgroundColor: themeMode,
       appBar: AppBar(
@@ -278,11 +282,14 @@ class _SettingsScreenState extends State<SettingsScreen>
             Transform.translate(
               offset: const Offset(0.0, -10.0),
               child: Container(
-                alignment: Alignment.bottomCenter,
-                padding: const EdgeInsets.all(16.0),
-                child: Image.asset(
-                    'assets/images/advertisement/settings_screen_advertisement.png'),
-              ),
+                  alignment: Alignment.bottomCenter,
+                  padding: const EdgeInsets.all(16.0),
+                  child: CustomGoogleBanner(
+                    adUnitId: adUnit,
+                  )
+                  // Image.asset(
+                  //     'assets/images/advertisement/settings_screen_advertisement.png'),
+                  ),
             )
           ],
         ),
