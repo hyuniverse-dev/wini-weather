@@ -34,32 +34,32 @@ class _CustomNightCloudState extends State<CustomNightCloud>
   void _initializeAnimation() {
     // Move left to right slow
     _leftToRightSlowController =
-        AnimationController(vsync: this, duration: Duration(minutes: 20))
-          ..repeat();
+    AnimationController(vsync: this, duration: Duration(minutes: 20))
+      ..repeat();
 
     _leftToRightSlowAnimation =
         Tween<double>(begin: 0, end: 2).animate(_leftToRightSlowController);
 
     // Move right to left slow
     _rightToLeftSlowController =
-        AnimationController(vsync: this, duration: Duration(minutes: 20))
-          ..repeat();
+    AnimationController(vsync: this, duration: Duration(minutes: 20))
+      ..repeat();
 
     _rightToLeftSlowAnimation =
         Tween<double>(begin: 2, end: 0).animate(_rightToLeftSlowController);
 
     // Move left to right fast
     _leftToRightFastController =
-        AnimationController(vsync: this, duration: Duration(seconds: 50))
-          ..repeat();
+    AnimationController(vsync: this, duration: Duration(seconds: 50))
+      ..repeat();
 
     _leftToRightFastAnimation =
         Tween<double>(begin: 0, end: 2).animate(_leftToRightFastController);
 
     // Move right to left fast
     _rightToLeftFastController =
-        AnimationController(vsync: this, duration: Duration(seconds: 35))
-          ..repeat();
+    AnimationController(vsync: this, duration: Duration(seconds: 35))
+      ..repeat();
 
     _rightToLeftFastAnimation =
         Tween<double>(begin: 2, end: 0).animate(_rightToLeftFastController);

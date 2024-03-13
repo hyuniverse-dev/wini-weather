@@ -23,7 +23,7 @@ Future<ForecastWeatherResponse> fetchForecastWeatherData(coordinate, day) async 
       final data = json.decode(response.body);
       final weatherData = ForecastWeatherResponse.fromJson(data);
       final maxTemps =
-          weatherData.forecast.forecastDay.map((e) => e.day.maxTempC).toList();
+      weatherData.forecast.forecastDay.map((e) => e.day.maxTempC).toList();
       return weatherData;
     } else {
       throw Exception('날씨 서버 오류: ${response.statusCode}');

@@ -88,17 +88,17 @@ class CityWeatherTile extends StatelessWidget {
           right: -23,
           child: index == 0
               ? Icon(
-                  Icons.block,
-                  color: Colors.transparent,
-                )
+            Icons.block,
+            color: Colors.transparent,
+          )
               : IconButton(
-                  icon: Icon(
-                    Icons.remove_circle,
-                    size: 26.0,
-                    color: Color(0xFFEF3B08),
-                  ),
-                  onPressed: onRemovePressed,
-                ),
+            icon: Icon(
+              Icons.remove_circle,
+              size: 26.0,
+              color: Color(0xFFEF3B08),
+            ),
+            onPressed: onRemovePressed,
+          ),
         )
       ]),
     );

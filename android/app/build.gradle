@@ -23,7 +23,11 @@ if (flutterVersionName == null) {
 }
 
 android {
+<<<<<<< HEAD
     namespace "com.example.mncf_weather"
+=======
+    namespace "com.example.morning_weather"
+>>>>>>> ca49a3ef7add4e7dc91cf7efb10c4e1797cfdf48
     compileSdkVersion 34
     ndkVersion flutter.ndkVersion
 
@@ -42,7 +46,11 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
+<<<<<<< HEAD
         applicationId "com.example.mncf_weather"
+=======
+        applicationId "com.example.morning_weather"
+>>>>>>> ca49a3ef7add4e7dc91cf7efb10c4e1797cfdf48
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdkVersion 21//localProperties.getProperty('flutter.minSdkVersion').toInteger()

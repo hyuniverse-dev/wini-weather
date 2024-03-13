@@ -43,7 +43,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
         hourlyWeatherData = data;
         isLoading = false;
         backgroundColor =
-            widget.isLightMode ? Color(0xFFFFF9F6) : Color(0xFF1D1F21);
+        widget.isLightMode ? Color(0xFFFFF9F6) : Color(0xFF1D1F21);
       });
     });
   }

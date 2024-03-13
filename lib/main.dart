@@ -17,10 +17,10 @@ import 'package:realm/realm.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final FlutterLocalNotificationsPlugin localNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
+FlutterLocalNotificationsPlugin();
 
 final SharedPreferencesService sharedPreferencesService =
-    SharedPreferencesService();
+SharedPreferencesService();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,9 +32,9 @@ Future<void> initService() async {
   final service = FlutterBackgroundService();
 
   const AndroidNotificationChannel notificationChannel =
-      AndroidNotificationChannel("foreground", "foreground service",
-          description: "This is channel foreground notification",
-          importance: Importance.high);
+  AndroidNotificationChannel("foreground", "foreground service",
+      description: "This is channel foreground notification",
+      importance: Importance.high);
 
   // if (Platform.isIOS) {
   //   await localNotificationsPlugin.initialize(
@@ -54,7 +54,7 @@ Future<void> initService() async {
 
   localNotificationsPlugin
       .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>()
+      AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(notificationChannel);
 
   // service init and start
@@ -264,8 +264,8 @@ class MyPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomLandingScreen(
-        // initialLatitude: latitude,
-        // initialLongitude: longitude,
-        );
+      // initialLatitude: latitude,
+      // initialLongitude: longitude,
+    );
   }
 }

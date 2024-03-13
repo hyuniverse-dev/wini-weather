@@ -66,7 +66,11 @@
 		331C80D7294CF71000263BE5 /* RunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunnerTests.swift; sourceTree = "<group>"; };
 		333000ED22D3DE5D00554162 /* Warnings.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Warnings.xcconfig; sourceTree = "<group>"; };
 		335BBD1A22A9A15E00E9071D /* GeneratedPluginRegistrant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeneratedPluginRegistrant.swift; sourceTree = "<group>"; };
+<<<<<<< HEAD
 		33CC10ED2044A3C60003C045 /* mncf_weather.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = mncf_weather.app; sourceTree = BUILT_PRODUCTS_DIR; };
+=======
+		33CC10ED2044A3C60003C045 /* morning_weather.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = morning_weather.app; sourceTree = BUILT_PRODUCTS_DIR; };
+>>>>>>> ca49a3ef7add4e7dc91cf7efb10c4e1797cfdf48
 		33CC10F02044A3C60003C045 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		33CC10F22044A3C60003C045 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = Runner/Assets.xcassets; sourceTree = "<group>"; };
 		33CC10F52044A3C60003C045 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
@@ -144,7 +148,11 @@
 		33CC10EE2044A3C60003C045 /* Products */ = {
 			isa = PBXGroup;
 			children = (
+<<<<<<< HEAD
 				33CC10ED2044A3C60003C045 /* mncf_weather.app */,
+=======
+				33CC10ED2044A3C60003C045 /* morning_weather.app */,
+>>>>>>> ca49a3ef7add4e7dc91cf7efb10c4e1797cfdf48
 				331C80D5294CF71000263BE5 /* RunnerTests.xctest */,
 			);
 			name = Products;
@@ -248,7 +256,11 @@
 			);
 			name = Runner;
 			productName = Runner;
+<<<<<<< HEAD
 			productReference = 33CC10ED2044A3C60003C045 /* mncf_weather.app */;
+=======
+			productReference = 33CC10ED2044A3C60003C045 /* morning_weather.app */;
+>>>>>>> ca49a3ef7add4e7dc91cf7efb10c4e1797cfdf48
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -477,10 +489,17 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
+<<<<<<< HEAD
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.mncfWeather.RunnerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/mncf_weather.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/mncf_weather";
+=======
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.morningWeather.RunnerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/morning_weather.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/morning_weather";
+>>>>>>> ca49a3ef7add4e7dc91cf7efb10c4e1797cfdf48
 			};
 			name = Debug;
 		};
@@ -492,10 +511,17 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
+<<<<<<< HEAD
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.mncfWeather.RunnerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/mncf_weather.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/mncf_weather";
+=======
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.morningWeather.RunnerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/morning_weather.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/morning_weather";
+>>>>>>> ca49a3ef7add4e7dc91cf7efb10c4e1797cfdf48
 			};
 			name = Release;
 		};
@@ -507,10 +533,17 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
+<<<<<<< HEAD
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.mncfWeather.RunnerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/mncf_weather.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/mncf_weather";
+=======
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.morningWeather.RunnerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/morning_weather.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/morning_weather";
+>>>>>>> ca49a3ef7add4e7dc91cf7efb10c4e1797cfdf48
 			};
 			name = Profile;
 		};
@@ -565,19 +598,42 @@
 			baseConfigurationReference = 33E5194F232828860026EE4D /* AppInfo.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+<<<<<<< HEAD
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/DebugProfile.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = RJ6G64FCL9;
 				INFOPLIST_FILE = Runner/Info.plist;
+=======
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Runner/DebugProfile.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = RJ6G64FCL9;
+				INFOPLIST_FILE = Runner/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "MNCF Weather";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.weather";
+>>>>>>> ca49a3ef7add4e7dc91cf7efb10c4e1797cfdf48
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+<<<<<<< HEAD
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.MNCFWeather;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
+=======
+				PRODUCT_BUNDLE_IDENTIFIER = com.morning.coffee.MNCFWeather;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+>>>>>>> ca49a3ef7add4e7dc91cf7efb10c4e1797cfdf48
 			};
 			name = Profile;
 		};
@@ -693,20 +749,44 @@
 			baseConfigurationReference = 33E5194F232828860026EE4D /* AppInfo.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+<<<<<<< HEAD
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/DebugProfile.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = RJ6G64FCL9;
 				INFOPLIST_FILE = Runner/Info.plist;
+=======
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Runner/DebugProfile.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = RJ6G64FCL9;
+				INFOPLIST_FILE = Runner/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "MNCF Weather";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.weather";
+>>>>>>> ca49a3ef7add4e7dc91cf7efb10c4e1797cfdf48
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+<<<<<<< HEAD
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.MNCFWeather;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
+=======
+				PRODUCT_BUNDLE_IDENTIFIER = com.morning.coffee.MNCFWeather;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+>>>>>>> ca49a3ef7add4e7dc91cf7efb10c4e1797cfdf48
 			};
 			name = Debug;
 		};
@@ -715,19 +795,42 @@
 			baseConfigurationReference = 33E5194F232828860026EE4D /* AppInfo.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+<<<<<<< HEAD
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Release.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = RJ6G64FCL9;
 				INFOPLIST_FILE = Runner/Info.plist;
+=======
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Runner/Release.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = RJ6G64FCL9;
+				INFOPLIST_FILE = Runner/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "MNCF Weather";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.weather";
+>>>>>>> ca49a3ef7add4e7dc91cf7efb10c4e1797cfdf48
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+<<<<<<< HEAD
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.MNCFWeather;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
+=======
+				PRODUCT_BUNDLE_IDENTIFIER = com.morning.coffee.MNCFWeather;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+>>>>>>> ca49a3ef7add4e7dc91cf7efb10c4e1797cfdf48
 			};
 			name = Release;
 		};

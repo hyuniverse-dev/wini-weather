@@ -22,9 +22,9 @@ class CustomSwitchTile extends StatelessWidget {
   Widget build(BuildContext context) {
     var textColor = isLightMode ? Color(0xFF000000) : Color(0xFFFFFFFF);
     var inactivateThumbColor =
-        isLightMode ? Color(0xFFFFFFFF) : Color(0xFFFFFFFF);
+    isLightMode ? Color(0xFFFFFFFF) : Color(0xFFFFFFFF);
     var inactiveTrackColor =
-        isLightMode ? Color(0xFFC5BDBD) : Color(0xFF57585E);
+    isLightMode ? Color(0xFFC5BDBD) : Color(0xFF57585E);
     return SwitchListTile(
       title: Text(
         title,

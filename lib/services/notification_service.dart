@@ -33,13 +33,13 @@ class NotificationService {
 
     localNotificationsPlugin
         .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
+        AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(channel);
   }
 
   Future<NotificationDetails> notificationDetails() async {
     const AndroidNotificationDetails androidDetails =
-        AndroidNotificationDetails(
+    AndroidNotificationDetails(
       'importance_preview_notification',
       'weather_preview',
       importance: Importance.high,
@@ -54,7 +54,7 @@ class NotificationService {
         presentSound: true);
 
     const NotificationDetails generalNotificationDetails =
-        NotificationDetails(android: androidDetails, iOS: iOSDetails);
+    NotificationDetails(android: androidDetails, iOS: iOSDetails);
 
     return generalNotificationDetails;
   }

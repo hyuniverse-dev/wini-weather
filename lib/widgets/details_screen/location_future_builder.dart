@@ -75,7 +75,7 @@ String extractDisplayName(String displayName) {
   if (parts.length > 1) {
     int index = parts.length - 2;
     requiredParts =
-        parts.length >= (index) ? parts.sublist(index).join(',') : '';
+    parts.length >= (index) ? parts.sublist(index).join(',') : '';
   }
   return requiredParts;
 }

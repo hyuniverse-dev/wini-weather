@@ -32,17 +32,17 @@ class _CustomNightSunnyState extends State<CustomNightSunny>
 
     _fadeAnimation1 =
         Tween<double>(begin: 0.2, end: 1.0).animate(CurvedAnimation(
-      parent: _fadeController,
-      curve: Curves.easeInOut,
-      reverseCurve: Curves.bounceIn,
-    ));
+          parent: _fadeController,
+          curve: Curves.easeInOut,
+          reverseCurve: Curves.bounceIn,
+        ));
 
     _fadeAnimation2 =
         Tween<double>(begin: 1.0, end: 0.2).animate(CurvedAnimation(
-      parent: _fadeController,
-      curve: Curves.easeInOut,
-      reverseCurve: Curves.bounceIn,
-    ));
+          parent: _fadeController,
+          curve: Curves.easeInOut,
+          reverseCurve: Curves.bounceIn,
+        ));
 
     _animations.addAll([
       _fadeAnimation1,

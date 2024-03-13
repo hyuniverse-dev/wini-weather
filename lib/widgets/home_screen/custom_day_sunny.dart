@@ -31,9 +31,9 @@ class _CustomDaySunnyState extends State<CustomDaySunny>
 
     _rotateAnimation =
         Tween<double>(begin: 0.0, end: 2 * pi).animate(CurvedAnimation(
-      parent: _rotateController,
-      curve: Curves.linear,
-    ));
+          parent: _rotateController,
+          curve: Curves.linear,
+        ));
   }
 
   @override
@@ -76,7 +76,7 @@ class _CustomDaySunnyState extends State<CustomDaySunny>
           width: width * 0.45,
           height: height * 0.45,
           child:
-              CustomAnimationContent().daySunnyAnimationBackContent(animation)),
+          CustomAnimationContent().daySunnyAnimationBackContent(animation)),
     ]);
   }
 }

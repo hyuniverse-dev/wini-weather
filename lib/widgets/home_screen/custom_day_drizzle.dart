@@ -38,32 +38,32 @@ class _CustomDayDrizzleState extends State<CustomDayDrizzle>
   void _initializeAnimation() {
     // Move left to right slow
     _leftToRightSlowController =
-        AnimationController(vsync: this, duration: Duration(minutes: 2))
-          ..repeat();
+    AnimationController(vsync: this, duration: Duration(minutes: 2))
+      ..repeat();
 
     _leftToRightSlowAnimation =
         Tween<double>(begin: 0, end: 1).animate(_leftToRightSlowController);
 
     // Move left to right fast
     _leftToRightFastController =
-        AnimationController(vsync: this, duration: Duration(minutes: 2))
-          ..repeat();
+    AnimationController(vsync: this, duration: Duration(minutes: 2))
+      ..repeat();
 
     _leftToRightFastAnimation =
         Tween<double>(begin: -2, end: 2).animate(_leftToRightFastController);
 
     // Move right to left fast
     _rightToLeftSlowController =
-        AnimationController(vsync: this, duration: Duration(minutes: 3))
-          ..repeat();
+    AnimationController(vsync: this, duration: Duration(minutes: 3))
+      ..repeat();
 
     _rightToLeftSlowAnimation =
         Tween<double>(begin: 2, end: -2).animate(_rightToLeftSlowController);
 
     // Move right to left fast
     _rightToLeftFastController =
-        AnimationController(vsync: this, duration: Duration(minutes: 2))
-          ..repeat();
+    AnimationController(vsync: this, duration: Duration(minutes: 2))
+      ..repeat();
 
     _rightToLeftFastAnimation =
         Tween<double>(begin: -1, end: 2).animate(_rightToLeftFastController);

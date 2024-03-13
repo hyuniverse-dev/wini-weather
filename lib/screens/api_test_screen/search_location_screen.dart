@@ -57,49 +57,49 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
           children: isLoading
               ? [CircularProgressIndicator()]
               : [
-                  LocationFutureBuilder(locationData: locationData),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: TextField(
-                      controller: searchKeywordController,
-                      decoration: InputDecoration(labelText: "Search Keyword"),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 50.0,
-                  ),
-                  ElevatedButton(
-                    onPressed: () async {
-                      final locationData = await refreshLocation();
-                      locationFetchCount++;
-                      print('locationData: $locationData');
-                      // 문자열로 지역검색 -> 위도/경도 반환
-                      // try {
-                      //   LocationResponse locationData = await fetchLocationData(
-                      //       searchKeywordController.text);
-                        String lat = locationData.latitude;
-                        String lon = locationData.longitude;
-                      //   String location = lat + ',' + lon;
-                      //   print('location: $location');
-                      //
-                      //   WeatherResponse weatherData =
-                      //       await fetchWeatherData(location);
-                      //   print('location.name: ${weatherData.location.name}');
-                      //   print(
-                      //       'location.country: ${weatherData.location.country}');
-                      //   print('current.tempC: ${weatherData.current.tempC}');
-                      //   print('current.feelsC: ${weatherData.current.feelsC}');
-                      // } catch (e) {
-                      //   print('Error: ${e}');
-                      // }
-                      // // 해당 위도/경도 날씨 조회
-                      // refreshLocation();
-                      // locationFetchCount++;
-                      print("위치검색 Button ${locationFetchCount} Clicked");
-                    },
-                    child: Text("위치검색"),
-                  ),
-                ],
+            LocationFutureBuilder(locationData: locationData),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: TextField(
+                controller: searchKeywordController,
+                decoration: InputDecoration(labelText: "Search Keyword"),
+              ),
+            ),
+            SizedBox(
+              height: 50.0,
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                final locationData = await refreshLocation();
+                locationFetchCount++;
+                print('locationData: $locationData');
+                // 문자열로 지역검색 -> 위도/경도 반환
+                // try {
+                //   LocationResponse locationData = await fetchLocationData(
+                //       searchKeywordController.text);
+                String lat = locationData.latitude;
+                String lon = locationData.longitude;
+                //   String location = lat + ',' + lon;
+                //   print('location: $location');
+                //
+                //   WeatherResponse weatherData =
+                //       await fetchWeatherData(location);
+                //   print('location.name: ${weatherData.location.name}');
+                //   print(
+                //       'location.country: ${weatherData.location.country}');
+                //   print('current.tempC: ${weatherData.current.tempC}');
+                //   print('current.feelsC: ${weatherData.current.feelsC}');
+                // } catch (e) {
+                //   print('Error: ${e}');
+                // }
+                // // 해당 위도/경도 날씨 조회
+                // refreshLocation();
+                // locationFetchCount++;
+                print("위치검색 Button ${locationFetchCount} Clicked");
+              },
+              child: Text("위치검색"),
+            ),
+          ],
         ),
       ),
     );

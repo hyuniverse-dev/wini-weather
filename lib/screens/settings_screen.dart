@@ -45,12 +45,12 @@ class _SettingsScreenState extends State<SettingsScreen>
   late bool isWindConditionEnabled = false;
   late bool isLocated = false;
   late TimeOfDay? notificationTime =
-      TimeOfDay(hour: notificationHour, minute: notificationMinute);
+  TimeOfDay(hour: notificationHour, minute: notificationMinute);
   late SettingsDataService settingsDataService;
   late NotificationService notificationService;
   late Color themeMode = Color(0xFFFFF9F6);
   final FlutterLocalNotificationsPlugin localNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
+  FlutterLocalNotificationsPlugin();
 
   @override
   void initState() {
@@ -114,7 +114,7 @@ class _SettingsScreenState extends State<SettingsScreen>
       backgroundColor: themeMode,
       appBar: AppBar(
         foregroundColor:
-            widget.isLightMode ? Color(0xFF000000) : Color(0xFFE9DEDA),
+        widget.isLightMode ? Color(0xFF000000) : Color(0xFFE9DEDA),
         backgroundColor: themeMode,
         scrolledUnderElevation: 0,
       ),
@@ -138,7 +138,7 @@ class _SettingsScreenState extends State<SettingsScreen>
               isLightMode: widget.isLightMode,
               value: isCelsius!,
               onChanged: (value) => setState(
-                () {
+                    () {
                   isCelsius = value;
                   settingsDataService.updateSettings(isCelsius: value);
                   Provider.of<SettingsProvider>(context, listen: false)
@@ -151,7 +151,7 @@ class _SettingsScreenState extends State<SettingsScreen>
               isLightMode: widget.isLightMode,
               value: !isCelsius!,
               onChanged: (value) => setState(
-                () {
+                    () {
                   isCelsius = !value;
                   settingsDataService.updateSettings(isCelsius: !value);
                 },
@@ -231,7 +231,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                             ? MaterialStateProperty.all(Color(0xFFFFE9DD))
                             : MaterialStateProperty.all(Color(0xFF57585E)),
                         minimumSize:
-                            MaterialStateProperty.all(const Size(56, 28)),
+                        MaterialStateProperty.all(const Size(56, 28)),
                         padding: MaterialStateProperty.all(
                             const EdgeInsets.symmetric(horizontal: 0.0)),
                       ),
@@ -243,7 +243,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                               return Theme(
                                 child: child!,
                                 data: CustomTimePickerTheme(
-                                        isDay: widget.isLightMode)
+                                    isDay: widget.isLightMode)
                                     .theme,
                               );
                             });
@@ -287,9 +287,9 @@ class _SettingsScreenState extends State<SettingsScreen>
                   child: CustomGoogleBanner(
                     adUnitId: adUnit,
                   )
-                  // Image.asset(
-                  //     'assets/images/advertisement/settings_screen_advertisement.png'),
-                  ),
+                // Image.asset(
+                //     'assets/images/advertisement/settings_screen_advertisement.png'),
+              ),
             )
           ],
         ),

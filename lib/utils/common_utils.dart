@@ -44,4 +44,3 @@ Widget columnSpaceWithDivider(double interval, Color color) {
     ],
   );
 }
-

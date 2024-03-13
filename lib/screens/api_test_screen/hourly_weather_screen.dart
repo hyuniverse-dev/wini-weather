@@ -51,15 +51,15 @@ class _HourlyWeatherScreenState extends State<HourlyWeatherScreen> {
           children: isLoading
               ? [CircularProgressIndicator()]
               : [
-                  HourlyWeatherBuilder(weatherData: weatherData),
-                  ElevatedButton(
-                      onPressed: () async {
-                        refreshWeather();
-                        print(weatherData);
-                        print('시간 새로고침 Button Clicked!');
-                      },
-                      child: Text('시간 새로고침'))
-                ],
+            HourlyWeatherBuilder(weatherData: weatherData),
+            ElevatedButton(
+                onPressed: () async {
+                  refreshWeather();
+                  print(weatherData);
+                  print('시간 새로고침 Button Clicked!');
+                },
+                child: Text('시간 새로고침'))
+          ],
         ),
       ),
     );

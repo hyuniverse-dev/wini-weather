@@ -36,13 +36,13 @@ class SettingsDataService {
 
   void updateSettings(
       {bool? isCelsius,
-      bool? isNotificationOn,
-      int? notificationHour,
-      int? notificationMinute,
-      bool? isTemperatureEnabled,
-      bool? isFeelsLikeEnabled,
-      bool? isSkyConditionEnabled,
-      bool? isWindConditionEnabled}) {
+        bool? isNotificationOn,
+        int? notificationHour,
+        int? notificationMinute,
+        bool? isTemperatureEnabled,
+        bool? isFeelsLikeEnabled,
+        bool? isSkyConditionEnabled,
+        bool? isWindConditionEnabled}) {
     final settings = realm.all<Settings>().last;
     realm.write(() {
       if (isCelsius != null) settings.isCelsius = isCelsius;

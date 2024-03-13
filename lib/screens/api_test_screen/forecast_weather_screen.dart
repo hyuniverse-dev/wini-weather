@@ -50,16 +50,16 @@ class _ForecastWeatherScreenState extends State<ForecastWeatherScreen> {
           children: isLoading
               ? [CircularProgressIndicator()]
               : [
-                  ForecastWeatherBuilder(weatherData: weatherData),
-                  ElevatedButton(
-                    onPressed: () async {
-                      refreshWeather();
-                      print(weatherData);
-                      print("날씨 새로고침 Button Clicked!");
-                    },
-                    child: Text("날씨 새로고침"),
-                  ),
-                ],
+            ForecastWeatherBuilder(weatherData: weatherData),
+            ElevatedButton(
+              onPressed: () async {
+                refreshWeather();
+                print(weatherData);
+                print("날씨 새로고침 Button Clicked!");
+              },
+              child: Text("날씨 새로고침"),
+            ),
+          ],
         ),
       ),
     );
