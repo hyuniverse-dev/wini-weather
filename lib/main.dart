@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:mncf_weather/models/location_model.dart';
 import 'package:mncf_weather/models/settings.dart';
 import 'package:mncf_weather/screens/settings_screen.dart';
@@ -17,10 +18,10 @@ import 'package:realm/realm.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final FlutterLocalNotificationsPlugin localNotificationsPlugin =
-FlutterLocalNotificationsPlugin();
+    FlutterLocalNotificationsPlugin();
 
 final SharedPreferencesService sharedPreferencesService =
-SharedPreferencesService();
+    SharedPreferencesService();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,9 +33,9 @@ Future<void> initService() async {
   final service = FlutterBackgroundService();
 
   const AndroidNotificationChannel notificationChannel =
-  AndroidNotificationChannel("foreground", "foreground service",
-      description: "This is channel foreground notification",
-      importance: Importance.high);
+      AndroidNotificationChannel("foreground", "foreground service",
+          description: "This is channel foreground notification",
+          importance: Importance.high);
 
   // if (Platform.isIOS) {
   //   await localNotificationsPlugin.initialize(
@@ -54,7 +55,7 @@ Future<void> initService() async {
 
   localNotificationsPlugin
       .resolvePlatformSpecificImplementation<
-      AndroidFlutterLocalNotificationsPlugin>()
+          AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(notificationChannel);
 
   // service init and start
@@ -190,6 +191,7 @@ class MyProviderApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    MobileAds.instance.initialize();
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
@@ -264,8 +266,8 @@ class MyPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomLandingScreen(
-      // initialLatitude: latitude,
-      // initialLongitude: longitude,
-    );
+        // initialLatitude: latitude,
+        // initialLongitude: longitude,
+        );
   }
 }

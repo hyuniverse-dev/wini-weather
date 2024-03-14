@@ -79,7 +79,6 @@ class SearchLocationInput extends StatelessWidget {
         if (extractData != null) {
           var city = extractData['city'] ?? 'Unknown City';
           final isOk =
-          // await showConfirmDialog(context, city!);
           await dialogs.Dialog.showConfirmDialog(context, city!);
           if (isOk == true) {
             // Create Local Database

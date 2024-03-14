@@ -108,8 +108,10 @@ class _SettingsScreenState extends State<SettingsScreen>
   @override
   Widget build(BuildContext context) {
     String adUnit = io.Platform.isAndroid
-        ? 'ca-app-pub-6607864297606809/5621273945'
+        ? 'ca-app-pub-3940256099942544/6300978111'
         : 'ca-app-pub-6607864297606809/7487576309';
+    // String adUnit = 'ca-app-pub-6607864297606809/7487576309';
+
     return Scaffold(
       backgroundColor: themeMode,
       appBar: AppBar(
