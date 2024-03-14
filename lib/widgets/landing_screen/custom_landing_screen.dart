@@ -19,7 +19,8 @@ class _CustomLandingScreenState extends State<CustomLandingScreen> {
   }
 
   Future<void> _init() async {
-    await Future.delayed(const Duration(seconds: 2), _checkPermissionAndNavigate);
+    await Future.delayed(
+        const Duration(seconds: 2), _checkPermissionAndNavigate);
   }
 
   void _checkPermissionAndNavigate() async {
@@ -60,46 +61,39 @@ class _CustomLandingScreenState extends State<CustomLandingScreen> {
       body: Align(
         alignment: Alignment.center,
         child: Column(
-          children: [
-            Container(
-              width: MediaQuery.of(context).size.width * 0.5,
-              height: MediaQuery.of(context).size.height * 0.7,
-              child: Column(
-                children: <Widget>[
-                  Spacer(),
-                  isDayTime
-                      ? Image.asset('assets/images/landing/day_landing1.png',
-                          width: 206.0, height: 206.0)
-                      : Image.asset('assets/images/landing/night_landing1.png',
-                          width: 206.0, height: 206.0),
-                  columnSpace(1.0),
-                  isDayTime
-                      ? Image.asset(
-                          'assets/images/landing/day_landing2.png',
-                          width: 39,
-                          height: 43,
-                        )
-                      : Image.asset(
-                          'assets/images/landing/night_landing2.png',
-                          width: 39,
-                          height: 43,
-                        ),
-                  columnSpace(1.0),
-                  isDayTime
-                      ? Text('Wini\'s Weather',
-                          style: TextStyle(
-                              fontSize: 24.0,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF000000)))
-                      : Text('Wini\'s Weather',
-                          style: TextStyle(
-                              fontSize: 24.0,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFFFFFFFF))),
-                ],
-              ),
-            ),
+          // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
             Spacer(),
+            isDayTime
+                ? Image.asset('assets/images/landing/day_landing1.png',
+                    width: 206.0, height: 206.0)
+                : Image.asset('assets/images/landing/night_landing1.png',
+                    width: 206.0, height: 206.0),
+            columnSpace(1.0),
+            isDayTime
+                ? Image.asset(
+                    'assets/images/landing/day_landing2.png',
+                    width: 39,
+                    height: 43,
+                  )
+                : Image.asset(
+                    'assets/images/landing/night_landing2.png',
+                    width: 39,
+                    height: 43,
+                  ),
+            columnSpace(1.0),
+            isDayTime
+                ? Text('Wini\'s Weather',
+                    style: TextStyle(
+                        fontSize: 24.0,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF000000)))
+                : Text('Wini\'s Weather',
+                    style: TextStyle(
+                        fontSize: 24.0,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFFFFFFFF))),
+            columnSpace(15.0),
             Stack(
               alignment: Alignment.center,
               children: [
@@ -120,7 +114,7 @@ class _CustomLandingScreenState extends State<CustomLandingScreen> {
                         'assets/images/landing/mncf_logo.png',
                         width: 42.0,
                         height: 42.0,
-                      )
+                      ),
               ],
             ),
             Spacer(),
