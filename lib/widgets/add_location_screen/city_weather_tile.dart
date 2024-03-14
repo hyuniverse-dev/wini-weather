@@ -80,22 +80,22 @@ class CityWeatherTile extends StatelessWidget {
                   'assets/images/wini/$skyCondition.png',
                   width: 38.0,
                 ),
-                rowSpace(0.5)
+                rowSpace(2.5)
               ],
             ),
           ),
         ),
         Positioned(
-          top: 20,
-          right: -15,
+          top: 10,
+          right: -25,
           child: index == 0
               ? Icon(
                   Icons.block,
                   color: Colors.transparent,
                 )
               : Container(
-                  width: 30,
-                  height: 30,
+                  width: 50,
+                  height: 50,
                   decoration: BoxDecoration(
                     color: buttonBackgroundColor,
                     shape: BoxShape.circle,
@@ -104,7 +104,7 @@ class CityWeatherTile extends StatelessWidget {
                     onTap: onRemovePressed,
                     child: Icon(
                       Icons.remove_circle_rounded,
-                      size: 26.0,
+                      size: 35.0,
                       color: Color(0xFFEF3B08),
                     ),
                     // onPressed: onRemovePressed,

@@ -153,27 +153,32 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                               var weekday =
                                   getWeekdays(date, false).first;
                               var minSeconds = getMinSeconds(date).first;
-                              return CityWeatherTile(
-                                index: index,
-                                backgroundColor: backgroundColor,
-                                textColor: textColor,
-                                textFieldColor: textFieldColor,
-                                city: location.name,
-                                skyCondition: conditions.first,
-                                summary:
-                                '$monthAndDay($weekday) $minSeconds',
-                                temperature: '$temperature°',
-                                buttonBackgroundColor: buttonBackgroundColor,
-                                onRemovePressed: () {
-                                  setState(() {
-                                    final locationDataService =
-                                    LocationDataService(realm);
-                                    locationDataService
-                                        .removeLocationById(location.id);
-                                    locationCount--;
-                                  });
-                                  locations.removeAt(index);
-                                },
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 7.0,
+                                ),
+                                child: CityWeatherTile(
+                                  index: index,
+                                  backgroundColor: backgroundColor,
+                                  textColor: textColor,
+                                  textFieldColor: textFieldColor,
+                                  city: location.name,
+                                  skyCondition: conditions.first,
+                                  summary:
+                                  '$monthAndDay($weekday) $minSeconds',
+                                  temperature: '$temperature°',
+                                  buttonBackgroundColor: buttonBackgroundColor,
+                                  onRemovePressed: () {
+                                    setState(() {
+                                      final locationDataService =
+                                      LocationDataService(realm);
+                                      locationDataService
+                                          .removeLocationById(location.id);
+                                      locationCount--;
+                                    });
+                                    locations.removeAt(index);
+                                  },
+                                ),
                               );
                             }
                           },
