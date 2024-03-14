@@ -9,7 +9,7 @@ Widget CustomAirQualityItem({
   var titleColor = isLightMode ? Color(0xFF57585E) : Color(0xFFE9DEDA);
   var valueColor = isLightMode ? Color(0xFF000000) : Color(0xFFFFFFFF);
   var boxDecorationColor = Colors.transparent;
-  var borderColor = isLightMode ? Color(0xFF57585E) : Color(0xFF343438);
+  var borderColor = isLightMode ? Color(0xFFE9DEDA) : Color(0xFF343438);
 
   return Container(
     padding: EdgeInsets.all(18.0),
