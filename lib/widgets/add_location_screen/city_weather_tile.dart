@@ -11,6 +11,7 @@ class CityWeatherTile extends StatelessWidget {
   final Color backgroundColor;
   final Color textColor;
   final Color textFieldColor;
+  final Color buttonBackgroundColor;
 
   const CityWeatherTile({
     super.key,
@@ -23,6 +24,7 @@ class CityWeatherTile extends StatelessWidget {
     required this.backgroundColor,
     required this.textColor,
     required this.textFieldColor,
+    required this.buttonBackgroundColor,
   });
 
   @override
@@ -84,21 +86,30 @@ class CityWeatherTile extends StatelessWidget {
           ),
         ),
         Positioned(
-          top: 10,
-          right: -23,
+          top: 20,
+          right: -15,
           child: index == 0
               ? Icon(
-            Icons.block,
-            color: Colors.transparent,
-          )
-              : IconButton(
-            icon: Icon(
-              Icons.remove_circle,
-              size: 26.0,
-              color: Color(0xFFEF3B08),
-            ),
-            onPressed: onRemovePressed,
-          ),
+                  Icons.block,
+                  color: Colors.transparent,
+                )
+              : Container(
+                  width: 30,
+                  height: 30,
+                  decoration: BoxDecoration(
+                    color: buttonBackgroundColor,
+                    shape: BoxShape.circle,
+                  ),
+                  child: InkWell(
+                    onTap: onRemovePressed,
+                    child: Icon(
+                      Icons.remove_circle_rounded,
+                      size: 26.0,
+                      color: Color(0xFFEF3B08),
+                    ),
+                    // onPressed: onRemovePressed,
+                  ),
+                ),
         )
       ]),
     );

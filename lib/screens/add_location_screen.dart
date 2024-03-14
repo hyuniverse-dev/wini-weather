@@ -36,6 +36,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
   late Color backgroundColor = Color(0xFFFFF9F6);
   late Color textColor = Color(0xFF1D1F21);
   late Color textFieldColor = Color(0xFF1D1F21);
+  late Color buttonBackgroundColor = Color(0xFF1D1F21);
 
   @override
   void initState() {
@@ -49,6 +50,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
       backgroundColor = widget.isLightMode ? Color(0xFFFFF9F6) : Color(0xFF1D1F21);
       textColor = widget.isLightMode ? Color(0xFF1D1F21) : Color(0xFFFFF9F6);
       textFieldColor = widget.isLightMode ? Colors.transparent : Color(0xFF343438);
+      buttonBackgroundColor = widget.isLightMode ? Color(0xFFFFF9F6) : Color(0xFF1D1F21);
     });
   }
 
@@ -161,6 +163,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                                 summary:
                                 '$monthAndDay($weekday) $minSeconds',
                                 temperature: '$temperature°',
+                                buttonBackgroundColor: buttonBackgroundColor,
                                 onRemovePressed: () {
                                   setState(() {
                                     final locationDataService =
