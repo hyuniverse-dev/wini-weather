@@ -126,7 +126,7 @@ class CustomWeatherScreen {
       return isDay == 1 ? Color(0xFFFFF9F6) : Color(0xFF1D1F21);
     } else if (code case 113 || 1000) {
       print('displaying customSunnyScreen'); // debug
-      return isDay == 1 ? Color(0xFFFFF9F6) : Color(0xFF57585E);
+      return isDay == 1 ? Color(0xFFFFF9F6) : Color(0xFF1D1F21);
     } else if (code case 1135 || 1147 || 1030) {
       print('displaying customMistScreen'); // debug
       return isDay == 1 ? Color(0xFFFFF9F6) : Color(0xFF1D1F21);

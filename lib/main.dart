@@ -37,13 +37,6 @@ Future<void> initService() async {
           description: "This is channel foreground notification",
           importance: Importance.high);
 
-  // if (Platform.isIOS) {
-  //   await localNotificationsPlugin.initialize(
-  //     const InitializationSettings(
-  //       iOS: DarwinInitializationSettings(),
-  //     ),
-  //   );
-  // }
   if (Platform.isIOS || Platform.isAndroid) {
     await localNotificationsPlugin.initialize(
       const InitializationSettings(
@@ -92,7 +85,6 @@ void onStart(ServiceInstance service) async {
       service.stopSelf();
     });
   }
-
   // setupPeriodicTask(service);
   Timer.periodic(Duration(minutes: 1), (timer) async {
     if (service is AndroidServiceInstance) {
@@ -204,10 +196,6 @@ class MyProviderApp extends StatelessWidget {
           create: (context) => SettingsProvider(),
         ),
       ],
-      // child: MyApp(
-      //   latitude: latitude,
-      //   longitude: longitude,
-      // ),
       child: MyApp(),
     );
   }
@@ -227,13 +215,8 @@ class PermissionDeniedApp extends StatelessWidget {
 }
 
 class MyApp extends StatelessWidget {
-  // final double latitude;
-  // final double longitude;
-
   const MyApp({
     super.key,
-    // required this.latitude,
-    // required this.longitude,
   });
 
   @override
@@ -245,10 +228,6 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       home: CustomLandingScreen(),
-      // home: MyPage(
-      //   latitude: latitude,
-      //   longitude: longitude,
-      // ),
     );
   }
 }
@@ -265,9 +244,6 @@ class MyPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomLandingScreen(
-        // initialLatitude: latitude,
-        // initialLongitude: longitude,
-        );
+    return CustomLandingScreen();
   }
 }

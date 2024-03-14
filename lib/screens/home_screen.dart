@@ -247,7 +247,7 @@ class _HomeScreenState extends State<HomeScreen>
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       coordinate =
-      '${widget.initialLatitude.toStringAsFixed(7)},${widget.initialLongitude.toStringAsFixed(7)}';
+          '${widget.initialLatitude.toStringAsFixed(7)},${widget.initialLongitude.toStringAsFixed(7)}';
       print(coordinate);
       final initialLocation = await fetchLocationData(coordinate);
       final currentLocation = Location(
@@ -273,7 +273,7 @@ class _HomeScreenState extends State<HomeScreen>
         pageLength = locations.length;
         location = currentLocation;
         isDayAtCurrentLocation =
-        dayAtCurrentLocation.current.isDay == 1 ? true : false;
+            dayAtCurrentLocation.current.isDay == 1 ? true : false;
         _forecastFuture = fetchForecastWeatherData(coordinate, 1);
       });
     });
@@ -300,7 +300,7 @@ class _HomeScreenState extends State<HomeScreen>
             DetailsScreen(
               coordinate: coordinate,
               isLightMode:
-              isDay == 1 ? true : false, // DetailsScreen light mode
+                  isDay == 1 ? true : false, // DetailsScreen light mode
               // isLightMode: false,
             ),
             'up'),
@@ -314,6 +314,7 @@ class _HomeScreenState extends State<HomeScreen>
       latitude = location.latitude;
       longitude = location.longitude;
       coordinate = '${location.latitude},${location.longitude}';
+      // _buildIndicator();
     });
     _loadForecastWeatherData();
   }
@@ -366,21 +367,21 @@ class _HomeScreenState extends State<HomeScreen>
   Widget _buildIndicator() {
     return pageLength > 0
         ? Container(
-      alignment: Alignment.topCenter,
-      height: MediaQuery.of(context).size.height * 0.07,
-      child: SmoothPageIndicator(
-        controller: pageController,
-        count: pageLength,
-        effect: JumpingDotEffect(
-          dotHeight: 6,
-          dotWidth: 6,
-          verticalOffset: 10,
-          jumpScale: 3,
-          dotColor: isDay == 1 ? Color(0xFFE9DEDA) : Color(0xFF57585E),
-          activeDotColor: Color(0xFFEF3B08),
-        ),
-      ),
-    )
+            alignment: Alignment.topCenter,
+            height: MediaQuery.of(context).size.height * 0.07,
+            child: SmoothPageIndicator(
+              controller: pageController,
+              count: pageLength,
+              effect: JumpingDotEffect(
+                dotHeight: 6,
+                dotWidth: 6,
+                verticalOffset: 10,
+                jumpScale: 3,
+                dotColor: isDay == 1 ? Color(0xFFE9DEDA) : Color(0xFF57585E),
+                activeDotColor: Color(0xFFEF3B08),
+              ),
+            ),
+          )
         : SizedBox.shrink();
   }
 }
