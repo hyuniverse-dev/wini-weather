@@ -13,6 +13,7 @@ class SearchLocationInput extends StatelessWidget {
   final Color backgroundColor;
   final Color textFieldColor;
   final Color textColor;
+  final bool isLightMode;
 
   // final Function onLocationAdded;
 
@@ -24,6 +25,7 @@ class SearchLocationInput extends StatelessWidget {
     required this.backgroundColor,
     required this.textColor,
     required this.textFieldColor,
+    required this.isLightMode,
   });
 
   @override
@@ -69,17 +71,16 @@ class SearchLocationInput extends StatelessWidget {
     final inputValue = textController.text;
     Realm realm;
     if (inputValue.isEmpty) {
-      dialogs.Dialog.showImputMissingValidateDialog(context);
+      dialogs.Dialog.showImputMissingValidateDialog(context, isLightMode);
     } else if (locationCount > 2) {
-      dialogs.Dialog.showLocationLimitDialog(context);
+      dialogs.Dialog.showLocationLimitDialog(context, isLightMode);
     } else {
       final locationData = await fetchLocationData(inputValue);
       if (locationData != null) {
         var extractData = await extractLocationData(locationData);
         if (extractData != null) {
           var city = extractData['city'] ?? 'Unknown City';
-          final isOk =
-          await dialogs.Dialog.showConfirmDialog(context, city!);
+          final isOk = await dialogs.Dialog.showConfirmDialog(context, city!, isLightMode);
           if (isOk == true) {
             // Create Local Database
             realm = Realm(config);
