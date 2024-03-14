@@ -113,27 +113,6 @@ class CityWeatherTile extends StatelessWidget {
                       ),
                     ),
                   ),
-                  // Container(
-                  //   width: 50,
-                  //   height: 50,
-                  //   decoration: BoxDecoration(
-                  //     color: buttonBackgroundColor,
-                  //     shape: BoxShape.circle,
-                  //   ),
-                  //   child: Align(
-                  //     alignment: Alignment.center,
-                  //     child: GestureDetector(
-                  //       onTap: onRemovePressed,
-                  //       behavior: HitTestBehavior.translucent,
-                  //       child: Icon(
-                  //         Icons.remove_circle_rounded,
-                  //         size: 35.0,
-                  //         color: Color(0xFFEF3B08),
-                  //       ),
-                  //       // onPressed: onRemovePressed,
-                  //     ),
-                  //   ),
-                  // ),
                 ),
         )
       ]),

@@ -6,10 +6,10 @@ class CustomTimePickerTheme {
   static const String fontFamily = 'Gamja Flower';
 
   TextStyle get timePickerDayStyle =>
-      TextStyle(fontSize: 14, fontFamily: fontFamily, color: Color(0xFF57585E));
+      TextStyle(fontSize: 20, fontFamily: fontFamily, color: Color(0xFF57585E));
 
   TextStyle get timePickerNightStyle =>
-      TextStyle(fontSize: 14, fontFamily: fontFamily, color: Color(0xFFFFFFFF));
+      TextStyle(fontSize: 20, fontFamily: fontFamily, color: Color(0xFFFFFFFF));
 
   Color dayBackgroundColor = Color(0xFFF4E7E4);
   Color nightBackgroundColor = Color(0xFF343438);
@@ -48,7 +48,7 @@ class CustomTimePickerTheme {
             backgroundColor:
                 MaterialStateProperty.all<Color>(Colors.transparent),
             foregroundColor: MaterialStateProperty.all<Color>(mainColor)),
-        hourMinuteTextStyle: TextStyle(fontSize: 30),
+        hourMinuteTextStyle: TextStyle(fontSize: 40),
       ),
       colorScheme: ColorScheme(
         primaryContainer: primaryContainerColor,
