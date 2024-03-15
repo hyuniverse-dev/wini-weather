@@ -9,6 +9,7 @@ import 'package:mncf_weather/widgets/details_screen/details_section.dart';
 import 'package:mncf_weather/widgets/details_screen/weekly_forecast_section.dart';
 import 'package:mncf_weather/widgets/details_screen/hourly_forecast_section.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import '../utils/date_utils.dart';
 
@@ -43,7 +44,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
         hourlyWeatherData = data;
         isLoading = false;
         backgroundColor =
-        widget.isLightMode ? Color(0xFFFFF9F6) : Color(0xFF1D1F21);
+            widget.isLightMode ? Color(0xFFFFF9F6) : Color(0xFF1D1F21);
       });
     });
   }
@@ -108,45 +109,59 @@ class DetailsScreenContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.0),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Container(
-              color: Colors.transparent,
-              child: HourlyForecastSection(
-                location: location,
-                dayCount: 1,
-                base: base,
-                isLightMode: isLightMode,
+    const spinkit = SpinKitChasingDots(
+      color: Color(0xFFEF3B08),
+      size: 50.0,
+    );
+
+    return FutureBuilder(
+      future: Future.delayed(Duration(milliseconds: 1200)),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return spinkit;
+        } else {
+          return Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Container(
+                    color: Colors.transparent,
+                    child: HourlyForecastSection(
+                      location: location,
+                      dayCount: 1,
+                      base: base,
+                      isLightMode: isLightMode,
+                    ),
+                  ),
+                  columnSpaceWithDivider(3.0, Color(0xFFE9DEDA)),
+                  WeeklyForecastSection(
+                    days: getWeekdays(DateTime.now(), true),
+                    date: getWeekdates(DateTime.now()),
+                    location: location,
+                    base: (base - 10.0),
+                    dayCount: 7,
+                    isLightMode: isLightMode,
+                  ),
+                  columnSpaceWithDivider(3.0, Color(0xFFE9DEDA)),
+                  DetailsSection(
+                    location: location,
+                    dayCount: 1,
+                    isLightMode: isLightMode,
+                  ),
+                  columnSpaceWithDivider(3.0, Color(0xFFE9DEDA)),
+                  AirQualitySection(
+                    location: location,
+                    dayCount: 1,
+                    isLightMode: isLightMode,
+                  ),
+                ],
               ),
             ),
-            columnSpaceWithDivider(3.0, Color(0xFFE9DEDA)),
-            WeeklyForecastSection(
-              days: getWeekdays(DateTime.now(), true),
-              date: getWeekdates(DateTime.now()),
-              location: location,
-              base: (base - 10.0),
-              dayCount: 7,
-              isLightMode: isLightMode,
-            ),
-            columnSpaceWithDivider(3.0, Color(0xFFE9DEDA)),
-            DetailsSection(
-              location: location,
-              dayCount: 1,
-              isLightMode: isLightMode,
-            ),
-            columnSpaceWithDivider(3.0, Color(0xFFE9DEDA)),
-            AirQualitySection(
-              location: location,
-              dayCount: 1,
-              isLightMode: isLightMode,
-            ),
-          ],
-        ),
-      ),
+          );
+        }
+      },
     );
   }
 }

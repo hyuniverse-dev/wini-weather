@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mncf_weather/utils/common_utils.dart';
+import 'package:defer_pointer/defer_pointer.dart';
 
 class CityWeatherTile extends StatelessWidget {
   final int index;
@@ -7,7 +8,6 @@ class CityWeatherTile extends StatelessWidget {
   final String skyCondition;
   final String summary;
   final String temperature;
-  final VoidCallback onRemovePressed;
   final Color backgroundColor;
   final Color textColor;
   final Color textFieldColor;
@@ -20,7 +20,6 @@ class CityWeatherTile extends StatelessWidget {
     required this.skyCondition,
     required this.summary,
     required this.temperature,
-    required this.onRemovePressed,
     required this.backgroundColor,
     required this.textColor,
     required this.textFieldColor,
@@ -30,92 +29,68 @@ class CityWeatherTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: 5.0,
+      padding: const EdgeInsets.only(
+        top: 5.0,
+        bottom: 5.0,
+        right: 10.0,
       ),
-      child: Stack(clipBehavior: Clip.none, children: [
-        Container(
-          // color: backgroundColor,
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: textColor,
-              width: 1.0,
-            ),
-            borderRadius: BorderRadius.circular(10.0),
-            color: textFieldColor,
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: textColor,
+            width: 1.0,
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                rowSpace(1.0),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      city.length > 10 ? '${city.substring(0, 11)}...' : city,
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: textColor,
+          borderRadius: BorderRadius.circular(8.0),
+          color: textFieldColor,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Row(
+                children: [
+                  rowSpace(1.0),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        city.length > 20
+                            ? '${city.substring(0, 21)}\n${city.substring(21, 40)}...'
+                            : city,
+                        style: TextStyle(
+                          fontSize: city.length > 20 ? 15 : 20,
+                          fontWeight: FontWeight.bold,
+                          color: textColor,
+                        ),
                       ),
-                    ),
-                    Text(
-                      summary,
-                      style: TextStyle(
-                        color: textColor,
+                      Text(
+                        summary,
+                        style: TextStyle(
+                          color: textColor,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                Spacer(),
-                Text(
-                  temperature,
-                  style: TextStyle(
-                    color: textColor,
-                    fontSize: 36,
+                    ],
                   ),
-                ),
-                Image.asset(
-                  'assets/images/wini/$skyCondition.png',
-                  width: 38.0,
-                ),
-                rowSpace(2.5)
-              ],
-            ),
+                  Spacer(),
+                  Text(
+                    temperature,
+                    style: TextStyle(
+                      color: textColor,
+                      fontSize: 36,
+                    ),
+                  ),
+                  Image.asset(
+                    'assets/images/wini/$skyCondition.png',
+                    width: 38.0,
+                  ),
+                  rowSpace(2.5),
+                ],
+              ),
+            ],
           ),
         ),
-        Positioned(
-          top: 10,
-          right: -25,
-          child: index == 0
-              ? Icon(
-                  Icons.block,
-                  color: Colors.transparent,
-                )
-              : Material(
-                  color: Colors.transparent,
-                  shape: CircleBorder(),
-                  clipBehavior: Clip.antiAlias,
-                  child: InkResponse(
-                    onTap: onRemovePressed,
-                    child: Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: buttonBackgroundColor, // 버튼 배경색
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        Icons.remove_circle_rounded,
-                        size: 35.0,
-                        color: Color(0xFFEF3B08),
-                      ),
-                    ),
-                  ),
-                ),
-        )
-      ]),
+      ),
     );
   }
 }

@@ -5,6 +5,7 @@ import 'package:mncf_weather/utils/common_utils.dart';
 import 'package:mncf_weather/utils/weather_utils.dart';
 import 'package:mncf_weather/widgets/details_screen/custom_bar_graph_builder.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import '../../screens/settings_screen.dart';
 import '../../utils/math_utils.dart';
@@ -32,8 +33,15 @@ class WeeklyForecastSection extends StatefulWidget {
 }
 
 class _WeeklyForecastSectionState extends State<WeeklyForecastSection> {
-  late ForecastWeatherResponse weeklyWeatherData;
   bool isLoading = true;
+
+  static const spinkit = SpinKitChasingDots(
+    color: Color(0xFFEF3B08),
+    size: 26.0,
+  );
+
+  late ForecastWeatherResponse weeklyWeatherData;
+
 
   @override
   void initState() {
@@ -71,7 +79,8 @@ class _WeeklyForecastSectionState extends State<WeeklyForecastSection> {
                   fetchForecastWeatherData(widget.location, widget.dayCount),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
+                  // return spinkit;
+                  return SizedBox.shrink();
                 } else if (snapshot.hasError) {
                   return Text('Error == ${snapshot.error}');
                 } else if (snapshot.hasData) {

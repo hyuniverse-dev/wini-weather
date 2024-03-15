@@ -28,7 +28,7 @@ Route createSwipeRoute(Widget screen, String direction) {
       var end = Offset.zero;
       var curve = Curves.easeIn;
 
-      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: Curves.decelerate));
       var offsetAnimation = animation.drive(tween);
 
       return SlideTransition(
@@ -36,7 +36,7 @@ Route createSwipeRoute(Widget screen, String direction) {
         child: child,
       );
     },
-    transitionDuration: Duration(milliseconds: 900), // 전환 효과 지속 시간 조절
+    transitionDuration: Duration(milliseconds: 450), // 전환 효과 지속 시간 조절
   );
 }
 

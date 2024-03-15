@@ -8,6 +8,7 @@ import '../../screens/settings_screen.dart';
 import '../../utils/common_utils.dart';
 import '../../utils/math_utils.dart';
 import 'custom_bar_graph_builder.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class HourlyForecastSection extends StatefulWidget {
   final double base;
@@ -28,6 +29,11 @@ class HourlyForecastSection extends StatefulWidget {
 }
 
 class _HourlyForecastSectionState extends State<HourlyForecastSection> {
+  static const spinkit = SpinKitChasingDots(
+    color: Color(0xFFEF3B08),
+    size: 26.0,
+  );
+
   final startHour = 0;
   final interval = 3;
 
@@ -70,7 +76,8 @@ class _HourlyForecastSectionState extends State<HourlyForecastSection> {
                   fetchForecastWeatherData(widget.location, widget.dayCount),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
+                  // return spinkit;
+                  return SizedBox.shrink();
                 } else if (snapshot.hasError) {
                   return Text('Error == ${snapshot.hasError}');
                 } else if (snapshot.hasData) {

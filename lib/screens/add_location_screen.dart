@@ -1,3 +1,5 @@
+import 'package:defer_pointer/defer_pointer.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mncf_weather/models/weather.dart' as current;
 import 'package:mncf_weather/screens/settings_screen.dart';
@@ -7,6 +9,8 @@ import 'package:mncf_weather/utils/weather_utils.dart';
 import 'package:mncf_weather/widgets/add_location_screen/city_weather_tile.dart';
 import 'package:mncf_weather/widgets/add_location_screen/search_location_input.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+
 import 'package:realm/realm.dart' hide ConnectionState;
 import '../models/location.dart';
 import '../services/location_data_service.dart';
@@ -28,6 +32,12 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
   final TextEditingController textController = TextEditingController();
   final double minDragDistance = 0;
   final double minVelocity = 0;
+
+  static const spinkit = SpinKitChasingDots(
+    color: Color(0xFFEF3B08),
+    size: 26.0,
+  );
+
   late int locationCount;
   late String currentLocation;
   late String? city;
@@ -162,29 +172,74 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                                       padding: const EdgeInsets.symmetric(
                                         vertical: 7.0,
                                       ),
-                                      child: CityWeatherTile(
-                                        index: index,
-                                        backgroundColor: backgroundColor,
-                                        textColor: textColor,
-                                        textFieldColor: textFieldColor,
-                                        city: location.name,
-                                        skyCondition: conditions.first,
-                                        summary:
-                                            '$monthAndDay($weekday) $minSeconds',
-                                        temperature: '$temperature°',
-                                        buttonBackgroundColor:
-                                            buttonBackgroundColor,
-                                        onRemovePressed: () {
-                                          setState(() {
-                                            final locationDataService =
-                                                LocationDataService(realm);
-                                            locationDataService
-                                                .removeLocationById(
-                                                    location.id);
-                                            locationCount--;
-                                          });
-                                          locations.removeAt(index);
-                                        },
+                                      child: DeferredPointerHandler(
+                                        child: Container(
+                                          child: Stack(
+                                            clipBehavior: Clip.none,
+                                            children: [
+                                              CityWeatherTile(
+                                                index: index,
+                                                backgroundColor:
+                                                    backgroundColor,
+                                                textColor: textColor,
+                                                textFieldColor: textFieldColor,
+                                                city: location.name,
+                                                skyCondition: conditions.first,
+                                                summary:
+                                                    '$monthAndDay($weekday) $minSeconds',
+                                                temperature: '$temperature°',
+                                                buttonBackgroundColor:
+                                                    buttonBackgroundColor,
+                                              ),
+                                              Positioned(
+                                                right: -57,
+                                                top: 0,
+                                                bottom: 0,
+                                                child: GestureDetector(
+                                                    behavior: HitTestBehavior
+                                                        .translucent,
+                                                    onTap: () {
+                                                      if (index != 0) {
+                                                        setState(() {
+                                                          final locationDataService =
+                                                              LocationDataService(
+                                                                  realm);
+                                                          locationDataService
+                                                              .removeLocationById(
+                                                                  locations[
+                                                                          index]
+                                                                      .id);
+                                                          locationCount--;
+                                                          locations
+                                                              .removeAt(index);
+                                                        });
+                                                      }
+                                                    },
+                                                    child: index != 0
+                                                        ? Container(
+                                                            decoration: BoxDecoration(
+                                                                shape: BoxShape
+                                                                    .circle,
+                                                                color:
+                                                                    backgroundColor),
+                                                            padding:
+                                                                EdgeInsets.only(
+                                                                    right: 50),
+                                                            alignment: Alignment
+                                                                .center,
+                                                            child: Icon(
+                                                              Icons
+                                                                  .remove_circle_rounded,
+                                                              size: 35.0,
+                                                              color: Color(
+                                                                  0xFFEF3B08),
+                                                            ),
+                                                          )
+                                                        : SizedBox.shrink()),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
                                       ),
                                     );
                                   }
@@ -192,7 +247,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                               );
                             },
                           )
-                        : RefreshProgressIndicator()
+                        : spinkit
                   ],
                 ),
               ),

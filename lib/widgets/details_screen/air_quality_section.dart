@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mncf_weather/models/forecast_weather_response.dart';
 import 'package:mncf_weather/services/weather_forecast_api_service.dart';
 import 'package:mncf_weather/utils/weather_utils.dart';
-
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'custom_airquality_item.dart';
 
 class DetailItem {
@@ -24,6 +24,11 @@ class AirQualitySectionItem extends StatelessWidget {
   final Color color;
   final String title;
   final String value;
+
+  static const spinkit = SpinKitChasingDots(
+    color: Color(0xFFEF3B08),
+    size: 26.0,
+  );
 
   const AirQualitySectionItem({
     super.key,
@@ -115,7 +120,8 @@ class _AirQualitySectionState extends State<AirQualitySection> {
           ),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
+              // return AirQualitySectionItem.spinkit;
+              return SizedBox.shrink();
             } else if (snapshot.hasError) {
               return Text('Error == ${snapshot.error}');
             } else if (snapshot.hasData) {

@@ -11,6 +11,7 @@ import 'package:mncf_weather/widgets/home_screen/custom_display_selector.dart';
 import 'package:provider/provider.dart';
 import 'package:realm/realm.dart' hide ConnectionState;
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import '../models/location.dart';
 import '../services/location_data_service.dart';
@@ -46,11 +47,16 @@ class _HomeScreenState extends State<HomeScreen>
   var weatherCondition = "";
   var isLastPage = false;
   var hasSettingsInit = true;
-
   var pageController = PageController(viewportFraction: 1.0, keepPage: true);
+
   final locationConfig = Configuration.local([Location.schema]);
   final settingsConfig = Configuration.local([Settings.schema]);
   final int sensitivity = 20;
+
+  static const spinkit = SpinKitChasingDots(
+    color: Color(0xFFEF3B08),
+    size: 40.0,
+  );
 
   late Realm locationRealm;
   late Realm settingsRealm;
@@ -102,7 +108,7 @@ class _HomeScreenState extends State<HomeScreen>
       stream: locationStream,
       builder: (context, locationSnapshot) {
         if (locationSnapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
+          return spinkit;
         }
         if (locationSnapshot.hasError) {
           return Text('>>> locationSnapshot Error: ${locationSnapshot.error}');
@@ -190,7 +196,7 @@ class _HomeScreenState extends State<HomeScreen>
           future: _forecastFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return isDetailScreen ? SizedBox() : RefreshProgressIndicator();
+              return spinkit;
             } else if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');
             } else if (snapshot.hasData) {
@@ -199,7 +205,7 @@ class _HomeScreenState extends State<HomeScreen>
               code = forecastWeather.current.condition.code;
               return _buildContent(context, forecastWeather, location!);
             } else {
-              return SizedBox.shrink();
+              return spinkit;
             }
           },
         ),
@@ -228,7 +234,10 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   void _loadForecastWeatherData() async {
-    _forecastFuture = fetchForecastWeatherData(coordinate, 1);
+    _forecastFuture = Future.delayed(Duration(milliseconds: 400), () {
+      return fetchForecastWeatherData(coordinate, 1);
+    });
+    // _forecastFuture = fetchForecastWeatherData(coordinate, 1);
     final newWeatherData = await fetchForecastWeatherData(coordinate, 1);
     setState(() {
       print('>>>>> isDay [$isDay]');
@@ -274,7 +283,10 @@ class _HomeScreenState extends State<HomeScreen>
         location = currentLocation;
         isDayAtCurrentLocation =
             dayAtCurrentLocation.current.isDay == 1 ? true : false;
-        _forecastFuture = fetchForecastWeatherData(coordinate, 1);
+        _forecastFuture = Future.delayed(Duration(milliseconds: 400), () {
+          return fetchForecastWeatherData(coordinate, 1);
+        });
+        // _forecastFuture = fetchForecastWeatherData(coordinate, 1);
       });
     });
   }
@@ -341,7 +353,7 @@ class _HomeScreenState extends State<HomeScreen>
                   currentIndex = pageLength - 1;
                   pageController.animateToPage(
                     currentIndex,
-                    duration: Duration(milliseconds: 500),
+                    duration: Duration(milliseconds: 400),
                     curve: Curves.easeInOut,
                   );
                 });

@@ -4,14 +4,19 @@ import 'package:mncf_weather/screens/settings_screen.dart';
 import 'package:mncf_weather/services/weather_forecast_api_service.dart';
 import 'package:mncf_weather/utils/weather_utils.dart';
 import 'package:provider/provider.dart';
-
 import 'custom_details_item.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class DetailsSection extends StatefulWidget {
+  static const double columnSpacing = 10.0;
+  static const spinkit = SpinKitChasingDots(
+    color: Color(0xFFEF3B08),
+    size: 26.0,
+  );
+
   final String location;
   final int dayCount;
   final bool isLightMode;
-  static const double columnSpacing = 10.0;
 
   const DetailsSection({
     super.key,
@@ -65,7 +70,8 @@ class _DetailsSectionState extends State<DetailsSection> {
           ),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
+              // return DetailsSection.spinkit;
+              return SizedBox.shrink();
             } else if (snapshot.hasError) {
               return Text('Error == ${snapshot.error}');
             } else if (snapshot.hasData) {
