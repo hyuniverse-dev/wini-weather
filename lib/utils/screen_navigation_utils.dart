@@ -7,11 +7,13 @@ import '../widgets/home_screen/custom_route.dart';
 
 void navigateToNewScreen(
     {required BuildContext context,
-      required bool isLightMode,
-      required bool isNext,
-      required Function(dynamic value) postNavigation}) async {
+    required bool isLightMode,
+    required bool isNext,
+    required Function(dynamic value) postNavigation}) async {
   final result = await Navigator.of(context).push(createSwipeRoute(
-      isNext ? AddLocationScreen(isLightMode: isLightMode) : IntroduceScreen(),
+      isNext
+          ? AddLocationScreen(isLightMode: isLightMode)
+          : IntroduceScreen(isLightMode: isLightMode),
       isNext ? 'right' : 'left'));
   postNavigation(result);
   print('>>> result: $result');

@@ -86,6 +86,7 @@ Widget _buildTemperatureContent(
             text: '${value.toInt()}°',
             style: TextStyle(
               fontSize: fontSize,
+              fontWeight: FontWeight.bold,
               color: color,
               letterSpacing: 0.0,
             ),
