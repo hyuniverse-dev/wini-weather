@@ -1,7 +1,9 @@
+import 'dart:io' as io;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mncf_weather/utils/common_utils.dart';
+import 'package:mncf_weather/widgets/advertisement/custom_google_banner.dart';
 
 class IntroduceScreen extends StatelessWidget {
   final int sensitivity = 25;
@@ -11,6 +13,10 @@ class IntroduceScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String adUnit = io.Platform.isAndroid
+        ? 'ca-app-pub-3940256099942544/6300978111'
+        : 'ca-app-pub-6607864297606809/7487576309';
+    // String adUnit = 'ca-app-pub-6607864297606809/7487576309';
     final backgroundColor = isLightMode ? Color(0xFFFFF9F6) : Color(0xFF1D1F21);
     final textColor = isLightMode ? Color(0xFF000000) : Color(0xFFFFFFFF);
     final descriptionTextColor =
@@ -105,6 +111,12 @@ class IntroduceScreen extends StatelessWidget {
                     color: descriptionTextColor,
                   ),
                 ),
+                columnSpace(2.0),
+                Container(
+                  child: CustomGoogleBanner(
+                    adUnitId: adUnit,
+                  ),
+                )
               ],
             ),
           ),

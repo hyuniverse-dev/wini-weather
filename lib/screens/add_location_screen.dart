@@ -1,4 +1,7 @@
+import 'dart:io' as io;
+
 import 'package:defer_pointer/defer_pointer.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mncf_weather/models/weather.dart' as current;
@@ -8,6 +11,7 @@ import 'package:mncf_weather/utils/common_utils.dart';
 import 'package:mncf_weather/utils/weather_utils.dart';
 import 'package:mncf_weather/widgets/add_location_screen/city_weather_tile.dart';
 import 'package:mncf_weather/widgets/add_location_screen/search_location_input.dart';
+import 'package:mncf_weather/widgets/advertisement/custom_google_banner.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
@@ -72,6 +76,10 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    String adUnit = io.Platform.isAndroid
+        ? 'ca-app-pub-3940256099942544/6300978111'
+        : 'ca-app-pub-6607864297606809/7487576309';
+    // String adUnit = 'ca-app-pub-6607864297606809/7487576309';
     return Scaffold(
       backgroundColor: backgroundColor,
       body: GestureDetector(
@@ -157,95 +165,107 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                                     List<String> conditions = [];
                                     divisionWeatherCodeToText(
                                         current.condition.code, conditions);
-                                    var date =
-                                        DateTime.fromMillisecondsSinceEpoch(
-                                                snapshot.data!.location
-                                                        .localtimeEpoch *
-                                                    1000,
-                                                isUtc: true);
-                                    var monthAndDay = getWeekdates(date).first;
-                                    var weekday =
-                                        getWeekdays(date, false).first;
-                                    var minSeconds = getMinSeconds(date).first;
-                                    return Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        vertical: 7.0,
-                                      ),
-                                      child: DeferredPointerHandler(
-                                        child: Container(
-                                          child: Stack(
-                                            clipBehavior: Clip.none,
-                                            children: [
-                                              CityWeatherTile(
-                                                index: index,
-                                                boxBackgroundColor:
-                                                    boxBackgroundColor,
-                                                textColor: textColor,
-                                                textFieldColor: textFieldColor,
-                                                city: location.name,
-                                                skyCondition: conditions.first,
-                                                summary:
-                                                    '$monthAndDay($weekday) $minSeconds',
-                                                temperature: '$temperature°',
-                                                buttonBackgroundColor:
-                                                    buttonBackgroundColor,
+                                    var date = snapshot.data!.location.localtime;
+                                    DateTime dateTime = DateFormat('yyyy-MM-dd H:mm').parse(date);
+                                    String displayDate = DateFormat('M.d(E) h:mm a').format(dateTime);
+                                    return Column(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 7.0,
+                                          ),
+                                          child: DeferredPointerHandler(
+                                            child: Container(
+                                              child: Stack(
+                                                clipBehavior: Clip.none,
+                                                children: [
+                                                  CityWeatherTile(
+                                                    index: index,
+                                                    boxBackgroundColor:
+                                                        boxBackgroundColor,
+                                                    textColor: textColor,
+                                                    textFieldColor:
+                                                        textFieldColor,
+                                                    city: location.name,
+                                                    skyCondition:
+                                                        conditions.first,
+                                                    summary:
+                                                        displayDate,
+                                                    temperature:
+                                                        '$temperature°',
+                                                    buttonBackgroundColor:
+                                                        buttonBackgroundColor,
+                                                  ),
+                                                  Positioned(
+                                                    right: -11,
+                                                    top: 0,
+                                                    bottom: 0,
+                                                    child: GestureDetector(
+                                                        behavior:
+                                                            HitTestBehavior
+                                                                .translucent,
+                                                        onTap: () {
+                                                          if (index != 0) {
+                                                            setState(
+                                                              () {
+                                                                final locationDataService =
+                                                                    LocationDataService(
+                                                                        realm);
+                                                                locationDataService
+                                                                    .removeLocationById(
+                                                                        locations[index]
+                                                                            .id);
+                                                                locationCount--;
+                                                                locations
+                                                                    .removeAt(
+                                                                        index);
+                                                              },
+                                                            );
+                                                          }
+                                                        },
+                                                        child: index != 0
+                                                            ? Container(
+                                                                constraints:
+                                                                    BoxConstraints(
+                                                                        maxWidth:
+                                                                            40,
+                                                                        maxHeight:
+                                                                            40),
+                                                                decoration: BoxDecoration(
+                                                                    shape: BoxShape
+                                                                        .circle,
+                                                                    color:
+                                                                        backgroundColor),
+                                                                padding: EdgeInsets
+                                                                    .only(
+                                                                        right:
+                                                                            50),
+                                                                alignment:
+                                                                    Alignment
+                                                                        .center,
+                                                                child: Icon(
+                                                                  Icons
+                                                                      .remove_circle_rounded,
+                                                                  size: 35.0,
+                                                                  color: Color(
+                                                                      0xFFEF3B08),
+                                                                ),
+                                                              )
+                                                            : SizedBox
+                                                                .shrink()),
+                                                  ),
+                                                ],
                                               ),
-                                              Positioned(
-                                                right: -11,
-                                                top: 0,
-                                                bottom: 0,
-                                                child: GestureDetector(
-                                                    behavior: HitTestBehavior
-                                                        .translucent,
-                                                    onTap: () {
-                                                      if (index != 0) {
-                                                        setState(() {
-                                                          final locationDataService =
-                                                              LocationDataService(
-                                                                  realm);
-                                                          locationDataService
-                                                              .removeLocationById(
-                                                                  locations[
-                                                                          index]
-                                                                      .id);
-                                                          locationCount--;
-                                                          locations
-                                                              .removeAt(index);
-                                                        });
-                                                      }
-                                                    },
-                                                    child: index != 0
-                                                        ? Container(
-                                                            constraints:
-                                                                BoxConstraints(
-                                                                    maxWidth:
-                                                                        40,
-                                                                    maxHeight:
-                                                                        40),
-                                                            decoration: BoxDecoration(
-                                                                shape: BoxShape
-                                                                    .circle,
-                                                                color:
-                                                                    backgroundColor),
-                                                            padding:
-                                                                EdgeInsets.only(
-                                                                    right: 50),
-                                                            alignment: Alignment
-                                                                .center,
-                                                            child: Icon(
-                                                              Icons
-                                                                  .remove_circle_rounded,
-                                                              size: 35.0,
-                                                              color: Color(
-                                                                  0xFFEF3B08),
-                                                            ),
-                                                          )
-                                                        : SizedBox.shrink()),
-                                              ),
-                                            ],
+                                            ),
                                           ),
                                         ),
-                                      ),
+                                        if (index == 0)
+                                          Container(
+                                            child: CustomGoogleBanner(
+                                              adUnitId: adUnit,
+                                            ),
+                                          )
+                                      ],
                                     );
                                   }
                                 },
