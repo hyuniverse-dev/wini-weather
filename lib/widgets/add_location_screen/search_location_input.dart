@@ -30,40 +30,52 @@ class SearchLocationInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      cursorColor: textColor,
-      style: TextStyle(
-        color: textColor,
-        fontSize: 16,
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.85,
+      decoration: BoxDecoration(
+        color: textFieldColor,
+        borderRadius: BorderRadius.circular(0),
+        border: Border(
+          bottom: BorderSide(
+            color: textColor,
+            width: 2.0,
+          ),
+        ),
       ),
-      controller: textController,
-      decoration: InputDecoration(
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(
+      child: TextField(
+        cursorColor: textColor,
+        style: TextStyle(
+          color: textColor,
+          fontSize: 16,
+        ),
+        controller: textController,
+        decoration: InputDecoration(
+            border: InputBorder.none,
+            contentPadding: EdgeInsets.all(10),
+            filled: true,
+            fillColor: textFieldColor,
+            labelStyle: TextStyle(
               color: textColor,
-              width: 2.0,
+              fontSize: 12,
             ),
-          ),
-          filled: true,
-          fillColor: textFieldColor,
-          labelStyle: TextStyle(
-            color: textColor,
-            fontSize: 12,
-          ),
-          hintText: 'Region and city names',
-          hintStyle: TextStyle(
-            color: textColor,
-            fontSize: 16,
-          ),
-          suffixIcon: IconButton(
-            color: textColor,
-            icon: Icon(Icons.keyboard_return_rounded),
-            onPressed: () => _handleSearch(context),
-          )),
-      onSubmitted: (String value) {
-        _handleSearch(context);
-      },
+            hintText: 'Region and city names',
+            hintStyle: TextStyle(
+              color: textColor,
+              fontSize: 16,
+            ),
+            prefixIcon: Icon(
+              Icons.search,
+              color: textColor,
+            ),
+            suffixIcon: IconButton(
+              color: textColor,
+              icon: Icon(Icons.keyboard_return_rounded),
+              onPressed: () => _handleSearch(context),
+            )),
+        onSubmitted: (String value) {
+          _handleSearch(context);
+        },
+      ),
     );
   }
 
@@ -80,7 +92,8 @@ class SearchLocationInput extends StatelessWidget {
         var extractData = await extractLocationData(locationData);
         if (extractData != null) {
           var city = extractData['city'] ?? 'Unknown City';
-          final isOk = await dialogs.Dialog.showConfirmDialog(context, city!, isLightMode);
+          final isOk = await dialogs.Dialog.showConfirmDialog(
+              context, city!, isLightMode);
           if (isOk == true) {
             // Create Local Database
             realm = Realm(config);

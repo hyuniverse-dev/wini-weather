@@ -8,7 +8,7 @@ class CityWeatherTile extends StatelessWidget {
   final String skyCondition;
   final String summary;
   final String temperature;
-  final Color backgroundColor;
+  final Color boxBackgroundColor;
   final Color textColor;
   final Color textFieldColor;
   final Color buttonBackgroundColor;
@@ -20,7 +20,7 @@ class CityWeatherTile extends StatelessWidget {
     required this.skyCondition,
     required this.summary,
     required this.temperature,
-    required this.backgroundColor,
+    required this.boxBackgroundColor,
     required this.textColor,
     required this.textFieldColor,
     required this.buttonBackgroundColor,
@@ -41,7 +41,7 @@ class CityWeatherTile extends StatelessWidget {
             width: 1.0,
           ),
           borderRadius: BorderRadius.circular(8.0),
-          color: textFieldColor,
+          color: boxBackgroundColor,
         ),
         child: Padding(
           padding: const EdgeInsets.all(15.0),
@@ -84,7 +84,7 @@ class CityWeatherTile extends StatelessWidget {
                     'assets/images/wini/$skyCondition.png',
                     width: 38.0,
                   ),
-                  rowSpace(2.5),
+                  rowSpace(0.5),
                 ],
               ),
             ],

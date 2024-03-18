@@ -44,6 +44,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
   late Realm realm;
   late var locations;
   late Color backgroundColor = Color(0xFFFFF9F6);
+  late Color boxBackgroundColor = Color(0xFFFFFFFF);
   late Color textColor = Color(0xFF1D1F21);
   late Color textFieldColor = Color(0xFF1D1F21);
   late Color buttonBackgroundColor = Color(0xFF1D1F21);
@@ -59,6 +60,8 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
       locationCount = locations.length;
       backgroundColor =
           widget.isLightMode ? Color(0xFFFFF9F6) : Color(0xFF1D1F21);
+      boxBackgroundColor =
+          widget.isLightMode ? Color(0xFFFFFFFF) : Color(0xFF343438);
       textColor = widget.isLightMode ? Color(0xFF1D1F21) : Color(0xFFFFF9F6);
       textFieldColor =
           widget.isLightMode ? Colors.transparent : Color(0xFF343438);
@@ -88,6 +91,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                 padding: const EdgeInsets.all(25.0),
                 child: Column(
                   children: <Widget>[
+                    columnSpace(3.0),
                     Text(
                       'Regional settings',
                       style: TextStyle(
@@ -97,7 +101,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                           height: 0.9),
                       textAlign: TextAlign.center,
                     ),
-                    columnSpace(1.0),
+                    columnSpace(5.0),
                     Column(
                       children: [
                         Align(
@@ -113,9 +117,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                         ),
                       ],
                     ),
-                    SizedBox(
-                      height: 20,
-                    ),
+                    columnSpace(5.0),
                     SearchLocationInput(
                       textController: textController,
                       config: config,
@@ -125,9 +127,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                       textFieldColor: textFieldColor,
                       isLightMode: widget.isLightMode,
                     ),
-                    SizedBox(
-                      height: 40,
-                    ),
+                    columnSpace(4.0),
                     locations.isNotEmpty
                         ? ListView.builder(
                             shrinkWrap: true,
@@ -162,8 +162,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                                                 snapshot.data!.location
                                                         .localtimeEpoch *
                                                     1000,
-                                                isUtc: true)
-                                            .toLocal();
+                                                isUtc: true);
                                     var monthAndDay = getWeekdates(date).first;
                                     var weekday =
                                         getWeekdays(date, false).first;
@@ -179,8 +178,8 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                                             children: [
                                               CityWeatherTile(
                                                 index: index,
-                                                backgroundColor:
-                                                    backgroundColor,
+                                                boxBackgroundColor:
+                                                    boxBackgroundColor,
                                                 textColor: textColor,
                                                 textFieldColor: textFieldColor,
                                                 city: location.name,
@@ -192,7 +191,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                                                     buttonBackgroundColor,
                                               ),
                                               Positioned(
-                                                right: -57,
+                                                right: -11,
                                                 top: 0,
                                                 bottom: 0,
                                                 child: GestureDetector(
@@ -217,6 +216,12 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                                                     },
                                                     child: index != 0
                                                         ? Container(
+                                                            constraints:
+                                                                BoxConstraints(
+                                                                    maxWidth:
+                                                                        40,
+                                                                    maxHeight:
+                                                                        40),
                                                             decoration: BoxDecoration(
                                                                 shape: BoxShape
                                                                     .circle,
