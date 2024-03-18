@@ -11,12 +11,13 @@ import '../../utils/common_utils.dart';
 
 Widget buildMainWeatherContent(
     {required BuildContext context,
+    required String locationName,
     required bool isCelsius,
     required ForecastWeatherResponse weatherData}) {
   final forecast = weatherData.forecast.forecastDay[0].day;
   final current = weatherData.current;
 
-  final locationName = weatherData.location.name;
+  // final locationName = locationName;
   final highValue = isCelsius ? forecast.maxTempC : forecast.maxTempF;
   final lowValue = isCelsius ? forecast.minTempC : forecast.minTempF;
   final feelsValue = isCelsius ? current.feelsC : current.feelsF;

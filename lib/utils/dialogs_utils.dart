@@ -40,7 +40,7 @@ class Dialog {
     );
   }
 
-  static Future<void> showImputMissingValidateDialog(
+  static Future<void> showInputMissingValidateDialog(
       BuildContext context, bool isLightMode) {
     return showDialog<void>(
       context: context,

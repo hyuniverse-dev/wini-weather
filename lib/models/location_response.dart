@@ -55,7 +55,7 @@ class NameDetails {
   factory NameDetails.fromJson(Map<String, dynamic> json) {
     return NameDetails(
       name: json['name'],
-      officialNameEn: json['official_name:en'],
+      officialNameEn: json['name:en'],
     );
   }
 }

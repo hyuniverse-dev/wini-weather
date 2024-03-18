@@ -18,7 +18,6 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:realm/realm.dart' hide ConnectionState;
 import '../models/location.dart';
 import '../services/location_data_service.dart';
-import '../utils/date_utils.dart';
 
 class AddLocationScreen extends StatefulWidget {
   final bool isLightMode;

@@ -66,6 +66,7 @@ class _HomeScreenState extends State<HomeScreen>
   late int isDay = 1;
   late bool isDayAtCurrentLocation = true;
   late int code = 113;
+  late String locationName = "";
   late ForecastWeatherResponse? forecastWeatherData;
   late Future<ForecastWeatherResponse>? _forecastFuture;
   late Stream<RealmResultsChanges<Location>> locationStream;
@@ -221,6 +222,7 @@ class _HomeScreenState extends State<HomeScreen>
         children: [
           buildMainWeatherContent(
             context: context,
+            locationName: locationName,
             isCelsius: isCelsius,
             weatherData: weatherData,
           ),
@@ -282,6 +284,7 @@ class _HomeScreenState extends State<HomeScreen>
         final locations = locationRealm.all<Location>().toList();
         pageLength = locations.length;
         location = currentLocation;
+        locationName = location!.name;
         isDayAtCurrentLocation =
             dayAtCurrentLocation.current.isDay == 1 ? true : false;
         _forecastFuture = Future.delayed(Duration(milliseconds: 400), () {
@@ -326,6 +329,7 @@ class _HomeScreenState extends State<HomeScreen>
       location = location;
       latitude = location.latitude;
       longitude = location.longitude;
+      locationName = location.name;
       coordinate = '${location.latitude},${location.longitude}';
       // _buildIndicator();
     });

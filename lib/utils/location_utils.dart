@@ -8,7 +8,8 @@ Map<String, dynamic> extractLocationData(
       'latitude': locationData.latitude,
       'longitude': locationData.longitude,
       'country': locationData.address.country,
-      'city': locationData.address.city,
+      'city': locationData.nameDetails.officialNameEn ??
+          locationData.address.city!,
     };
   } catch (e) {
     print('Error occurred??: $e');

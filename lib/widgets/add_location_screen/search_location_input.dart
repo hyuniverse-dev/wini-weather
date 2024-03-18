@@ -83,7 +83,7 @@ class SearchLocationInput extends StatelessWidget {
     final inputValue = textController.text;
     Realm realm;
     if (inputValue.isEmpty) {
-      dialogs.Dialog.showImputMissingValidateDialog(context, isLightMode);
+      dialogs.Dialog.showInputMissingValidateDialog(context, isLightMode);
     } else if (locationCount > 2) {
       dialogs.Dialog.showLocationLimitDialog(context, isLightMode);
     } else {
@@ -94,6 +94,7 @@ class SearchLocationInput extends StatelessWidget {
           var city = extractData['city'] ?? 'Unknown City';
           final isOk = await dialogs.Dialog.showConfirmDialog(
               context, city!, isLightMode);
+          print('locationData.nameDetails.officialNameEn >>> ${locationData.nameDetails.officialNameEn}');
           if (isOk == true) {
             // Create Local Database
             realm = Realm(config);
