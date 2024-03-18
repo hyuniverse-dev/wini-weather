@@ -51,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen>
 
   final locationConfig = Configuration.local([Location.schema]);
   final settingsConfig = Configuration.local([Settings.schema]);
-  final int sensitivity = 20;
+  final int sensitivity = 15;
 
   static const spinkit = SpinKitChasingDots(
     color: Color(0xFFEF3B08),
@@ -220,6 +220,7 @@ class _HomeScreenState extends State<HomeScreen>
       child: Stack(
         children: [
           buildMainWeatherContent(
+            context: context,
             isCelsius: isCelsius,
             weatherData: weatherData,
           ),
