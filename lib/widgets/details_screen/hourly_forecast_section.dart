@@ -163,7 +163,7 @@ class HourlyForecastSectionItem extends StatelessWidget {
             children: [
               Spacer(),
               Text(
-                temp.toStringAsFixed(1),
+                "${temp.toStringAsFixed(1)}°",
                 style: TextStyle(
                   color: tempColor,
                   fontWeight: FontWeight.bold,

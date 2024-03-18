@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mncf_weather/models/forecast_weather_response.dart';
 import 'package:mncf_weather/screens/settings_screen.dart';
 import 'package:mncf_weather/services/weather_forecast_api_service.dart';
+import 'package:mncf_weather/utils/common_utils.dart';
 import 'package:mncf_weather/utils/weather_utils.dart';
 import 'package:provider/provider.dart';
 import 'custom_details_item.dart';
@@ -62,7 +63,7 @@ class _DetailsSectionState extends State<DetailsSection> {
             ),
           ),
         ),
-        SizedBox(height: DetailsSection.columnSpacing),
+        columnSpace(3.0),
         FutureBuilder<ForecastWeatherResponse>(
           future: fetchForecastWeatherData(
             widget.location,
@@ -98,13 +99,13 @@ class _DetailsSectionState extends State<DetailsSection> {
                           CustomDetailsItem(
                             asset: '$feelsLikeAsset',
                             title: 'Feels Like',
-                            value: '$feelsLikeValue',
+                            value: '${feelsLikeValue}°',
                             isLightMode: widget.isLightMode,
                           ),
                           CustomDetailsItem(
                             asset: '$humidityAsset',
                             title: 'Humidity',
-                            value: '$humidityValue',
+                            value: '${humidityValue}%',
                             isLightMode: widget.isLightMode,
                           ),
                         ]),
@@ -116,13 +117,13 @@ class _DetailsSectionState extends State<DetailsSection> {
                           CustomDetailsItem(
                             asset: '$rainSnowChanceAsset',
                             title: '$rainSnowChanceTitle',
-                            value: '$rainSnowChanceValue',
+                            value: '${rainSnowChanceValue}%',
                             isLightMode: widget.isLightMode,
                           ),
                           CustomDetailsItem(
                             asset: '$windSpeedAsset',
                             title: 'Wind \"$windDirectionValue\"',
-                            value: '$windSpeedValue',
+                            value: '${windSpeedValue}Kps',
                             isLightMode: widget.isLightMode,
                           ),
                         ]),

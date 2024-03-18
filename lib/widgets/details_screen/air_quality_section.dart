@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mncf_weather/models/forecast_weather_response.dart';
 import 'package:mncf_weather/services/weather_forecast_api_service.dart';
+import 'package:mncf_weather/utils/common_utils.dart';
 import 'package:mncf_weather/utils/weather_utils.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'custom_airquality_item.dart';
@@ -112,7 +113,7 @@ class _AirQualitySectionState extends State<AirQualitySection> {
             ),
           ),
         ),
-        SizedBox(height: AirQualitySection.columnSpacing),
+        columnSpace(3.0),
         FutureBuilder<ForecastWeatherResponse>(
           future: fetchForecastWeatherData(
             widget.location,
@@ -120,7 +121,6 @@ class _AirQualitySectionState extends State<AirQualitySection> {
           ),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              // return AirQualitySectionItem.spinkit;
               return SizedBox.shrink();
             } else if (snapshot.hasError) {
               return Text('Error == ${snapshot.error}');
@@ -146,13 +146,13 @@ class _AirQualitySectionState extends State<AirQualitySection> {
                           CustomAirQualityItem(
                             asset: '$finedustAsset',
                             title: 'Fine dust',
-                            value: '$finedustValue',
+                            value: '${finedustValue}㎍/m³',
                             isLightMode: widget.isLightMode,
                           ),
                           CustomAirQualityItem(
                             asset: '$coAsset',
                             title: 'CO',
-                            value: '$coValue',
+                            value: '${coValue}ppm',
                             isLightMode: widget.isLightMode,
                           )
                         ]),
@@ -164,13 +164,13 @@ class _AirQualitySectionState extends State<AirQualitySection> {
                           CustomAirQualityItem(
                             asset: '$ultrafineDustAsset',
                             title: '     Ultra Dust',
-                            value: '$ultrafineDustValue',
+                            value: '${ultrafineDustValue}㎍/m³',
                             isLightMode: widget.isLightMode,
                           ),
                           CustomAirQualityItem(
                             asset: '$oThreeAsset',
                             title: 'OZone',
-                            value: '$oThreeValue',
+                            value: '${oThreeValue}ppm',
                             isLightMode: widget.isLightMode,
                           )
                         ]),

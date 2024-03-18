@@ -70,9 +70,7 @@ class _WeeklyForecastSectionState extends State<WeeklyForecastSection> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(
-            height: 10.0,
-          ),
+          columnSpace(3.0),
           Center(
             child: FutureBuilder<ForecastWeatherResponse>(
               future:
@@ -192,7 +190,7 @@ class ForecastSectionItem extends StatelessWidget {
               ),
               Spacer(),
               Text(
-                highTemp.toStringAsFixed(0),
+                "${highTemp.toStringAsFixed(0)}°",
                 style: TextStyle(
                   color: tempColor,
                 ),
@@ -201,7 +199,7 @@ class ForecastSectionItem extends StatelessWidget {
               BarGraphBuilder(values: graphValues),
               columnSpace(1.0),
               Text(
-                lowTemp.toStringAsFixed(0),
+                "${lowTemp.toStringAsFixed(0)}°",
                 style: TextStyle(
                   color: tempColor,
                 ),

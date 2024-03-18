@@ -113,7 +113,7 @@ class DetailsScreenContent extends StatelessWidget {
       color: Color(0xFFEF3B08),
       size: 50.0,
     );
-
+    final dividerColor = isLightMode ? Color(0xFFF4F3F3) : Color(0xFF343438);
     return FutureBuilder(
       future: Future.delayed(Duration(milliseconds: 1200)),
       builder: (context, snapshot) {
@@ -135,7 +135,7 @@ class DetailsScreenContent extends StatelessWidget {
                       isLightMode: isLightMode,
                     ),
                   ),
-                  columnSpaceWithDivider(3.0, Color(0xFFE9DEDA)),
+                  columnSpaceWithDivider(3.0, dividerColor),
                   WeeklyForecastSection(
                     days: getWeekdays(DateTime.now(), true),
                     date: getWeekdates(DateTime.now()),
@@ -144,13 +144,13 @@ class DetailsScreenContent extends StatelessWidget {
                     dayCount: 7,
                     isLightMode: isLightMode,
                   ),
-                  columnSpaceWithDivider(3.0, Color(0xFFE9DEDA)),
+                  columnSpaceWithDivider(3.0, dividerColor),
                   DetailsSection(
                     location: location,
                     dayCount: 1,
                     isLightMode: isLightMode,
                   ),
-                  columnSpaceWithDivider(3.0, Color(0xFFE9DEDA)),
+                  columnSpaceWithDivider(3.0, dividerColor),
                   AirQualitySection(
                     location: location,
                     dayCount: 1,
