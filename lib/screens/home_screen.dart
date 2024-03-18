@@ -216,7 +216,7 @@ class _HomeScreenState extends State<HomeScreen>
   Widget _buildContent(BuildContext context,
       ForecastWeatherResponse weatherData, Location location) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(0.0),
       child: Stack(
         children: [
           buildMainWeatherContent(
