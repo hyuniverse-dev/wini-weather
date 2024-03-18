@@ -124,6 +124,7 @@ class _CustomDayThunderState extends State<CustomDayThunder>
       right: 0,
       child: Center(
         child: getBackgroundImage(
+          context: context,
           status: 'day_thunder',
         ),
       ),

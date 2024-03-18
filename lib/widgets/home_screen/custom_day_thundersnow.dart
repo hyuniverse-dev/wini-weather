@@ -147,6 +147,7 @@ class _CustomDayThundersnowState extends State<CustomDayThundersnow>
       right: 0,
       child: Center(
         child: getBackgroundImage(
+          context: context,
           status: 'day_snow_thunder',
         ),
       ),

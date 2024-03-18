@@ -147,6 +147,7 @@ class _CustomNightThundersnowState extends State<CustomNightThundersnow>
       right: 0,
       child: Center(
         child: getBackgroundImage(
+          context: context,
           status: 'night_snow_thunder',
         ),
       ),

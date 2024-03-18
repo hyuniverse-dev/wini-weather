@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 Widget CustomDetailsItem({
+  required BuildContext context,
   required String asset,
   required String title,
   required String value,
@@ -9,6 +10,7 @@ Widget CustomDetailsItem({
   var titleColor = isLightMode ? Color(0xFF57585E) : Color(0xFFE9DEDA);
   var valueColor = isLightMode ? Color(0xFF000000) : Color(0xFFFFFFFF);
   var boxDecorationColor = isLightMode ? Color(0xFFE9DEDA) : Color(0xFF343438);
+  final width = MediaQuery.of(context).size.width;
   return Container(
     padding: EdgeInsets.all(18.0),
     margin: EdgeInsets.all(8.0),
@@ -36,7 +38,7 @@ Widget CustomDetailsItem({
               Text(
                 title,
                 style: TextStyle(
-                  fontSize: 15,
+                  fontSize: width > 750 ? 15 : 12,
                   fontWeight: FontWeight.bold,
                   color: titleColor,
                 ),

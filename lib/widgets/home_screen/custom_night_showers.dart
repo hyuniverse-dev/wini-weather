@@ -132,6 +132,7 @@ class _CustomNightShowersState extends State<CustomNightShowers>
       right: 0,
       child: Center(
         child: getBackgroundImage(
+          context: context,
           status: 'night_showers',
         ),
       ),

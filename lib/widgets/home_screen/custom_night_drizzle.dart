@@ -123,6 +123,7 @@ class _CustomNightDrizzleState extends State<CustomNightDrizzle>
       right: 0,
       child: Center(
         child: getBackgroundImage(
+          context: context,
           status: 'night_drizzle',
         ),
       ),

@@ -132,6 +132,7 @@ class _CustomDayRainState extends State<CustomDayRain>
       right: 0,
       child: Center(
         child: getBackgroundImage(
+          context: context,
           status: 'day_rain',
         ),
       ),

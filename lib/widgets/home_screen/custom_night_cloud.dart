@@ -99,6 +99,7 @@ class _CustomNightCloudState extends State<CustomNightCloud>
       right: 0,
       child: Center(
         child: getBackgroundImage(
+          context: context,
           status: 'night_cloud',
         ),
       ),

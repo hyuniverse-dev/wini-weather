@@ -59,6 +59,7 @@ class _CustomDaySunnyState extends State<CustomDaySunny>
       right: 0,
       child: Center(
         child: getBackgroundImage(
+          context: context,
           status: 'day_sunny',
         ),
       ),

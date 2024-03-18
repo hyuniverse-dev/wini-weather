@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 Widget CustomAirQualityItem({
+  required BuildContext context,
   required String asset,
   required String title,
   required String value,
@@ -10,7 +11,8 @@ Widget CustomAirQualityItem({
   var valueColor = isLightMode ? Color(0xFF000000) : Color(0xFFFFFFFF);
   var boxDecorationColor = Colors.transparent;
   var borderColor = isLightMode ? Color(0xFFE9DEDA) : Color(0xFF343438);
-
+  final width = MediaQuery.of(context).size.width;
+  final fontSize = width > 750 ? 15.0 : 13.0;
   return Container(
     padding: EdgeInsets.all(18.0),
     margin: EdgeInsets.all(8.0),
@@ -57,7 +59,7 @@ Widget CustomAirQualityItem({
               Text(
                 title,
                 style: TextStyle(
-                  fontSize: 15,
+                  fontSize: fontSize,
                   fontWeight: FontWeight.bold,
                   color: titleColor,
                 ),
@@ -66,7 +68,7 @@ Widget CustomAirQualityItem({
               Text(
                 value,
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: fontSize,
                   color: valueColor,
                 ),
               ),

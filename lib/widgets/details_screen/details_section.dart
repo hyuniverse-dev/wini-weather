@@ -97,12 +97,14 @@ class _DetailsSectionState extends State<DetailsSection> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           CustomDetailsItem(
+                            context: context,
                             asset: '$feelsLikeAsset',
                             title: 'Feels Like',
                             value: '${feelsLikeValue}°',
                             isLightMode: widget.isLightMode,
                           ),
                           CustomDetailsItem(
+                            context: context,
                             asset: '$humidityAsset',
                             title: 'Humidity',
                             value: '${humidityValue}%',
@@ -115,12 +117,14 @@ class _DetailsSectionState extends State<DetailsSection> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           CustomDetailsItem(
+                            context: context,
                             asset: '$rainSnowChanceAsset',
                             title: '$rainSnowChanceTitle',
                             value: '${rainSnowChanceValue}%',
                             isLightMode: widget.isLightMode,
                           ),
                           CustomDetailsItem(
+                            context: context,
                             asset: '$windSpeedAsset',
                             title: 'Wind \"$windDirectionValue\"',
                             value: '${windSpeedValue}Kps',

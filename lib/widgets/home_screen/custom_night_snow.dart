@@ -126,6 +126,7 @@ class _CustomNightSnowState extends State<CustomNightSnow>
       right: 0,
       child: Center(
         child: getBackgroundImage(
+          context: context,
           status: 'night_snow',
         ),
       ),

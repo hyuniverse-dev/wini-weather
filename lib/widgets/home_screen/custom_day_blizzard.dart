@@ -109,6 +109,7 @@ class _CustomDayBlizzardState extends State<CustomDayBlizzard>
       right: 0,
       child: Center(
         child: getBackgroundImage(
+          context: context,
           status: 'day_blizzard',
         ),
       ),

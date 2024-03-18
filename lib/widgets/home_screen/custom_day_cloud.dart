@@ -99,6 +99,7 @@ class _CustomDayCloudState extends State<CustomDayCloud>
       right: 0,
       child: Center(
         child: getBackgroundImage(
+          context: context,
           status: "day_cloud",
         ),
       ),

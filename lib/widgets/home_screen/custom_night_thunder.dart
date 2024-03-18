@@ -124,6 +124,7 @@ class _CustomNightThunderState extends State<CustomNightThunder>
       right: 0,
       child: Center(
         child: getBackgroundImage(
+          context: context,
           status: 'night_thunder',
         ),
       ),

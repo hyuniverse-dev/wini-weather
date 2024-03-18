@@ -144,12 +144,14 @@ class _AirQualitySectionState extends State<AirQualitySection> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           CustomAirQualityItem(
+                            context: context,
                             asset: '$finedustAsset',
                             title: 'Fine dust',
                             value: '${finedustValue}㎍/m³',
                             isLightMode: widget.isLightMode,
                           ),
                           CustomAirQualityItem(
+                            context: context,
                             asset: '$coAsset',
                             title: 'CO',
                             value: '${coValue}ppm',
@@ -162,12 +164,14 @@ class _AirQualitySectionState extends State<AirQualitySection> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           CustomAirQualityItem(
+                            context: context,
                             asset: '$ultrafineDustAsset',
-                            title: '     Ultra Dust',
+                            title: 'Ultra Dust',
                             value: '${ultrafineDustValue}㎍/m³',
                             isLightMode: widget.isLightMode,
                           ),
                           CustomAirQualityItem(
+                            context: context,
                             asset: '$oThreeAsset',
                             title: 'OZone',
                             value: '${oThreeValue}ppm',

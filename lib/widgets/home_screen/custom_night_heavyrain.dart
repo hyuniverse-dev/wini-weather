@@ -132,6 +132,7 @@ class _CustomNightHeavyrainState extends State<CustomNightHeavyrain>
       right: 0,
       child: Center(
         child: getBackgroundImage(
+          context: context,
           status: 'night_heavyrain',
         ),
       ),

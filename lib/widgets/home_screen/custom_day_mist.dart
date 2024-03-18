@@ -87,6 +87,7 @@ class _CustomDayMistState extends State<CustomDayMist>
       right: 0,
       child: Center(
         child: getBackgroundImage(
+          context: context,
           status: 'day_mist',
         ),
       ),
