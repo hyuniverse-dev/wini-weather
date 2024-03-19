@@ -29,7 +29,7 @@ class HourlyForecastSection extends StatefulWidget {
 }
 
 class _HourlyForecastSectionState extends State<HourlyForecastSection> {
-  static const spinkit = SpinKitChasingDots(
+  static const spinKit = SpinKitChasingDots(
     color: Color(0xFFEF3B08),
     size: 26.0,
   );
@@ -152,8 +152,22 @@ class HourlyForecastSectionItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var iconColor = isLightMode ? Color(0xFF919191) : Color(0xFF919191);
-    var tempColor = isLightMode ? Color(0xFF919191) : Color(0xFF919191);
+    var currentHour = DateTime.now().hour;
+    final Color pointColor =
+        isLightMode ? Color(0xFF000000) : Color(0xFFFFFFFF);
+    final bool isWithinTimeRange =
+        currentHour > (time - 2) && currentHour < (time + 2);
+
+    var iconColor = Color(0xFF919191);
+    var tempColor = Color(0xFF919191);
+    var timeColor = Color(0xFF6D6D6D);
+
+    if (isWithinTimeRange) {
+      iconColor = pointColor;
+      tempColor = pointColor;
+      timeColor = pointColor;
+    }
+
     return Row(
       children: [
         Container(
@@ -176,7 +190,7 @@ class HourlyForecastSectionItem extends StatelessWidget {
               columnSpace(2.0),
               getAssetImage('images/weather/$asset.png', 36, 36, iconColor),
               columnSpace(2.0),
-              _formatTime(time),
+              _formatTime(time, timeColor),
             ],
           ),
         ),
@@ -187,13 +201,13 @@ class HourlyForecastSectionItem extends StatelessWidget {
     );
   }
 
-  Widget _formatTime(int time) {
+  Widget _formatTime(int time, Color color) {
     final int formattedTime = time % 12 == 0 ? 12 : time % 12;
     final String period = time < 12 || time == 24 ? 'AM' : 'PM';
     final formatted = '$period ${formattedTime.toString().padLeft(2, '0')}';
     return Text(formatted,
         style: TextStyle(
-          color: Color(0xFF6D6D6D),
+          color: color,
           fontWeight: FontWeight.bold,
         ));
   }
