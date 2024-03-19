@@ -24,6 +24,11 @@ Widget buildMainWeatherContent(
   final isDay = current.isDay;
   final titleColor = isDay == 1 ? Color(0xFF000000) : Color(0xFFFFFFFF);
   final color = isDay == 1 ? Color(0xFF57585E) : Color(0xFFFFFFFF);
+  final locationNameLength = locationName.length;
+  final formattedLocationName = locationNameLength > 15
+      ? "${locationName.substring(0, 15)}\n${locationName.substring(15)}"
+      : locationName;
+  final fontSize = locationNameLength > 15 ? 26.0 : 32.0;
   return Positioned(
     top: 0,
     bottom: 0,
@@ -35,9 +40,12 @@ Widget buildMainWeatherContent(
       child: Column(
         children: [
           Text(
-            locationName,
+            textAlign: TextAlign.center,
+            formattedLocationName,
             style: TextStyle(
-                fontSize: 32.0, color: titleColor, fontWeight: FontWeight.bold),
+                fontSize: fontSize,
+                color: titleColor,
+                fontWeight: FontWeight.bold),
           ),
           columnSpace(1.0),
           Row(
