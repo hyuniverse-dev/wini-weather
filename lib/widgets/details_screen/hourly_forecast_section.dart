@@ -161,11 +161,12 @@ class HourlyForecastSectionItem extends StatelessWidget {
     var iconColor = Color(0xFF919191);
     var tempColor = Color(0xFF919191);
     var timeColor = Color(0xFF6D6D6D);
-
+    var graphColor = Color(0xFFA49696);
     if (isWithinTimeRange) {
       iconColor = pointColor;
       tempColor = pointColor;
       timeColor = pointColor;
+      graphColor = pointColor;
     }
 
     return Row(
@@ -186,6 +187,7 @@ class HourlyForecastSectionItem extends StatelessWidget {
               columnSpace(2.0),
               BarGraphBuilder(
                 values: graphValues,
+                color: graphColor,
               ),
               columnSpace(2.0),
               getAssetImage('images/weather/$asset.png', 36, 36, iconColor),

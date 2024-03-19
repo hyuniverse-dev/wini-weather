@@ -3,24 +3,31 @@ import 'package:fl_chart/fl_chart.dart';
 
 class BarGraphBuilder extends StatelessWidget {
   final double values;
+  final Color color;
 
   const BarGraphBuilder({
     super.key,
     required this.values,
+    required this.color,
   });
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBar(value: values);
+    return AnimatedBar(
+      value: values,
+      color: color,
+    );
   }
 }
 
 class AnimatedBar extends StatefulWidget {
   final double value;
+  final Color color;
 
   const AnimatedBar({
     super.key,
     required this.value,
+    required this.color,
   });
 
   @override
@@ -34,6 +41,7 @@ class _AnimatedBarState extends State<AnimatedBar>
 
   @override
   void initState() {
+    super.initState();
     _animationController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 800),
@@ -68,7 +76,7 @@ class _AnimatedBarState extends State<AnimatedBar>
         width: 10,
         height: widget.value,
         decoration: BoxDecoration(
-          color: Color(0xFFA49696),
+          color: widget.color,
           borderRadius: BorderRadius.circular(4),
         ),
       ),

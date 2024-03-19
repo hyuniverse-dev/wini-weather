@@ -35,13 +35,12 @@ class WeeklyForecastSection extends StatefulWidget {
 class _WeeklyForecastSectionState extends State<WeeklyForecastSection> {
   bool isLoading = true;
 
-  static const spinkit = SpinKitChasingDots(
+  static const spinKit = SpinKitChasingDots(
     color: Color(0xFFEF3B08),
     size: 26.0,
   );
 
   late ForecastWeatherResponse weeklyWeatherData;
-
 
   @override
   void initState() {
@@ -77,7 +76,6 @@ class _WeeklyForecastSectionState extends State<WeeklyForecastSection> {
                   fetchForecastWeatherData(widget.location, widget.dayCount),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  // return spinkit;
                   return SizedBox.shrink();
                 } else if (snapshot.hasError) {
                   return Text('Error == ${snapshot.error}');
@@ -158,9 +156,19 @@ class ForecastSectionItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var tempColor = isLightMode ? Color(0xFF919191) : Color(0xFF919191);
-    var dayColor = isLightMode ? Color(0xFF919191) : Color(0xFF919191);
-    var dateColor = isLightMode ? Color(0xFF919191) : Color(0xFF919191);
+    final bool isToday = day == "Today";
+    final pointColor = isLightMode ? Color(0xFF000000) : Color(0xFFFFFFFF);
+    var tempColor = Color(0xFF919191);
+    var dayColor = Color(0xFF919191);
+    var dateColor = Color(0xFF919191);
+    var graphColor = Color(0xFFA49696);
+    if (isToday) {
+      tempColor = pointColor;
+      dayColor = pointColor;
+      dateColor = pointColor;
+      graphColor = pointColor;
+    }
+
     return Row(
       children: [
         Container(
@@ -196,7 +204,7 @@ class ForecastSectionItem extends StatelessWidget {
                 ),
               ),
               columnSpace(1.0),
-              BarGraphBuilder(values: graphValues),
+              BarGraphBuilder(values: graphValues, color: graphColor,),
               columnSpace(1.0),
               Text(
                 "${lowTemp.toStringAsFixed(0)}°",
