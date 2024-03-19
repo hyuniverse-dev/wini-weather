@@ -151,8 +151,6 @@ class DetailsScreenContent extends StatelessWidget {
                   ),
                   columnSpaceWithDivider(3.0, dividerColor),
                   WeeklyForecastSection(
-                    days: getWeekdays(DateTime.now(), true),
-                    date: getWeekdates(DateTime.now()),
                     location: location,
                     base: (base - 10.0),
                     dayCount: 7,

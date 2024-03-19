@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mncf_weather/models/forecast_weather_response.dart';
 import 'package:mncf_weather/services/weather_forecast_api_service.dart';
 import 'package:mncf_weather/utils/weather_utils.dart';
 import 'package:provider/provider.dart';
+import 'package:timezone/timezone.dart';
 
 import '../../screens/settings_screen.dart';
 import '../../utils/common_utils.dart';
@@ -76,19 +78,21 @@ class _HourlyForecastSectionState extends State<HourlyForecastSection> {
                   fetchForecastWeatherData(widget.location, widget.dayCount),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  // return spinkit;
                   return SizedBox.shrink();
                 } else if (snapshot.hasError) {
                   return Text('Error == ${snapshot.hasError}');
                 } else if (snapshot.hasData) {
                   ForecastWeatherResponse weatherData = snapshot.data!;
                   final forecast = weatherData.forecast.forecastDay;
+                  String localTimeString = weatherData.location.localtime;
+                  DateTime localTime = DateFormat("yyyy-MM-dd HH:mm").parse(localTimeString);
+                  final formattedLocationTime = DateFormat("HH").format(localTime);
+
                   var weather = WeatherUtils(weatherData: weatherData);
                   List<String> skyConditions =
                       weather.getThreeHourlySkyCondition();
                   List<double> tempsC = [];
                   List<double> tempsF = [];
-                  print('>>>>> skyConditions.length [${skyConditions.length}]');
 
                   for (var days in forecast) {
                     for (int i = 0; i < days.hour.length; i += interval) {
@@ -117,6 +121,7 @@ class _HourlyForecastSectionState extends State<HourlyForecastSection> {
                             asset: skyConditions[i],
                             time: time,
                             isLightMode: widget.isLightMode,
+                            localTime: int.parse(formattedLocationTime),
                           );
                         },
                       ),
@@ -139,6 +144,7 @@ class HourlyForecastSectionItem extends StatelessWidget {
   final double graphValues;
   final String asset;
   final int time;
+  final int localTime;
   final bool isLightMode;
 
   const HourlyForecastSectionItem({
@@ -148,11 +154,13 @@ class HourlyForecastSectionItem extends StatelessWidget {
     required this.asset,
     required this.time,
     required this.isLightMode,
+    required this.localTime,
   });
 
   @override
   Widget build(BuildContext context) {
-    var currentHour = DateTime.now().hour;
+    // var currentHour = DateTime.now().hour;
+    var currentHour = localTime;
     final Color pointColor =
         isLightMode ? Color(0xFF000000) : Color(0xFFFFFFFF);
     final bool isWithinTimeRange =

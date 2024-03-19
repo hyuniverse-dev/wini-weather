@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mncf_weather/models/forecast_weather_response.dart';
 import 'package:mncf_weather/services/weather_forecast_api_service.dart';
 import 'package:mncf_weather/utils/common_utils.dart';
 import 'package:mncf_weather/utils/weather_utils.dart';
+import 'package:mncf_weather/utils/date_utils.dart';
 import 'package:mncf_weather/widgets/details_screen/custom_bar_graph_builder.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -11,8 +13,6 @@ import '../../screens/settings_screen.dart';
 import '../../utils/math_utils.dart';
 
 class WeeklyForecastSection extends StatefulWidget {
-  final List<String> days;
-  final List<String> date;
   final String location;
   final double base;
   final int dayCount;
@@ -20,8 +20,6 @@ class WeeklyForecastSection extends StatefulWidget {
 
   const WeeklyForecastSection({
     super.key,
-    required this.days,
-    required this.date,
     required this.location,
     required this.base,
     required this.dayCount,
@@ -81,6 +79,11 @@ class _WeeklyForecastSectionState extends State<WeeklyForecastSection> {
                   return Text('Error == ${snapshot.error}');
                 } else if (snapshot.hasData) {
                   ForecastWeatherResponse weatherData = snapshot.data!;
+                  String localTimeString = weatherData.location.localtime;
+                  DateTime localTime =
+                      DateFormat("yyyy-MM-dd HH:mm").parse(localTimeString);
+                  final days = getWeekdays(localTime, true);
+                  final date = getWeekdates(localTime);
 
                   var weather = WeatherUtils(weatherData: weatherData);
                   final settingsProvider =
@@ -111,8 +114,8 @@ class _WeeklyForecastSectionState extends State<WeeklyForecastSection> {
                             highTemp: hTemps[i],
                             lowTemp: lTemps[i],
                             graphValues: tempsDifferRatios[i],
-                            day: widget.days[i],
-                            date: widget.date[i],
+                            day: days[i],
+                            date: date[i],
                             isLightMode: widget.isLightMode,
                           ),
                           SizedBox(
@@ -204,7 +207,10 @@ class ForecastSectionItem extends StatelessWidget {
                 ),
               ),
               columnSpace(1.0),
-              BarGraphBuilder(values: graphValues, color: graphColor,),
+              BarGraphBuilder(
+                values: graphValues,
+                color: graphColor,
+              ),
               columnSpace(1.0),
               Text(
                 "${lowTemp.toStringAsFixed(0)}°",
