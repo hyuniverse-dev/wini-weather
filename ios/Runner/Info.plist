@@ -28,17 +28,28 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>GADApplicationIdentifier</key>
+	<string>ca-app-pub-6607864297606809~3070298073</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>이 앱은 항상 위치 정보가 필요합니다.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>이 앱은 위치 정보가 필요합니다.</string>
+	<key>SKAdNetworkItems</key>
+	<array>
+		<dict>
+			<key>SKAdNetworkIdentifier</key>
+			<string>cstr6suwn9.skadnetwork</string>
+		</dict>
+	</array>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>
 	<array>
+		<string>location</string>
 		<string>processing</string>
+		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
@@ -57,14 +68,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>GADApplicationIdentifier</key>
-        <string>ca-app-pub-6607864297606809~3070298073</string>
-        <key>SKAdNetworkItems</key>
-        <array>
-            <dict>
-                <key>SKAdNetworkIdentifier</key>
-                <string>cstr6suwn9.skadnetwork</string>
-            </dict>
-        </array>
 </dict>
 </plist>

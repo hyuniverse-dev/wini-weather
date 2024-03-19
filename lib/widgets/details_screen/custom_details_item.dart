@@ -11,7 +11,7 @@ Widget CustomDetailsItem({
   var valueColor = isLightMode ? Color(0xFF000000) : Color(0xFFFFFFFF);
   var boxDecorationColor = isLightMode ? Color(0xFFE9DEDA) : Color(0xFF343438);
   final width = MediaQuery.of(context).size.width;
-  final fontSize = width > 375 ? 15.0 : 13.0;
+  final fontSize = width > 393 ? 15.0 : 13.0;
   return Container(
     padding: EdgeInsets.all(18.0),
     margin: EdgeInsets.all(8.0),

@@ -36,6 +36,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
   int topReachCount = 0;
   bool isLoading = true;
 
+  final ScrollController _scrollController = ScrollController();
+  double? startY;
+
   @override
   void initState() {
     super.initState();
@@ -53,11 +56,25 @@ class _DetailsScreenState extends State<DetailsScreen> {
   Widget build(BuildContext context) {
     final settingsProvider = Provider.of<SettingsProvider>(context);
     final isCelsius = settingsProvider.isCelsius;
+    final minSwipeDistance = 50.0;
     return Scaffold(
       backgroundColor: backgroundColor,
       body: SafeArea(
-        child: NotificationListener(
-          onNotification: _handleScrollNotification,
+        child: Listener(
+          onPointerDown: (PointerDownEvent event) {
+            if (_scrollController.hasClients && _scrollController.offset <= 0) {
+              startY = event.position.dy;
+            }
+          },
+          onPointerUp: (PointerUpEvent event) {
+            if (startY != null) {
+              final dy = event.position.dy - startY!;
+              if (dy > minSwipeDistance) {
+                Navigator.of(context).pop();
+              }
+            }
+            startY = null;
+          },
           child: FutureBuilder<ForecastWeatherResponse>(
             future: fetchForecastWeatherData(widget.coordinate, day),
             builder: (context, snapshot) {
@@ -70,6 +87,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                   location: widget.coordinate,
                   base: isCelsius ? tTempBase : fTempBase,
                   isLightMode: widget.isLightMode,
+                  scrollController: _scrollController,
                 );
               } else {
                 return Text('No Data');
@@ -81,17 +99,10 @@ class _DetailsScreenState extends State<DetailsScreen> {
     );
   }
 
-  bool _handleScrollNotification(ScrollNotification notification) {
-    if (notification is ScrollUpdateNotification) {
-      if (notification.metrics.pixels == notification.metrics.minScrollExtent) {
-        topReachCount++;
-        print(topReachCount);
-        if (topReachCount >= 1) {
-          Navigator.of(context).pop();
-        }
-      }
-    }
-    return true;
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 }
 
@@ -99,17 +110,19 @@ class DetailsScreenContent extends StatelessWidget {
   final String location;
   final double base;
   final bool isLightMode;
+  final ScrollController scrollController;
 
   const DetailsScreenContent({
     super.key,
     required this.location,
     required this.base,
     required this.isLightMode,
+    required this.scrollController,
   });
 
   @override
   Widget build(BuildContext context) {
-    const spinkit = SpinKitChasingDots(
+    const spinKit = SpinKitChasingDots(
       color: Color(0xFFEF3B08),
       size: 50.0,
     );
@@ -118,11 +131,12 @@ class DetailsScreenContent extends StatelessWidget {
       future: Future.delayed(Duration(milliseconds: 1200)),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return spinkit;
+          return spinKit;
         } else {
           return Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.0),
             child: SingleChildScrollView(
+              controller: scrollController,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
