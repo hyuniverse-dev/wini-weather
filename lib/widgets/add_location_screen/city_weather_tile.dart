@@ -56,7 +56,7 @@ class CityWeatherTile extends StatelessWidget {
                     children: [
                       Text(
                         city.length > 20
-                            ? '${city.substring(0, 21)}\n${city.substring(21, 40)}...'
+                            ? '${city.substring(0, 20)}\n${city.substring(20)}...'
                             : city,
                         style: TextStyle(
                           fontSize: city.length > 20 ? 15 : 20,

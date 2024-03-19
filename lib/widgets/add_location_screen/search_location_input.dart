@@ -43,6 +43,9 @@ class SearchLocationInput extends StatelessWidget {
         ),
       ),
       child: TextField(
+        onTapOutside: (focusNode) {
+          (event) => FocusScope.of(context).unfocus();
+        },
         cursorColor: textColor,
         style: TextStyle(
           color: textColor,
@@ -94,7 +97,8 @@ class SearchLocationInput extends StatelessWidget {
           var city = extractData['city'] ?? 'Unknown City';
           final isOk = await dialogs.Dialog.showConfirmDialog(
               context, city!, isLightMode);
-          print('locationData.nameDetails.officialNameEn >>> ${locationData.nameDetails.officialNameEn}');
+          print(
+              'locationData.nameDetails.officialNameEn >>> ${locationData.nameDetails.officialNameEn}');
           if (isOk == true) {
             // Create Local Database
             realm = Realm(config);
