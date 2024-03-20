@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mncf_weather/models/forecast_weather_response.dart';
@@ -12,6 +13,8 @@ import 'package:provider/provider.dart';
 import 'package:realm/realm.dart' hide ConnectionState;
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:logger/logger.dart';
 
 import '../models/location.dart';
 import '../services/location_data_service.dart';
@@ -72,9 +75,40 @@ class _HomeScreenState extends State<HomeScreen>
   late Stream<RealmResultsChanges<Location>> locationStream;
   late Stream<RealmResultsChanges<Settings>> settingsStream;
 
+  String _fcmToken = '';
+
+  void getMyDeviceToken() async {
+    try {
+      FirebaseMessaging messaging = FirebaseMessaging.instance;
+      NotificationSettings settings = await messaging.requestPermission();
+      if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+        print('User granted permission');
+        String? token = await messaging.getToken();
+        print('Token: $token');
+        setState(() {
+          _fcmToken = token ?? '';
+        });
+      } else {
+        print('User declined or has not accepted permission');
+      }
+    }catch (e) {
+      print('getMyDeviceToken error: $e');
+    }
+  }
+
   @override
   void initState() {
+    print('initState [실행]');
     super.initState();
+    getMyDeviceToken();
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print("Got a message whilst in the foreground!");
+      print("Message data: ${message.data}");
+      if(message.notification != null) {
+        print("Message also contained a notification: ${message.notification!.body}");
+      }
+    });
+
     WidgetsBinding.instance.addObserver(this);
     _loadInitLocationData();
     _loadInitSettingsData();

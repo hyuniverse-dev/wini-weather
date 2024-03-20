@@ -174,19 +174,20 @@ class _SettingsScreenState extends State<SettingsScreen>
                   });
                   await SharedPreferencesService()
                       .setNotificationStatus(isNotificationOn!);
-                  if (isNotificationOn!) {
-                    print('Notification On----------');
-                    if (io.Platform.isIOS) {
-                      print('iOS Notification On----------'); // debug
-                      // FlutterBackgroundServiceIOS().start();
-                      FlutterBackgroundService().invoke("startService");
-                    } else if (io.Platform.isAndroid) {
-                      FlutterBackgroundService().startService();
-                    }
-                  } else {
-                    print('Notification Off----------');
-                    FlutterBackgroundService().invoke("stopService");
-                  }
+                  print('isNotificationON: $isNotificationOn');
+                  // if (isNotificationOn!) {
+                  //   print('Notification On----------');
+                  //   if (io.Platform.isIOS) {
+                  //     print('iOS Notification On----------'); // debug
+                  //     // FlutterBackgroundServiceIOS().start();
+                  //     FlutterBackgroundService().invoke("startService");
+                  //   } else if (io.Platform.isAndroid) {
+                  //     FlutterBackgroundService().startService();
+                  //   }
+                  // } else {
+                  //   print('Notification Off----------');
+                  //   FlutterBackgroundService().invoke("stopService");
+                  // }
                 },
               ),
               Padding(

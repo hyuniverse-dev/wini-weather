@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
@@ -23,20 +25,60 @@ final FlutterLocalNotificationsPlugin localNotificationsPlugin =
 final SharedPreferencesService sharedPreferencesService =
     SharedPreferencesService();
 
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+  print('Handling a background message ${message.messageId}');
+}
+
+void initializeNotification() async {
+  FirebaseMessaging.onBackgroundMessage(await _firebaseMessagingBackgroundHandler);
+
+  final flutterLocalNotificationPlugin = FlutterLocalNotificationsPlugin();
+  await flutterLocalNotificationPlugin
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(const AndroidNotificationChannel(
+        'high_importance_channel', // id
+        'High Importance Notifications', // title
+        importance: Importance.high,
+      ));
+
+  await flutterLocalNotificationPlugin.initialize(const InitializationSettings(
+    android: AndroidInitializationSettings("@mipmap/ic_launcher"),
+  ));
+
+  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await initService();
+  try {
+    await Firebase.initializeApp(
+      options: FirebaseOptions(
+        apiKey: 'AIzaSyCp9eXvIyt_YV36V4LF98leLMMFpzSEr1A',
+        appId: '1:115030953322:android:ed479db0a25321e0b7e913',
+        messagingSenderId: '115030953322',
+        projectId: 'mncf-weather-26e4a',
+        databaseURL: 'https://mncf-weather.firebaseio.com',
+    ));
+  }catch (e) {
+    print('Error: $e');
+  }
+  // initializeNotification();
+  // await initService();
   runApp(MyProviderApp(latitude: 37.5666791, longitude: 126.9782914));
 }
 
 Future<void> initService() async {
   final service = FlutterBackgroundService();
-
   const AndroidNotificationChannel notificationChannel =
       AndroidNotificationChannel("foreground", "foreground service",
           description: "This is channel foreground notification",
           importance: Importance.high);
-
   if (Platform.isIOS || Platform.isAndroid) {
     await localNotificationsPlugin.initialize(
       const InitializationSettings(
@@ -45,12 +87,10 @@ Future<void> initService() async {
       ),
     );
   }
-
   localNotificationsPlugin
       .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(notificationChannel);
-
   // service init and start
   await service.configure(
     iosConfiguration: IosConfiguration(
@@ -127,7 +167,9 @@ void onStart(ServiceInstance service) async {
 
   print('MainScreen prefs >>> $prefs');
   if (prefs) {
+    print('MainScreen prefs2 >>> $prefs');
     periodicTimer = Timer.periodic(Duration(minutes: 1), (timer) async {
+      print('MainScreen prefs3 >>> $prefs');
       var now = DateTime.now().toLocal();
       var currentTime = TimeOfDay(hour: now.hour, minute: now.minute);
       var config = Configuration.local([Settings.schema]);

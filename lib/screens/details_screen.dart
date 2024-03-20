@@ -10,6 +10,7 @@ import 'package:mncf_weather/widgets/details_screen/weekly_forecast_section.dart
 import 'package:mncf_weather/widgets/details_screen/hourly_forecast_section.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import '../utils/date_utils.dart';
 
@@ -57,6 +58,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
     final settingsProvider = Provider.of<SettingsProvider>(context);
     final isCelsius = settingsProvider.isCelsius;
     final minSwipeDistance = 50.0;
+
     return Scaffold(
       backgroundColor: backgroundColor,
       body: SafeArea(
